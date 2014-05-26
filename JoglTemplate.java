@@ -51,8 +51,7 @@ public class JoglTemplate extends JPanel implements
         display.addMouseMotionListener(this);
         
         // TODO: Uncomment the following line to start the animation
-        startAnimation();
-
+        /* startAnimation(); */
     }
 
     // ---------------  Methods of the GLEventListener interface -----------
@@ -66,7 +65,7 @@ public class JoglTemplate extends JPanel implements
             // called when the panel needs to be drawn
 
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0,0,0,0);
+        gl.glClearColor(0.8f,0.8f,0.8f,0);
         gl.glClear( GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
 
         gl.glMatrixMode(GL2.GL_PROJECTION);  // TODO: Set up a better projection?
@@ -79,10 +78,17 @@ public class JoglTemplate extends JPanel implements
         gl.glRotatef(rotateX,1,0,0);
 
         // TODO: add drawing code!!  As an example, draw a GLUT teapot
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
         glut.glutSolidTeapot(0.5);
+        glut.glutSolidSphere(1.0, 10, 10);
 
-        gl.glBegin(GL.GL_POINTS);
+        gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're
+
+        gl.glEnable( GL2.GL_POINT_SMOOTH );
+        gl.glEnable( GL2.GL_BLEND );
+        gl.glBlendFunc( GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA );
         gl.glPointSize(10f);
+        gl.glBegin(GL.GL_POINTS);
         gl.glColor3f( 0.95f, 0.207f, 0.031f  );
         gl.glVertex3f( 0.5f, 0.5f, 0.5f);
         gl.glVertex3f( 0.5f, 0.6f, 0.6f);
@@ -232,8 +238,8 @@ public class JoglTemplate extends JPanel implements
         int x = evt.getX();
         int y = evt.getY();
 
-        rotateX += x - prevX;
-        rotateY += y - prevY;
+        rotateY += x - prevX;
+        rotateX -= y - prevY;
         // TODO:  respond to mouse drag to new point (x,y)
         prevX = x;
         prevY = y;
@@ -241,8 +247,16 @@ public class JoglTemplate extends JPanel implements
         display.repaint();
     }
 
-    public void mouseMoved(MouseEvent evt) {}
-    public void mouseClicked(MouseEvent evt) { }
-    public void mouseEntered(MouseEvent evt) { }
-    public void mouseExited(MouseEvent evt) { }
-                   }
+    public void mouseMoved(MouseEvent evt) { 
+    
+    }
+    public void mouseClicked(MouseEvent evt) { 
+    
+    }
+    public void mouseEntered(MouseEvent evt) { 
+    
+    }
+    public void mouseExited(MouseEvent evt) { 
+    
+    }
+}
