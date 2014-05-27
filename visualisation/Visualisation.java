@@ -12,6 +12,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.GLUquadric;
 import javax.swing.Timer;
 
 import point.point;
@@ -112,20 +113,47 @@ public class Visualisation implements
     	for (point p : pointsList) {
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-			/* gl.glColor3f(0.95f, 0.207f, 0.031f); */
 			gl.glColor3f(0.95f, 0.207f, 0.031f);
 			gl.glVertex3f(p.getX(), p.getY(), p.getZ());
 			gl.glPopMatrix();
 		}
     	gl.glEnd();
     }
+    
+    public void buildAxes(GLAutoDrawable drawable){
+    	GL2 gl = drawable.getGL().getGL2();
+    	float cylinderRadius = 0.001f;
+    	float cylinderHeight = 1f;
+    	int slices = 16;
+    	int stacks = 16;
+    	GLUquadric body = glu.gluNewQuadric();
+    	
+    	gl.glPushMatrix();
+    	gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+        gl.glTranslatef(0.0f,0.0f,-0.5f);
+        gl.glColor3f(0.1f,0.4f, 0.4f);
+        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+		gl.glPopMatrix();
+		
+		gl.glPushMatrix();
+        gl.glTranslatef(0.0f,0.0f,-0.5f);
+		gl.glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+		gl.glColor3f(0.0f,0.906f,0.909f);
+		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+		gl.glPopMatrix();
+		
+		gl.glPushMatrix();
+        gl.glTranslatef(-0.5f,0.0f,0.0f);
+		gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		gl.glColor3f(1f, 1f, 0.0f);
+		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+		gl.glPopMatrix();
+    }
 
     /**
      * This method is called when the OpenGL display needs to be redrawn.
      */
     public void display(GLAutoDrawable drawable) {  
-            // called when the panel needs to be drawn
-
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8f,0.8f,0.8f,0);
         gl.glClear( GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
@@ -144,6 +172,7 @@ public class Visualisation implements
 
         // TODO: add drawing code!!  As an example, draw a GLUT teapot
         buildPoints(drawable);
+        buildAxes(drawable);
         /* gl.glColor3f(1.0f, 1.0f, 1.0f); */
         /* glut.glutSolidTeapot(5); */
 //        glut.glutSolidSphere(1.0, 10, 10);
@@ -181,6 +210,7 @@ public class Visualisation implements
         doLighting(gl);
         
         buildPoints(drawable);
+        buildAxes(drawable);
     }
 
     private void doLighting( GL2 gl )
