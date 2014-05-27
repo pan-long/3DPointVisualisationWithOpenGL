@@ -1,13 +1,10 @@
 package visualisation;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
 
@@ -16,19 +13,23 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import point.point;
 
+import com.jogamp.newt.event.MouseListener;
+import com.jogamp.newt.event.WindowAdapter;
+import com.jogamp.newt.event.WindowEvent;
+import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;  // for drawing the sample teapot
 
 import dataReader.dataReader;
 
-public class Visualisation extends JPanel implements 
+public class Visualisation implements 
                    GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
     static final long serialVersionUID = 1l;
@@ -40,42 +41,65 @@ public class Visualisation extends JPanel implements
     private GLUT glut = new GLUT();  // for drawing the teapot
     private GLU glu = new GLU();
     
+    private static String TITLE = "JOGL 2 with NEWT";  
+    private static final int WINDOW_WIDTH = 640;  
+    private static final int WINDOW_HEIGHT = 480; 
+    private static final int FPS = 60; 
+    
     public static void main(String[] args) {
     	initDataReader();
-    	initMainWindow();
+        GLProfile glp = GLProfile.getDefault();
+        GLCapabilities caps = new GLCapabilities(glp);
+        GLWindow window = GLWindow.create(caps);
+ 
+        final FPSAnimator animator = new FPSAnimator(window, FPS, true);
+  
+        window.addWindowListener(new WindowAdapter() {
+           @Override
+           public void windowDestroyNotify(WindowEvent arg0) {
+              // Use a dedicate thread to run the stop() to ensure that the
+              // animator stops before program exits.
+              new Thread() {
+                 @Override
+                 public void run() {
+                    animator.stop(); // stop the animator loop
+                    System.exit(0);
+                 }
+              }.start();
+           };
+        });
+  
+        Visualisation v = new Visualisation();
+        window.addGLEventListener(v);
+        window.addMouseListener(v);
+        window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        window.setTitle(TITLE);
+        window.setVisible(true);
+        animator.start();
     }
 
     public Visualisation() {
-        GLCapabilities caps = new GLCapabilities(null);
-        display = new GLJPanel(caps);
-        display.setPreferredSize( new Dimension(600,600) );  // TODO: set display size here
-        display.addGLEventListener(this);
-        setLayout(new BorderLayout());
-        add(display,BorderLayout.CENTER);
+//        GLCapabilities caps = new GLCapabilities(null);
+//        display = new GLJPanel(caps);
+//        display.setPreferredSize( new Dimension(600,600) );  // TODO: set display size here
+//        display.addGLEventListener(this);
+//        setLayout(new BorderLayout());
+//        add(display,BorderLayout.CENTER);
         // TODO:  Other components could be added to the main panel.
         
-        rotateX = 15;  // initialize some variables used in the drawing.
-        rotateY = 15;
+//        rotateX = 15;  // initialize some variables used in the drawing.
+//        rotateY = 15;
         
         // TODO:  Uncomment the next two lines to enable keyboard event handling
-        requestFocusInWindow();
-        display.addKeyListener(this);
+//        requestFocusInWindow();
+//        display.addKeyListener(this);
 
         // TODO:  Uncomment the next one or two lines to enable mouse event handling
-        display.addMouseListener(this);
-        display.addMouseMotionListener(this);
+//        display.addMouseListener(this);
+//        display.addMouseMotionListener(this);
         
         // TODO: Uncomment the following line to start the animation
-        startAnimation(); 
-    }
-    
-    public static void initMainWindow(){
-    	JFrame window = new JFrame("JOGL");
-        window.setContentPane(new Visualisation());
-        window.pack();
-        window.setLocation(50,50);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
+        //startAnimation(); 
     }
     
     public static void initDataReader(){
@@ -86,8 +110,6 @@ public class Visualisation extends JPanel implements
     // ---------------  Methods of the GLEventListener interface -----------
     public void buildPoints(GLAutoDrawable drawable){
     	GL2 gl = drawable.getGL().getGL2();
-//    	gl.glClearColor(0.8f,0.8f,0.8f,0);
-//        gl.glClear( GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
     	gl.glBegin(GL.GL_POINTS);
     	for (point p : pointsList) {
 			gl.glPushMatrix();
@@ -214,7 +236,7 @@ public class Visualisation extends JPanel implements
             rotateX -= 15;
         else if ( key == KeyEvent.VK_HOME )
             rotateX = rotateY = 0;
-        repaint();
+        //repaint();
     }
 
     /**
@@ -337,4 +359,52 @@ public class Visualisation extends JPanel implements
     public void mouseExited(MouseEvent evt) { 
 
     }
+
+	@Override
+	public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseWheelMoved(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
                    }
