@@ -17,14 +17,16 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
+import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import point.point;
-import dataReader.dataReader;
 
 import com.jogamp.opengl.util.gl2.GLUT;  // for drawing the sample teapot
+
+import dataReader.dataReader;
 
 public class Visualisation extends JPanel implements 
                    GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
@@ -36,6 +38,7 @@ public class Visualisation extends JPanel implements
     private Timer animationTimer;
     private float rotateX, rotateY;   // rotation amounts about axes, controlled by keyboard
     private GLUT glut = new GLUT();  // for drawing the teapot
+    private GLU glu = new GLU();
     
     public static void main(String[] args) {
     	initDataReader();
