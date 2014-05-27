@@ -92,7 +92,7 @@ public class Visualisation extends JPanel implements
     	for (point p : pointsList) {
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-			gl.glColor3f(0.95f, 0.207f, 0.031f);
+			/* gl.glColor3f(0.95f, 0.207f, 0.031f); */
 			gl.glColor3f(0.95f, 0.207f, 0.031f);
 			gl.glVertex3f(p.getX(), p.getY(), p.getZ());
 			gl.glPopMatrix();
@@ -114,7 +114,7 @@ public class Visualisation extends JPanel implements
         gl.glLoadIdentity();
         /* gl.glOrtho(-1,1,-1,1,-2,2); */
         glu.gluPerspective(35, 1, 0.1, 10000);
-        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
+        glu.gluLookAt(0, 0, 1, 0, 0, 0, 0, 1, 0);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 
@@ -123,9 +123,9 @@ public class Visualisation extends JPanel implements
         gl.glRotatef(rotateX,1,0,0);
 
         // TODO: add drawing code!!  As an example, draw a GLUT teapot
-        /* buildPoints(drawable); */
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
-        glut.glutSolidTeapot(5);
+        buildPoints(drawable);
+        /* gl.glColor3f(1.0f, 1.0f, 1.0f); */
+        /* glut.glutSolidTeapot(5); */
 //        glut.glutSolidSphere(1.0, 10, 10);
 
         /* gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're */
@@ -319,7 +319,7 @@ public class Visualisation extends JPanel implements
 
         rotateY += mouseDeltaX;
 
-        System.out.println("x: " + rotateX + "   y: " + rotateY);
+        System.out.println("x: " + rotateX + "    y: " + rotateY);
 
         prevX = x;
         prevY = y;
