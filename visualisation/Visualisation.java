@@ -99,7 +99,7 @@ public class Visualisation implements
 //        display.addMouseMotionListener(this);
         
         // TODO: Uncomment the following line to start the animation
-        //startAnimation(); 
+        /* startAnimation();  */
     }
     
     public static void initDataReader(){
@@ -145,9 +145,9 @@ public class Visualisation implements
         gl.glRotatef(rotateX,1,0,0);
 
         // TODO: add drawing code!!  As an example, draw a GLUT teapot
-        buildPoints(drawable);
-//        gl.glColor3f(1.0f, 1.0f, 1.0f);
-//        glut.glutSolidTeapot(0.5);
+        /* buildPoints(drawable); */
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        glut.glutSolidTeapot(5);
 //        glut.glutSolidSphere(1.0, 10, 10);
 
         /* gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're */
@@ -257,7 +257,7 @@ public class Visualisation implements
 
     private void updateFrame() {
         // TODO:  add any other updating required for the next frame.
-        rotateX += 10;
+        rotateY += 10;
         frameNumber++;
     }
 
@@ -333,13 +333,15 @@ public class Visualisation implements
         double mouseDeltaY = y - prevY;
         // TODO:  respond to mouse drag to new point (x,y)   
 
-        if ((rotateX % 360 > 90 && rotateX % 360 < 270)
-                || (rotateX % 360 < 0 && rotateX % 360 + 360 > 90 && rotateX % 360 + 360 < 270))
-            rotateY += mouseDeltaX;
+        if ((rotateY % 360 > 90 && rotateY % 360 < 270)
+                || (rotateY % 360 < 0 && rotateY % 360 + 360 > 90 && rotateY % 360 + 360 < 270))
+            rotateX -= mouseDeltaY;
         else
-            rotateY -= mouseDeltaX;
+            rotateX += mouseDeltaY;
 
-        rotateX += mouseDeltaY;
+        rotateY += mouseDeltaX;
+
+        System.out.println("x: " + rotateX + "   y: " + rotateY);
 
         prevX = x;
         prevY = y;
