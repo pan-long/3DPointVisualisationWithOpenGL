@@ -5,7 +5,7 @@ import java.util.List;
 
 import point.point;
 
-class ScaleConfiguration {
+public class ScaleConfiguration {
     private final double cameraDistance = -40;
     private final double fieldOfView = 35;
 
