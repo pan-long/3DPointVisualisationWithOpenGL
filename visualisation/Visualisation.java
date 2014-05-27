@@ -75,9 +75,9 @@ public class Visualisation extends JPanel implements
 
         gl.glMatrixMode(GL2.GL_PROJECTION);  // TODO: Set up a better projection?
         gl.glLoadIdentity();
-        gl.glOrtho(-1,1,-1,1,-2,2);
-        /* glu.gluPerspective(45, 1, 0.01, 1000); */
-        /* glu.gluLookAt(0, 0, 2, 0, 0, 0, 0, 1, 0); */
+        /* gl.glOrtho(-1,1,-1,1,-2,2); */
+        glu.gluPerspective(35, 1, 0.1, 10000);
+        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 
@@ -267,9 +267,18 @@ public class Visualisation extends JPanel implements
         int x = evt.getX();
         int y = evt.getY();
 
-        rotateY += x - prevX;
-        rotateX -= y - prevY;
-        // TODO:  respond to mouse drag to new point (x,y)
+        double mouseDeltaX = x - prevX;
+        double mouseDeltaY = y - prevY;
+        // TODO:  respond to mouse drag to new point (x,y)   
+
+        if ((rotateX % 360 > 90 && rotateX % 360 < 270)
+                || (rotateX % 360 < 0 && rotateX % 360 + 360 > 90 && rotateX % 360 + 360 < 270))
+            rotateY += mouseDeltaX;
+        else
+            rotateY -= mouseDeltaX;
+
+        rotateX += mouseDeltaY;
+
         prevX = x;
         prevY = y;
 
@@ -277,15 +286,15 @@ public class Visualisation extends JPanel implements
     }
 
     public void mouseMoved(MouseEvent evt) { 
-    
+
     }
     public void mouseClicked(MouseEvent evt) { 
-    
+
     }
     public void mouseEntered(MouseEvent evt) { 
-    
+
     }
     public void mouseExited(MouseEvent evt) { 
-    
+
     }
-}
+                   }
