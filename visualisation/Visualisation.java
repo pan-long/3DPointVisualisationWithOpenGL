@@ -1,38 +1,46 @@
 package visualisation;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.List;
 
-import javax.swing.*;
-import javax.media.opengl.*;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
-import javax.media.opengl.glu.GLU;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import point.point;
+import dataReader.dataReader;
 
 import com.jogamp.opengl.util.gl2.GLUT;  // for drawing the sample teapot
 
-/**
- * A template for a basic JOGL application with support for animation and for
- * keyboard and mouse event handling.  To enable the support, uncomment the
- * appropriate lines in the init() method.  As an example, the program draws
- * the GLUT teapot.
- */
 public class Visualisation extends JPanel implements 
                    GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
     static final long serialVersionUID = 1l;
-
-    public static void main(String[] args) {
-        JFrame window = new JFrame("JOGL");
-        window.setContentPane(new Visualisation());
-        window.pack();
-        window.setLocation(50,50);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
-    }
-    
+    private static List<point> pointsList = null;
+    private static dataReader dr = null;
     private GLJPanel display;
     private Timer animationTimer;
     private float rotateX, rotateY;   // rotation amounts about axes, controlled by keyboard
+    private GLUT glut = new GLUT();  // for drawing the teapot
+    
+    public static void main(String[] args) {
+    	initDataReader();
+    	initMainWindow();
+    }
 
     public Visualisation() {
         GLCapabilities caps = new GLCapabilities(null);
@@ -55,13 +63,39 @@ public class Visualisation extends JPanel implements
         display.addMouseMotionListener(this);
         
         // TODO: Uncomment the following line to start the animation
-        /* startAnimation(); */
+        startAnimation(); 
+    }
+    
+    public static void initMainWindow(){
+    	JFrame window = new JFrame("JOGL");
+        window.setContentPane(new Visualisation());
+        window.pack();
+        window.setLocation(50,50);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+    }
+    
+    public static void initDataReader(){
+    	dr = new dataReader("output1.pcd");
+    	pointsList = dr.getPoints();
     }
 
     // ---------------  Methods of the GLEventListener interface -----------
-    
-    private GLUT glut = new GLUT();  // for drawing the teapot
-    private GLU glu = new GLU();
+    public void buildPoints(GLAutoDrawable drawable){
+    	GL2 gl = drawable.getGL().getGL2();
+//    	gl.glClearColor(0.8f,0.8f,0.8f,0);
+//        gl.glClear( GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
+    	gl.glBegin(GL.GL_POINTS);
+    	for (point p : pointsList) {
+			gl.glPushMatrix();
+			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
+			gl.glColor3f(0.95f, 0.207f, 0.031f);
+			gl.glColor3f(0.95f, 0.207f, 0.031f);
+			gl.glVertex3f(p.getX(), p.getY(), p.getZ());
+			gl.glPopMatrix();
+		}
+    	gl.glEnd();
+    }
 
     /**
      * This method is called when the OpenGL display needs to be redrawn.
@@ -86,9 +120,10 @@ public class Visualisation extends JPanel implements
         gl.glRotatef(rotateX,1,0,0);
 
         // TODO: add drawing code!!  As an example, draw a GLUT teapot
-        /* gl.glColor3f(1.0f, 1.0f, 1.0f); */
-        glut.glutSolidTeapot(5);
-        /* glut.glutSolidSphere(1.0, 10, 10); */
+        buildPoints(drawable);
+//        gl.glColor3f(1.0f, 1.0f, 1.0f);
+//        glut.glutSolidTeapot(0.5);
+//        glut.glutSolidSphere(1.0, 10, 10);
 
         /* gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're */
         /*  */
@@ -121,6 +156,8 @@ public class Visualisation extends JPanel implements
         gl.glEnable(GL2.GL_LIGHT0);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
         doLighting(gl);
+        
+        buildPoints(drawable);
     }
 
     private void doLighting( GL2 gl )
