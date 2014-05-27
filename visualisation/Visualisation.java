@@ -1,3 +1,5 @@
+package visualisation;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -12,7 +14,7 @@ import com.jogamp.opengl.util.gl2.GLUT;  // for drawing the sample teapot
  * appropriate lines in the init() method.  As an example, the program draws
  * the GLUT teapot.
  */
-public class JoglTemplate extends JPanel implements 
+public class Visualisation extends JPanel implements 
                    GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
     static final long serialVersionUID = 1l;
@@ -30,7 +32,7 @@ public class JoglTemplate extends JPanel implements
     private Timer animationTimer;
     private float rotateX, rotateY;   // rotation amounts about axes, controlled by keyboard
 
-    public JoglTemplate() {
+    public Visualisation() {
         GLCapabilities caps = new GLCapabilities(null);
         display = new GLJPanel(caps);
         display.setPreferredSize( new Dimension(600,600) );  // TODO: set display size here
