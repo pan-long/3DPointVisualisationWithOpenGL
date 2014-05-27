@@ -123,7 +123,7 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glPointSize((float) radius);
+        gl.glPointSize((float) radius / 2);
 
         gl.glBegin(GL.GL_POINTS);
         for (point p : pointsList) {
@@ -193,8 +193,8 @@ public class Visualisation implements GLEventListener, KeyListener,
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8F, 0.8F, 0.8F, 1.0F);
         gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glEnable(GL2.GL_LIGHT0);
+        /* gl.glEnable(GL2.GL_LIGHTING); */
+        /* gl.glEnable(GL2.GL_LIGHT0); */
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
         doLighting(gl);
 
@@ -202,86 +202,16 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     private void doLighting(GL2 gl) {
-        float[] lightPos = new float[4];
-        lightPos[0] = 50005;
-        lightPos[1] = 30000;
-        lightPos[2] = 50000;
-        lightPos[3] = 1;
-        gl.glEnable(GL2.GL_DEPTH_TEST);
+        float[] light_ambient=new float[] {1.0f,1.0f,1.0f,1.0f};
+        float[] light_diffuse=new float[] {1.0f,1.0f,1.0f,1.0f};
+        float[] light_specular=new float[] {1.0f,1.0f,1.0f,1.0f};
+        float[] light_position=new float[] {1.0f,1.0f,1.0f,0.0f};
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,light_ambient,0);
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,light_diffuse,0);
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_SPECULAR,light_specular,0);
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,light_position,0);
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
-        float[] noAmbient = { 0.1f, 0.1f, 0.1f, 1f }; // low ambient light
-        float[] spec = { 1f, 0f, 0.6f, 1f }; // low ambient light
-        float[] diffuse = { 1f, 1f, 1f, 1f };
-        // properties of the light
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, noAmbient, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spec, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diffuse, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
-        /*  */
-        /* float[] lightPos1 = new float[4]; */
-        /* lightPos1[0] = -50005; */
-        /* lightPos1[1] = -30000; */
-        /* lightPos1[2] = -50000; */
-        /* lightPos1[3] = 1; */
-        /*  */
-        /* gl.glEnable(GL2.GL_LIGHT1); */
-        /*  */
-        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, noAmbient, 0); */
-        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, spec, 0); */
-        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, diffuse, 0); */
-        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, lightPos1, 0); */
-        /* float[] colorBlack = {0.0f,0.0f,0.0f,1.0f}; */
-        /* float[] colorWhite = {1.0f,1.0f,1.0f,1.0f}; */
-        /* float[] colorGray = {0.6f,0.6f,0.6f,1.0f}; */
-        /* float[] colorRed = {1.0f,0.0f,0.0f,1.0f}; */
-        /* float[] colorBlue = {0.0f,0.0f,0.1f,1.0f}; */
-        /* float[] colorYellow = {1.0f,1.0f,0.0f,1.0f}; */
-        /* float[] colorLightYellow = {.5f,.5f,0.0f,1.0f}; */
-        /* // First Switch the lights on. */
-        /* gl.glEnable( GL2.GL_LIGHTING ); */
-        /* gl.glEnable( GL2.GL_LIGHT0 ); */
-        /* gl.glEnable( GL2.GL_LIGHT1 ); */
-        /* gl.glEnable( GL2.GL_LIGHT2 ); */
-        /*  */
-        /* // */
-        /* // Light 0. */
-        /* // */
-        /* // Default from the red book. */
-        /* // */
-        /* float[] noAmbient ={ 0.3f, 0.3f, 0.3f, 1f }; // low ambient light */
-        /* gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_AMBIENT, noAmbient, 0); */
-        /* gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0); */
-        /*  */
-        /* // */
-        /* // Light 1. */
-        /* // */
-        /* // Position and direction (spotlight) */
-        /* float posLight1[] = { 1.0f, 1.f, 1.f, 0.0f }; */
-        /* float spotDirection[] = { -1.0f, -1.0f, 0.f }; */
-        /* //gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, posLight1 ); */
-        /* //gl.glLightf( GL.GL_LIGHT1, GL.GL_SPOT_CUTOFF, 60.0F ); */
-        /* //gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPOT_DIRECTION, spotDirection ); */
-        /* // */
-        /* gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_AMBIENT, colorGray, 0); */
-        /* gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_DIFFUSE, colorGray, 0); */
-        /* gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_SPECULAR, colorWhite, 0); */
-        /* //gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPECULAR, colorRed ); */
-        /* // */
-        /* gl.glLightf( GL2.GL_LIGHT1, GL2.GL_CONSTANT_ATTENUATION, 0.2f ); */
-        /*  */
-        /* // */
-        /* // Light 2. */
-        /* // */
-        /* // Position and direction */
-        /* float posLight2[] = { .5f, 1.f, 3.f, 0.0f }; */
-        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_POSITION, posLight2, 0); */
-        /* // */
-        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_AMBIENT, colorGray, 0); */
-        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_DIFFUSE, colorGray, 0); */
-        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_SPECULAR, colorWhite, 0); */
-        /* // */
-        /* gl.glLightf( GL2.GL_LIGHT2, GL2.GL_CONSTANT_ATTENUATION, 0.8f ); */
     }
 
     /**
