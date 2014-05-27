@@ -2,10 +2,6 @@ package visualisation;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -20,17 +16,19 @@ import javax.swing.Timer;
 
 import point.point;
 
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
-import com.jogamp.opengl.util.gl2.GLUT;  // for drawing the sample teapot
 
 import dataReader.dataReader;
+// for drawing the sample teapot
 
 public class Visualisation implements 
-                   GLEventListener, KeyListener, MouseListener, MouseMotionListener, ActionListener {
+                   GLEventListener, KeyListener, MouseListener, ActionListener {
 
     static final long serialVersionUID = 1l;
     private static List<point> pointsList = null;
@@ -38,7 +36,7 @@ public class Visualisation implements
     private GLJPanel display;
     private Timer animationTimer;
     private float rotateX, rotateY;   // rotation amounts about axes, controlled by keyboard
-    private GLUT glut = new GLUT();  // for drawing the teapot
+    /* private GLUT glut = new GLUT();  // for drawing the teapot */
     private GLU glu = new GLU();
     
     private static String TITLE = "JOGL 2 with NEWT";  
@@ -194,7 +192,7 @@ public class Visualisation implements
         lightPos[3] = 1;
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
-        float[] noAmbient ={ 0.1f, 0.1f, 0.1f, 1f }; // low ambient light
+        float[] noAmbient ={ 0.3f, 0.3f, 0.3f, 1f }; // low ambient light
         float[] spec =    { 1f, 0.6f, 0f, 1f }; // low ambient light
         float[] diffuse ={ 1f, 1f, 1f, 1f };
         // properties of the light
@@ -243,7 +241,7 @@ public class Visualisation implements
      * Called when the user types a character.
      */
     public void keyTyped(KeyEvent e) { 
-        char ch = e.getKeyChar();  // Which character was typed.
+        /* char ch = e.getKeyChar();  // Which character was typed. */
     }
 
     public void keyReleased(KeyEvent e) { 
@@ -251,14 +249,14 @@ public class Visualisation implements
 
     // --------------------------- animation support ---------------------------
 
-    private int frameNumber = 0;
+    /* private int frameNumber = 0; */
 
     private boolean animating;
 
     private void updateFrame() {
         // TODO:  add any other updating required for the next frame.
         rotateY += 10;
-        frameNumber++;
+        /* frameNumber++; */
     }
 
     public void startAnimation() {
@@ -285,49 +283,23 @@ public class Visualisation implements
 
 
 
-    // ---------------------- support for mouse events ----------------------
+    // MouseEvent support 
+    private boolean dragging = false;
+    private double prevX, prevY;
 
-    private boolean dragging;  // is a drag operation in progress?
+	@Override
+	public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
+		}
 
-    private int startX, startY;  // starting location of mouse during drag
-    private int prevX, prevY;    // previous location of mouse during drag
-
-    /**
-     * Called when the user presses a mouse button on the display.
-     */
-    public void mousePressed(MouseEvent evt) {
-        if (dragging) {
-            return;  // don't start a new drag while one is already in progress
-        }
-        int x = evt.getX();
-        int y = evt.getY();
-        // TODO: respond to mouse click at (x,y)
-        dragging = true;  // might not always be correct!
-        prevX = startX = x;
-        prevY = startY = y;
-        display.repaint();    //  only needed if display should change
-    }
-
-    /**
-     * Called when the user releases a mouse button after pressing it on the display.
-     */
-    public void mouseReleased(MouseEvent evt) {
+	@Override
+	public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
+		// TODO Auto-generated method stub
         if (! dragging) {
             return;
         }
-        dragging = false;
-        // TODO:  finish drag (generally nothing to do here)
-    }
 
-    /**
-     * Called during a drag operation when the user drags the mouse on the display/
-     */
-    public void mouseDragged(MouseEvent evt) {
-        if (! dragging) {
-            return;
-        }
-        int x = evt.getX();
-        int y = evt.getY();
+        int x = arg0.getX();
+        int y = arg0.getY();
 
         double mouseDeltaX = x - prevX;
         double mouseDeltaY = y - prevY;
@@ -346,32 +318,7 @@ public class Visualisation implements
         prevX = x;
         prevY = y;
 
-        display.repaint();
-    }
-
-    public void mouseMoved(MouseEvent evt) { 
-
-    }
-    public void mouseClicked(MouseEvent evt) { 
-
-    }
-    public void mouseEntered(MouseEvent evt) { 
-
-    }
-    public void mouseExited(MouseEvent evt) { 
-
-    }
-
-	@Override
-	public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+        /* display.repaint(); */
 	}
 
 	@Override
@@ -395,13 +342,30 @@ public class Visualisation implements
 	@Override
 	public void mousePressed(com.jogamp.newt.event.MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		if (dragging) {
+            return;  // don't start a new drag while one is already in progress
+        }
+        int x = arg0.getX();
+        int y = arg0.getY();
+
+        // TODO: respond to mouse click at (x,y)
+        dragging = true;  // might not always be correct!
+        /* prevX = startX = x; */
+        /* prevY = startY = y; */
+        prevX = x;
+        prevY = y;
+        /* display.repaint();   */
+
 	}
 
 	@Override
 	public void mouseReleased(com.jogamp.newt.event.MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		if (! dragging) {
+            return;
+        }
+        dragging = false;
+
 	}
 
 	@Override
