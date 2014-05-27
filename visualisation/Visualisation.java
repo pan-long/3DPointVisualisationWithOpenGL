@@ -25,7 +25,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import dataReader.dataReader;
-// for drawing the sample teapot
+import configuration.ScaleConfiguration;
 
 public class Visualisation implements 
                    GLEventListener, KeyListener, MouseListener, ActionListener {
@@ -38,7 +38,11 @@ public class Visualisation implements
     private float rotateX, rotateY;   // rotation amounts about axes, controlled by keyboard
     /* private GLUT glut = new GLUT();  // for drawing the teapot */
     private GLU glu = new GLU();
+    private static ScaleConfiguration sc = null;
     
+    private static double scaleFactor;
+    private static double radius;
+
     private static String TITLE = "JOGL 2 with NEWT";  
     private static final int WINDOW_WIDTH = 640;  
     private static final int WINDOW_HEIGHT = 480; 
@@ -103,18 +107,27 @@ public class Visualisation implements
     public static void initDataReader(){
     	dr = new dataReader("output1.pcd");
     	pointsList = dr.getPoints();
+        sc = new ScaleConfiguration(pointsList, 10);
+        scaleFactor = sc.getScaleFactor();
+        radius = sc.getRadius();
     }
 
     // ---------------  Methods of the GLEventListener interface -----------
     public void buildPoints(GLAutoDrawable drawable){
     	GL2 gl = drawable.getGL().getGL2();
+        gl.glEnable(GL2.GL_POINT_SPRITE); // GL_POINT_SPRITE_ARB if you're
+        gl.glEnable(GL2.GL_POINT_SMOOTH);
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+        gl.glPointSize((float)radius);
+
     	gl.glBegin(GL.GL_POINTS);
     	for (point p : pointsList) {
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 			/* gl.glColor3f(0.95f, 0.207f, 0.031f); */
 			gl.glColor3f(0.95f, 0.207f, 0.031f);
-			gl.glVertex3f(p.getX(), p.getY(), p.getZ());
+			gl.glVertex3f((float)(p.getX() * scaleFactor), (float)(p.getY() * scaleFactor), (float)(p.getZ() * scaleFactor));
 			gl.glPopMatrix();
 		}
     	gl.glEnd();
@@ -134,7 +147,7 @@ public class Visualisation implements
         gl.glLoadIdentity();
         /* gl.glOrtho(-1,1,-1,1,-2,2); */
         glu.gluPerspective(35, 1, 0.1, 10000);
-        glu.gluLookAt(0, 0, 1, 0, 0, 0, 0, 1, 0);
+        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 
@@ -149,7 +162,6 @@ public class Visualisation implements
 //        glut.glutSolidSphere(1.0, 10, 10);
 
         /* gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're */
-        /*  */
         /* gl.glEnable( GL2.GL_POINT_SMOOTH ); */
         /* gl.glEnable( GL2.GL_BLEND ); */
         /* gl.glBlendFunc( GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA ); */
@@ -190,16 +202,81 @@ public class Visualisation implements
         lightPos[1] = 30000;
         lightPos[2] = 50000;
         lightPos[3] = 1;
+        gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
-        float[] noAmbient ={ 0.3f, 0.3f, 0.3f, 1f }; // low ambient light
-        float[] spec =    { 1f, 0.6f, 0f, 1f }; // low ambient light
+        float[] noAmbient ={ 0.1f, 0.1f, 0.1f, 1f }; // low ambient light
+        float[] spec =    { 1f, 0f, 0.6f, 1f }; // low ambient light
         float[] diffuse ={ 1f, 1f, 1f, 1f };
         // properties of the light
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, noAmbient, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spec, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diffuse, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
+        /*  */
+        /* float[] lightPos1 = new float[4]; */
+        /* lightPos1[0] = -50005; */
+        /* lightPos1[1] = -30000; */
+        /* lightPos1[2] = -50000; */
+        /* lightPos1[3] = 1; */
+        /*  */
+        /* gl.glEnable(GL2.GL_LIGHT1); */
+        /*  */
+        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, noAmbient, 0); */
+        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, spec, 0); */
+        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, diffuse, 0); */
+        /* gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, lightPos1, 0); */
+        /* float[] colorBlack  = {0.0f,0.0f,0.0f,1.0f}; */
+        /* float[] colorWhite  = {1.0f,1.0f,1.0f,1.0f}; */
+        /* float[] colorGray   = {0.6f,0.6f,0.6f,1.0f}; */
+        /* float[] colorRed    = {1.0f,0.0f,0.0f,1.0f}; */
+        /* float[] colorBlue   = {0.0f,0.0f,0.1f,1.0f}; */
+        /* float[] colorYellow = {1.0f,1.0f,0.0f,1.0f}; */
+        /* float[] colorLightYellow = {.5f,.5f,0.0f,1.0f}; */
+        /* // First Switch the lights on. */
+        /* gl.glEnable( GL2.GL_LIGHTING ); */
+        /* gl.glEnable( GL2.GL_LIGHT0 ); */
+        /* gl.glEnable( GL2.GL_LIGHT1 ); */
+        /* gl.glEnable( GL2.GL_LIGHT2 ); */
+        /*  */
+        /* // */
+        /* // Light 0. */
+        /* //     */
+        /* // Default from the red book. */
+        /* // */
+        /* float[] noAmbient ={ 0.3f, 0.3f, 0.3f, 1f }; // low ambient light */
+        /* gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_AMBIENT, noAmbient, 0); */
+        /* gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);     */
+        /*  */
+        /* // */
+        /* // Light 1. */
+        /* // */
+        /* // Position and direction (spotlight) */
+        /* float posLight1[] = { 1.0f, 1.f, 1.f, 0.0f }; */
+        /* float spotDirection[] = { -1.0f, -1.0f, 0.f }; */
+        /* //gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, posLight1 ); */
+        /* //gl.glLightf( GL.GL_LIGHT1, GL.GL_SPOT_CUTOFF, 60.0F ); */
+        /* //gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPOT_DIRECTION, spotDirection ); */
+        /* // */
+        /* gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_AMBIENT, colorGray, 0); */
+        /* gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_DIFFUSE, colorGray, 0); */
+        /* gl.glLightfv( GL2.GL_LIGHT1, GL2.GL_SPECULAR, colorWhite, 0); */
+        /* //gl.glLightfv( GL.GL_LIGHT1, GL.GL_SPECULAR, colorRed ); */
+        /* // */
+        /* gl.glLightf( GL2.GL_LIGHT1, GL2.GL_CONSTANT_ATTENUATION, 0.2f ); */
+        /*  */
+        /* // */
+        /* // Light 2. */
+        /* // */
+        /* // Position and direction */
+        /* float posLight2[] = { .5f, 1.f, 3.f, 0.0f }; */
+        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_POSITION, posLight2, 0); */
+        /* // */
+        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_AMBIENT, colorGray, 0); */
+        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_DIFFUSE, colorGray, 0); */
+        /* gl.glLightfv( GL2.GL_LIGHT2, GL2.GL_SPECULAR, colorWhite, 0); */
+        /* // */
+        /* gl.glLightf( GL2.GL_LIGHT2, GL2.GL_CONSTANT_ATTENUATION, 0.8f ); */
     }
 
     /**
@@ -287,13 +364,13 @@ public class Visualisation implements
     private boolean dragging = false;
     private double prevX, prevY;
 
-	@Override
-	public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
-		}
+    @Override
+    public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
+    }
 
-	@Override
-	public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
         if (! dragging) {
             return;
         }
@@ -313,36 +390,36 @@ public class Visualisation implements
 
         rotateY += mouseDeltaX;
 
-        System.out.println("x: " + rotateX + "    y: " + rotateY);
+        /* System.out.println("x: " + rotateX + "    y: " + rotateY); */
 
         prevX = x;
         prevY = y;
 
         /* display.repaint(); */
-	}
+    }
 
-	@Override
-	public void mouseEntered(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void mouseEntered(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void mouseExited(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void mouseExited(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void mousePressed(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		if (dragging) {
+    }
+
+    @Override
+    public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void mousePressed(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        if (dragging) {
             return;  // don't start a new drag while one is already in progress
         }
         int x = arg0.getX();
@@ -356,21 +433,21 @@ public class Visualisation implements
         prevY = y;
         /* display.repaint();   */
 
-	}
+    }
 
-	@Override
-	public void mouseReleased(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		if (! dragging) {
+    @Override
+    public void mouseReleased(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
+        if (! dragging) {
             return;
         }
         dragging = false;
 
-	}
+    }
 
-	@Override
-	public void mouseWheelMoved(com.jogamp.newt.event.MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void mouseWheelMoved(com.jogamp.newt.event.MouseEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
                    }
