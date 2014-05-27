@@ -202,7 +202,7 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     private void doLighting(GL2 gl) {
-        float[] light_ambient=new float[] {1.0f,1.0f,1.0f,1.0f};
+        float[] light_ambient=new float[] {0.3f,0.3f,0.3f,1.0f};
         float[] light_diffuse=new float[] {1.0f,1.0f,1.0f,1.0f};
         float[] light_specular=new float[] {1.0f,1.0f,1.0f,1.0f};
         float[] light_position=new float[] {1.0f,1.0f,1.0f,0.0f};
