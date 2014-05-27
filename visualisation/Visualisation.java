@@ -109,7 +109,10 @@ public class Visualisation extends JPanel implements
 
         gl.glMatrixMode(GL2.GL_PROJECTION);  // TODO: Set up a better projection?
         gl.glLoadIdentity();
-        gl.glOrtho(-0.1,0.1,-0.1,0.1,-0.1, 0.1);
+        /* gl.glOrtho(-1,1,-1,1,-2,2); */
+        glu.gluPerspective(35, 1, 0.1, 10000);
+        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
+        
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 
         gl.glLoadIdentity();             // Set up modelview transform. 
@@ -122,21 +125,21 @@ public class Visualisation extends JPanel implements
 //        glut.glutSolidTeapot(0.5);
 //        glut.glutSolidSphere(1.0, 10, 10);
 
-//        gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're
-//
-//        gl.glEnable( GL2.GL_POINT_SMOOTH );
-//        gl.glEnable( GL2.GL_BLEND );
-//        gl.glBlendFunc( GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA );
-//        gl.glPointSize(10f);
-//        gl.glBegin(GL.GL_POINTS);
-//        gl.glColor3f( 0.95f, 0.207f, 0.031f  );
-//        gl.glVertex3f( 0.5f, 0.5f, 0.5f);
-//        gl.glVertex3f( 0.5f, 0.6f, 0.6f);
-//        gl.glVertex3f( 0.5f, 0.8f, 0.7f);
-//        gl.glVertex3f( 0.5f, 0.7f, 0.8f);
-//        gl.glEnd();
-//
-//        gl.glFinish();
+        /* gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're */
+        /*  */
+        /* gl.glEnable( GL2.GL_POINT_SMOOTH ); */
+        /* gl.glEnable( GL2.GL_BLEND ); */
+        /* gl.glBlendFunc( GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA ); */
+        /* gl.glPointSize(10f); */
+        /* gl.glBegin(GL.GL_POINTS); */
+        /* gl.glColor3f( 0.95f, 0.207f, 0.031f  ); */
+        /* gl.glVertex3f( 0.5f, 0.5f, 0.5f); */
+        /* gl.glVertex3f( 0.5f, 0.6f, 0.6f); */
+        /* gl.glVertex3f( 0.5f, 0.8f, 0.7f); */
+        /* gl.glVertex3f( 0.5f, 0.7f, 0.8f); */
+        /* gl.glEnd(); */
+        /*  */
+        /* gl.glFinish(); */
         /* glutSwapBuffers(); */
     }
 
@@ -152,11 +155,32 @@ public class Visualisation extends JPanel implements
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
+        doLighting(gl);
         
         buildPoints(drawable);
     }
 
+    private void doLighting( GL2 gl )
+    {
+        float[] lightPos = new float[4];
+        lightPos[0] = 50005;
+        lightPos[1] = 30000;
+        lightPos[2] = 50000;
+        lightPos[3] = 1;
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
+        float[] noAmbient ={ 0.1f, 0.1f, 0.1f, 1f }; // low ambient light
+        float[] spec =    { 1f, 0.6f, 0f, 1f }; // low ambient light
+        float[] diffuse ={ 1f, 1f, 1f, 1f };
+        // properties of the light
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, noAmbient, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spec, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diffuse, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
+    }
+
     /**
+     * 
      * Called when the size of the GLJPanel changes.  Note:  glViewport(x,y,width,height)
      * has already been called before this method is called!
      */
@@ -280,9 +304,18 @@ public class Visualisation extends JPanel implements
         int x = evt.getX();
         int y = evt.getY();
 
-        rotateY += x - prevX;
-        rotateX -= y - prevY;
-        // TODO:  respond to mouse drag to new point (x,y)
+        double mouseDeltaX = x - prevX;
+        double mouseDeltaY = y - prevY;
+        // TODO:  respond to mouse drag to new point (x,y)   
+
+        if ((rotateX % 360 > 90 && rotateX % 360 < 270)
+                || (rotateX % 360 < 0 && rotateX % 360 + 360 > 90 && rotateX % 360 + 360 < 270))
+            rotateY += mouseDeltaX;
+        else
+            rotateY -= mouseDeltaX;
+
+        rotateX += mouseDeltaY;
+
         prevX = x;
         prevY = y;
 
@@ -290,15 +323,15 @@ public class Visualisation extends JPanel implements
     }
 
     public void mouseMoved(MouseEvent evt) { 
-    
+
     }
     public void mouseClicked(MouseEvent evt) { 
-    
+
     }
     public void mouseEntered(MouseEvent evt) { 
-    
+
     }
     public void mouseExited(MouseEvent evt) { 
-    
+
     }
-}
+                   }
