@@ -222,7 +222,7 @@ public class Visualisation implements GLEventListener, KeyListener,
     public void setupVS(int w, int h) {
         cueCenter.x = w / 2;
         cueCenter.y = h / 2;
-        cueRadius = Math.min(w - 20, h - 20) / 2;
+        cueRadius = (int)Math.sqrt(w * w + h * h) / 2;
     }
 
     /**
@@ -398,6 +398,7 @@ public class Visualisation implements GLEventListener, KeyListener,
             vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
                     mouseMtx);
 
+            rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
             rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
             fixRotationMatrix();
 
