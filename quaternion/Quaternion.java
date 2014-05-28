@@ -82,10 +82,10 @@ public class Quaternion {
         float[] q = new float[4];
         float[] a_norm = getVectorNormal(a);
         for (int i = 0; i < 3; i++) {
-            q[i] = a_norm[i];
+            q[i] = a_norm[i] * (float)Math.sin(phi / 2);
         }
 
-        q = scaleVector(q, (float) Math.sin(phi / 2));
+        /* q = scaleVector(q, (float) Math.sin(phi / 2)); */
         q[3] = (float) Math.cos(phi / 2);
         return q;
     }
@@ -102,30 +102,6 @@ public class Quaternion {
         }
 
         return z;
-    }
-
-    private float[] addQuats(float[] q1, float[] q2) {
-        int count = 0;
-        float[] t1 = scaleVector(q1, q2[3]);
-        float[] t2 = scaleVector(q2, q1[3]);
-        float[] t3 = VectorCross(q2, q1);
-        float[] tf = VectorAdd(t1, t2);
-        tf = VectorAdd(t3, tf);
-
-        tf[3] = q1[3] * q2[3] - VectorDot(q1, q2);
-
-        float[] dest = new float[4];
-        dest[0] = tf[0];
-        dest[1] = tf[1];
-        dest[2] = tf[2];
-        dest[3] = tf[3];
-
-        if (++count > 97) {
-            count = 0;
-            dest = normalizeQuat(dest);
-        }
-
-        return dest;
     }
 
     private float[] normalizeQuat(float[] q) {
