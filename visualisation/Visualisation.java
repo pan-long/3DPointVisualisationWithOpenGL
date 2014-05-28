@@ -55,8 +55,8 @@ public class Visualisation implements GLEventListener, KeyListener,
     private static double radius;
 
     private static String TITLE = "3D Visualisation With Jogl";
-    private static final int WINDOW_WIDTH = 640;
-    private static final int WINDOW_HEIGHT = 480;
+    private static final int WINDOW_WIDTH = 800;
+    private static final int WINDOW_HEIGHT = 600;
     private static final int FPS = 60;
 
     public static void main(String[] args) {
