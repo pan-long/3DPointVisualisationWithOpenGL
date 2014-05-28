@@ -20,9 +20,11 @@
 *   Or visit:  http://www.gnu.org/licenses/lgpl.html
 **/
 
-package jahuwaldt.gl;
+package util;
 
-import net.java.games.jogl.GL;
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+
 
 
 /**
@@ -63,7 +65,7 @@ public class GLUtils {
     *  @param  radius    The radius of the cirlce.
     *  @param  numVerts  The number of verticies to use.
     **/
-    public static final void drawCircle(GL gl, float x, float y, float radius, int numVerts) {
+    public static final void drawCircle(GL2 gl, float x, float y, float radius, int numVerts) {
 
         //  Calculate the parametric increment.
         double p = 2*Math.PI/(numVerts-1);
@@ -75,7 +77,7 @@ public class GLUtils {
         float ym1 = y;
 
         //  Begin rendering the circle.
-        gl.glBegin(gl.GL_LINE_LOOP);
+        gl.glBegin(GL.GL_LINE_LOOP);
         for (int m=0; m < numVerts; ++m) {
             float xm1mx = xm1 - x;
             float ym1mx = ym1 - y;
@@ -120,7 +122,7 @@ public class GLUtils {
     *  @param  inc  Inclination angle of the major axis in degrees.
     *  @param  numVerts  The number of verticies to use.
     **/
-    public static final void drawEllipse(GL gl, float x, float y, float a, float b,
+    public static final void drawEllipse(GL2 gl, float x, float y, float a, float b,
                                     float inc, int numVerts) {
 
         //  Convert inclination to radians.
@@ -142,7 +144,7 @@ public class GLUtils {
         float s3 = 0;
 
         //  Begin rendering the ellipse.
-        gl.glBegin(gl.GL_LINE_LOOP);
+        gl.glBegin(GL.GL_LINE_LOOP);
         for (int m=0; m < numVerts; ++m) {
             //  Calculate increments in X & Y.
             float x1 = a*c3;
@@ -197,7 +199,7 @@ public class GLUtils {
     *  @param  sweep  The number of degrees to sweep the arc through.
     *  @param  numVerts  The number of verticies to use.
     **/
-    public static final void drawArc(GL gl, float x, float y, float a, float b,
+    public static final void drawArc(GL2 gl, float x, float y, float a, float b,
                                     float inc, float angle, float sweep, int numVerts) {
 
         //  Calculate the sine and cosine of the inclination angle.
@@ -218,7 +220,7 @@ public class GLUtils {
         float s3 = (float)Math.sin(p);
 
         //  Begin rendering the arc.
-        gl.glBegin(gl.GL_LINE_STRIP);
+        gl.glBegin(GL.GL_LINE_STRIP);
         for (int m=0; m < numVerts; ++m) {
             //  Calculate increments in X & Y.
             float x1 = a*c3;
