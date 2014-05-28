@@ -2,6 +2,7 @@ package visualisation;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.IntBuffer;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -17,6 +18,7 @@ import javax.swing.Timer;
 
 import point.point;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseListener;
@@ -26,7 +28,6 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import configuration.ScaleConfiguration;
-
 import dataReader.dataReader;
 
 public class Visualisation implements GLEventListener, KeyListener,
@@ -46,11 +47,15 @@ public class Visualisation implements GLEventListener, KeyListener,
     private static double scaleFactor;
     private static double radius;
 
-    private static String TITLE = "JOGL 2 with NEWT";
+    private static String TITLE = "3D Visualisation Tool";
     private static final int WINDOW_WIDTH = 640;
     private static final int WINDOW_HEIGHT = 480;
     private static final int FPS = 60;
 
+    static final int UPDATE = 1, SELECT = 2;
+    int cmd = UPDATE;
+    double mouseX, mouseY;
+    
     public static void main(String[] args) {
         initDataReader();
         GLProfile glp = GLProfile.getDefault();
@@ -181,7 +186,6 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void display(GLAutoDrawable drawable) {  
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
         gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
@@ -191,14 +195,44 @@ public class Visualisation implements GLEventListener, KeyListener,
         glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-
         gl.glLoadIdentity(); // Set up modelview transform.
         gl.glRotatef(rotateY, 0, 1, 0);
         gl.glRotatef(rotateX, 1, 0, 0);
 
-        // TODO: add drawing code!! As an example, draw a GLUT teapot
-        buildPoints(drawable);
-        buildAxes(drawable);
+        switch(cmd){
+        	case UPDATE:
+        		buildPoints(drawable);
+                buildAxes(drawable);
+        	break;
+        	
+        	case SELECT:
+        		int buffsize = 512;
+                double x = mouseX, y = mouseY;
+                int[] viewPort = new int[4];
+                IntBuffer selectBuffer = Buffers.newDirectIntBuffer(buffsize);
+                int hits = 0;
+                gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
+                gl.glSelectBuffer(buffsize, selectBuffer);
+                gl.glRenderMode(GL2.GL_SELECT);
+                gl.glInitNames();
+                gl.glMatrixMode(GL2.GL_PROJECTION);
+                gl.glPushMatrix();
+                gl.glLoadIdentity();
+                glu.gluPickMatrix(x, (double) viewPort[3] - y, 2.0d, 2.0d, viewPort, 0);
+                glu.gluOrtho2D(0.0d, 1.0d, 0.0d, 1.0d);
+                
+                //draw graph
+                buildPoints(drawable);
+                buildAxes(drawable);
+                
+                gl.glMatrixMode(GL2.GL_PROJECTION);
+                gl.glPopMatrix();
+                gl.glFlush();
+                hits = gl.glRenderMode(GL2.GL_RENDER);
+                processHits(hits, selectBuffer);
+                cmd = UPDATE;
+        	break;
+        }
     }
 
     /**
@@ -231,6 +265,39 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
     }
+    
+	public void processHits(int hits, IntBuffer buffer) {
+		System.out.println("---------------------------------");
+		System.out.println(" HITS: " + hits);
+		int offset = 0;
+		int names;
+		float z1, z2;
+		for (int i = 0; i < hits; i++) {
+			System.out.println("- - - - - - - - - - - -");
+			System.out.println(" hit: " + (i + 1));
+			names = buffer.get(offset);
+			offset++;
+			z1 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
+			offset++;
+			z2 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
+			offset++;
+			System.out.println(" number of names: " + names);
+			System.out.println(" z1: " + z1);
+			System.out.println(" z2: " + z2);
+			System.out.println(" names: ");
+
+			for (int j = 0; j < names; j++) {
+				System.out.print("       " + buffer.get(offset));
+				if (j == (names - 1))
+					System.out.println("<-");
+				else
+					System.out.println();
+				offset++;
+			}
+			System.out.println("- - - - - - - - - - - -");
+		}
+		System.out.println("---------------------------------");
+	}
 
     /**
      *
@@ -319,6 +386,7 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
+    	
     }
 
     @Override
@@ -347,14 +415,11 @@ public class Visualisation implements GLEventListener, KeyListener,
 
         prevX = x;
         prevY = y;
-
-        /* display.repaint(); */
     }
 
     @Override
     public void mouseEntered(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
+    	
     }
 
     @Override
@@ -365,8 +430,9 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
+    	cmd = SELECT;
+    	mouseX = arg0.getX();
+    	mouseY = arg0.getY();
     }
 
     @Override
