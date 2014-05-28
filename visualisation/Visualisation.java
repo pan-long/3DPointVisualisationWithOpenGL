@@ -35,7 +35,6 @@ import dataReader.dataReader;
 
 public class Visualisation implements GLEventListener, KeyListener,
         MouseListener, ActionListener {
-
     static final long serialVersionUID = 1l;
     private static List<point> pointsList = null;
     private static dataReader dr = null;
@@ -171,34 +170,12 @@ public class Visualisation implements GLEventListener, KeyListener,
         buildAxes(drawable);
 
         gl.glPopMatrix();
-
-        if (mouseDown) renderVS(drawable);
     }
 
     public void setupVS(int w, int h){
         cueCenter.x = w/2;
         cueCenter.y = h/2;
         cueRadius = Math.min(w-20, h-20)/2;
-    }
-
-    public void renderVS(GLAutoDrawable drawable){
-        GL2 gl = drawable.getGL().getGL2();
-
-        boolean lighting = gl.glIsEnabled(GL2.GL_LIGHTING);
-        boolean texture2D = gl.glIsEnabled(GL2.GL_TEXTURE_2D);
-        boolean fog = gl.glIsEnabled(GL2.GL_FOG);
-
-        gl.glDisable(GL2.GL_LIGHTING);
-        gl.glDisable(GL2.GL_TEXTURE_2D);
-        gl.glDisable(GL2.GL_FOG);
-
-        gl.glColor3f(0.5f, 0.5f, 0.5f);
-        
-        vs.draw(gl, glu, 600, 600, prevMouse, cueCenter, cueRadius);
-
-		if (lighting)	gl.glEnable(GL2.GL_LIGHTING);
-		if (texture2D)	gl.glEnable(GL2.GL_TEXTURE_2D);
-		if (fog)		gl.glEnable(GL2.GL_FOG);
     }
 
     /**
