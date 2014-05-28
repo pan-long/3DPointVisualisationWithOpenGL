@@ -3,6 +3,7 @@ package visualisation;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.IntBuffer;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -21,6 +22,7 @@ import point.point;
 import util.Matrix;
 import util.VirtualSphere;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseListener;
@@ -30,7 +32,6 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import configuration.ScaleConfiguration;
-
 import dataReader.dataReader;
 
 public class Visualisation implements GLEventListener, KeyListener,
@@ -54,11 +55,15 @@ public class Visualisation implements GLEventListener, KeyListener,
     private static double scaleFactor;
     private static double radius;
 
-    private static String TITLE = "3D Visualisation With Jogl";
+    private static String TITLE = "3D Visualisation Tool";
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
     private static final int FPS = 60;
 
+    static final int UPDATE = 1, SELECT = 2;
+    int cmd = UPDATE;
+    double mouseX, mouseY;
+    
     public static void main(String[] args) {
         initDataReader();
         GLProfile glp = GLProfile.getDefault();
@@ -103,59 +108,56 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     // --------------- Methods of the GLEventListener interface -----------
-    public void buildPoints(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
-
-        gl.glEnable(GL2.GL_POINT_SPRITE); // GL_POINT_SPRITE_ARB if you're
+    public void buildPoints(GL2 gl) {
+    	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        gl.glEnable(GL2.GL_POINT_SPRITE); 
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gl.glPointSize((float) radius / 2);
 
+        int pointName = 0;
         gl.glBegin(GL.GL_POINTS);
         for (point p : pointsList) {
-            gl.glPushMatrix();
+            if(cmd == SELECT) gl.glLoadName(pointName);
+        	gl.glPushMatrix();
             gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-            /* gl.glColor3f(0.95f, 0.207f, 0.031f); */
             gl.glColor3f(0.95f, 0.207f, 0.031f);
             gl.glVertex3f((float) (p.getX() * scaleFactor),
                     (float) (p.getY() * scaleFactor),
                     (float) (p.getZ() * scaleFactor));
             gl.glPopMatrix();
+            pointName++;
         }
         gl.glEnd();
     }
-
-    public void buildAxes(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
-        float cylinderRadius = 0.1f;
-        float cylinderHeight = 30;
-        int slices = 16;
-        int stacks = 16;
-        GLUquadric body = glu.gluNewQuadric();
-
-        gl.glPushMatrix();
-        gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
-        gl.glColor3f(0.1f, 0.4f, 0.4f);
-        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
-                slices, stacks);
-        gl.glPopMatrix();
-
-        gl.glPushMatrix();
-        gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
-        gl.glColor3f(0.0f, 0.906f, 0.909f);
-        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
-                slices, stacks);
-        gl.glPopMatrix();
-
-        gl.glPushMatrix();
-        gl.glTranslatef(-cylinderHeight / 2, 0.0f, 0.0f);
-        gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        gl.glColor3f(1f, 1f, 0.0f);
-        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
-                slices, stacks);
-        gl.glPopMatrix();
+   
+    public void buildAxes(GL2 gl){
+    	float cylinderRadius = 0.1f;
+    	float cylinderHeight = 30;
+    	int slices = 16;
+    	int stacks = 16;
+    	GLUquadric body = glu.gluNewQuadric();
+    	
+    	gl.glPushMatrix();
+    	gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+        gl.glTranslatef(0.0f,0.0f, -cylinderHeight / 2);
+        gl.glColor3f(0.1f,0.4f, 0.4f);
+        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+		gl.glPopMatrix();
+		
+		gl.glPushMatrix();
+        gl.glTranslatef(0.0f,0.0f,-cylinderHeight / 2);
+		gl.glColor3f(0.0f,0.906f,0.909f);
+		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+		gl.glPopMatrix();
+		
+		gl.glPushMatrix();
+        gl.glTranslatef(-cylinderHeight / 2,0.0f,0.0f);
+		gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		gl.glColor3f(1f, 1f, 0.0f);
+		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+		gl.glPopMatrix();
     }
 
     /**
@@ -163,16 +165,65 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        
+//        gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
+//        gl.glLoadIdentity();
+//        /* gl.glOrtho(-1,1,-1,1,-2,2); */
+//        glu.gluPerspective(35, 1, 0.1, 10000);
+//        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
+//
+//        gl.glMatrixMode(GL2.GL_MODELVIEW);
+//        gl.glLoadIdentity(); // Set up modelview transform.
+//        gl.glRotatef(rotateY, 0, 1, 0);
+//        gl.glRotatef(rotateX, 1, 0, 0);
 
-        gl.glPushMatrix();
-        gl.glMultMatrixf(rot_matrix, 0);
+        switch(cmd){
+            case UPDATE:
+                gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
+                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-        buildPoints(drawable);
-        buildAxes(drawable);
+                gl.glPushMatrix();
+                gl.glMultMatrixf(rot_matrix, 0);
 
-        gl.glPopMatrix();
+                buildPoints(gl);
+                buildAxes(gl);
+
+                gl.glPopMatrix();
+                break;
+        	
+        	case SELECT:
+        		int buffsize = 512;
+                double x = mouseX, y = mouseY;
+                int[] viewPort = new int[4];
+                IntBuffer selectBuffer = Buffers.newDirectIntBuffer(buffsize);
+                int hits = 0;
+                
+                gl.glSelectBuffer(buffsize, selectBuffer);
+                gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
+                gl.glRenderMode(GL2.GL_SELECT);
+                gl.glInitNames();
+                
+                gl.glMatrixMode(GL2.GL_PROJECTION);
+                gl.glPushMatrix();
+                gl.glLoadIdentity();
+                
+                glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
+                glu.gluPerspective(35, 1, 0.1, 10000);
+                
+                //draw graph
+                buildPoints(gl);
+                buildAxes(gl);
+                
+                gl.glMatrixMode(GL2.GL_PROJECTION);
+                gl.glPopMatrix();
+                gl.glFlush();
+                
+                hits = gl.glRenderMode(GL2.GL_RENDER);
+                processHits(hits, selectBuffer);
+                cmd = UPDATE;
+        	break;
+        }
+
     }
 
     public void setupVS(int w, int h) {
@@ -195,14 +246,16 @@ public class Visualisation implements GLEventListener, KeyListener,
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8F, 0.8F, 0.8F, 1.0F);
         gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glEnable(GL2.GL_COLOR_MATERIAL);
-        doLighting(gl);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        buildPoints(drawable);
-        buildAxes(drawable);
+        gl.glEnable(GL2.GL_CULL_FACE);
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
+        doLighting(gl);
+
+        buildPoints(gl);
+        buildAxes(gl);
     }
 
     private void doLighting(GL2 gl) {
@@ -217,6 +270,39 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
     }
+    
+	public void processHits(int hits, IntBuffer buffer) {
+		System.out.println("---------------------------------");
+		System.out.println(" HITS: " + hits);
+		int offset = 0;
+		int names;
+		float z1, z2;
+		for (int i = 0; i < hits; i++) {
+			System.out.println("- - - - - - - - - - - -");
+			System.out.println(" hit: " + (i + 1));
+			names = buffer.get(offset);
+			offset++;
+			z1 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
+			offset++;
+			z2 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
+			offset++;
+			System.out.println(" number of names: " + names);
+			System.out.println(" z1: " + z1);
+			System.out.println(" z2: " + z2);
+			System.out.println(" names: ");
+
+			for (int j = 0; j < names; j++) {
+				System.out.print("       " + buffer.get(offset));
+				if (j == (names - 1))
+					System.out.println("<-");
+				else
+					System.out.println();
+				offset++;
+			}
+			System.out.println("- - - - - - - - - - - -");
+		}
+		System.out.println("---------------------------------");
+	}
 
     /**
      *
@@ -302,6 +388,7 @@ public class Visualisation implements GLEventListener, KeyListener,
     // MouseEvent support
     @Override
     public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
+    	
     }
 
     private float[] mouseMtx = new float[16];
@@ -363,7 +450,6 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseEntered(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -373,7 +459,9 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
+    	cmd = SELECT;
+    	mouseX = arg0.getX();
+    	mouseY = arg0.getY();
     }
 
     @Override
