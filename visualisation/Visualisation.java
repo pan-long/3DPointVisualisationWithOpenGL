@@ -207,7 +207,7 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void init(GLAutoDrawable drawable) {
         // called when the panel is created
-        setupVS(600, 600);
+        setupVS(drawable.getWidth(), drawable.getHeight());
 
         Matrix.rotateY(Matrix.deg2Rad(30), rot_matrix);
         Matrix.rotateX(Matrix.deg2Rad(20), rot_matrix);
