@@ -1,22 +1,25 @@
 package trackBall;
 
+import java.util.Arrays;
+
 public class Trackball
 {
-    private static final float RADIUS_ = Screen.DFLT_WIDTH / 2.0F;
     private static final int REFRESH_ = 50;
     private static final float SQRT2_ = (float) Math.sqrt(2);
     private static final float SQRT2_INVERSE_ = 1.0F / SQRT2_;
 
+    private float RADIUS_ = 0f;
     private int count_;
     private int objx_, objy_;
     private float[] v1_, v2_;
     private float[] rot_;
 
-    public Trackball ()
+    public Trackball (float RADIUS_)
     {
         v1_ = new float[4];
         v2_ = new float[4];
         rot_ = new float[] {0, 0, 0, 1};
+        this.RADIUS_ = RADIUS_;
     }
 
     public void click (int x, int y)
