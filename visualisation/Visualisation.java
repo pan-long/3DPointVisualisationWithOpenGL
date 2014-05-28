@@ -123,34 +123,31 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     // --------------- Methods of the GLEventListener interface -----------
-    public void buildPoints(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
-        gl.glEnable(GL2.GL_POINT_SPRITE); // GL_POINT_SPRITE_ARB if you're
+    public void buildPoints(GL2 gl) {
+    	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        gl.glEnable(GL2.GL_POINT_SPRITE); 
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gl.glPointSize((float) radius / 2);
 
         int pointName = 0;
-        gl.glInitNames();
         gl.glBegin(GL.GL_POINTS);
         for (point p : pointsList) {
-            gl.glPushMatrix();
-            gl.glPushName(pointName);
+            if(cmd == SELECT) gl.glLoadName(pointName);
+        	gl.glPushMatrix();
             gl.glTranslatef(p.getX(), p.getY(), p.getZ());
             gl.glColor3f(0.95f, 0.207f, 0.031f);
             gl.glVertex3f((float) (p.getX() * scaleFactor),
                     (float) (p.getY() * scaleFactor),
                     (float) (p.getZ() * scaleFactor));
-            gl.glPopName();
             gl.glPopMatrix();
             pointName++;
         }
         gl.glEnd();
     }
     
-    public void buildAxes(GLAutoDrawable drawable){
-    	GL2 gl = drawable.getGL().getGL2();
+    public void buildAxes(GL2 gl){
     	float cylinderRadius = 0.1f;
     	float cylinderHeight = 30;
     	int slices = 16;
@@ -190,23 +187,33 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void display(GLAutoDrawable drawable) {  
         GL2 gl = drawable.getGL().getGL2();
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-        gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
-        gl.glLoadIdentity();
-        /* gl.glOrtho(-1,1,-1,1,-2,2); */
-        glu.gluPerspective(35, 1, 0.1, 10000);
-        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
-
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity(); // Set up modelview transform.
-        gl.glRotatef(rotateY, 0, 1, 0);
-        gl.glRotatef(rotateX, 1, 0, 0);
+//        gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
+//        gl.glLoadIdentity();
+//        /* gl.glOrtho(-1,1,-1,1,-2,2); */
+//        glu.gluPerspective(35, 1, 0.1, 10000);
+//        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
+//
+//        gl.glMatrixMode(GL2.GL_MODELVIEW);
+//        gl.glLoadIdentity(); // Set up modelview transform.
+//        gl.glRotatef(rotateY, 0, 1, 0);
+//        gl.glRotatef(rotateX, 1, 0, 0);
 
         switch(cmd){
         	case UPDATE:
-        		buildPoints(drawable);
-                buildAxes(drawable);
+        		gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
+                gl.glLoadIdentity();
+                /* gl.glOrtho(-1,1,-1,1,-2,2); */
+                glu.gluPerspective(35, 1, 0.1, 10000);
+                glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
+
+                gl.glMatrixMode(GL2.GL_MODELVIEW);
+                gl.glLoadIdentity();
+                gl.glRotatef(rotateY, 0, 1, 0);
+                gl.glRotatef(rotateX, 1, 0, 0);
+        		
+        		buildPoints(gl);
+                buildAxes(gl);
         	break;
         	
         	case SELECT:
@@ -215,23 +222,27 @@ public class Visualisation implements GLEventListener, KeyListener,
                 int[] viewPort = new int[4];
                 IntBuffer selectBuffer = Buffers.newDirectIntBuffer(buffsize);
                 int hits = 0;
-                gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
+                
                 gl.glSelectBuffer(buffsize, selectBuffer);
+                gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
                 gl.glRenderMode(GL2.GL_SELECT);
                 gl.glInitNames();
+                
                 gl.glMatrixMode(GL2.GL_PROJECTION);
                 gl.glPushMatrix();
                 gl.glLoadIdentity();
+                
                 glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
-                glu.gluOrtho2D(0.0d, 2.0d, 0.0d, 2.0d);
+                glu.gluPerspective(35, 1, 0.1, 10000);
                 
                 //draw graph
-                buildPoints(drawable);
-                buildAxes(drawable);
+                buildPoints(gl);
+                buildAxes(gl);
                 
                 gl.glMatrixMode(GL2.GL_PROJECTION);
                 gl.glPopMatrix();
                 gl.glFlush();
+                
                 hits = gl.glRenderMode(GL2.GL_RENDER);
                 processHits(hits, selectBuffer);
                 cmd = UPDATE;
@@ -248,13 +259,12 @@ public class Visualisation implements GLEventListener, KeyListener,
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8F, 0.8F, 0.8F, 1.0F);
         gl.glEnable(GL.GL_DEPTH_TEST);
-        /* gl.glEnable(GL2.GL_LIGHTING); */
-        /* gl.glEnable(GL2.GL_LIGHT0); */
+        gl.glEnable(GL2.GL_CULL_FACE);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
         doLighting(gl);
 
-        buildPoints(drawable);
-        buildAxes(drawable);
+        buildPoints(gl);
+        buildAxes(gl);
     }
 
     private void doLighting(GL2 gl) {
