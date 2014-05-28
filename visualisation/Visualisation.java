@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.media.nativewindow.util.Dimension;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -28,7 +27,6 @@ import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.opengl.math.Quaternion;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import configuration.ScaleConfiguration;
@@ -43,18 +41,10 @@ public class Visualisation implements GLEventListener, KeyListener,
     private static dataReader dr = null;
     private GLJPanel display;
     private Timer animationTimer;
-    private float rotateX, rotateY, rotateZ; // rotation amounts about axes, controlled
-    private float[] axis = new float[3];
-    /* private float[] rotationMatrix = new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, */
-    private float[] rotationMatrix = new Quaternion(new float[] {0f, 0f, 1f}, 0f).toMatrix();
-    private float angle;
-                                    // by keyboard
-    /* private GLUT glut = new GLUT(); // for drawing the teapot */
     private GLU glu = new GLU();
     private static ScaleConfiguration sc = null;
 
     private Point prevMouse;
-    private boolean mouseRButtonDown = false;
 
     private VirtualSphere vs = new VirtualSphere();
     private Point cueCenter = new Point();
@@ -65,15 +55,10 @@ public class Visualisation implements GLEventListener, KeyListener,
     private static double scaleFactor;
     private static double radius;
 
-    private static String TITLE = "JOGL 2 with NEWT";
+    private static String TITLE = "3D Visualisation With Jogl";
     private static final int WINDOW_WIDTH = 640;
     private static final int WINDOW_HEIGHT = 480;
     private static final int FPS = 60;
-
-    private static final double MAX_COOR = 10;
-    /* private static double[] rotationQuaternion = new double[] {0, 0, 0, 0}; */
-
-    /* private static Trackball trackball = new Trackball(); */
 
     public static void main(String[] args) {
         initDataReader();
@@ -108,29 +93,6 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     public Visualisation() {
-        // GLCapabilities caps = new GLCapabilities(null);
-        // display = new GLJPanel(caps);
-        // display.setPreferredSize( new Dimension(600,600) ); // TODO: set
-        // display size here
-        // display.addGLEventListener(this);
-        // setLayout(new BorderLayout());
-        // add(display,BorderLayout.CENTER);
-        // TODO: Other components could be added to the main panel.
-
-        // rotateX = 15; // initialize some variables used in the drawing.
-        // rotateY = 15;
-
-        // TODO: Uncomment the next two lines to enable keyboard event handling
-        // requestFocusInWindow();
-        // display.addKeyListener(this);
-
-        // TODO: Uncomment the next one or two lines to enable mouse event
-        // handling
-        // display.addMouseListener(this);
-        // display.addMouseMotionListener(this);
-
-        // TODO: Uncomment the following line to start the animation
-        /* startAnimation(); */
     }
 
     public static void initDataReader() {
@@ -144,6 +106,7 @@ public class Visualisation implements GLEventListener, KeyListener,
     // --------------- Methods of the GLEventListener interface -----------
     public void buildPoints(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
+
         gl.glEnable(GL2.GL_POINT_SPRITE); // GL_POINT_SPRITE_ARB if you're
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         gl.glEnable(GL2.GL_BLEND);
@@ -173,28 +136,21 @@ public class Visualisation implements GLEventListener, KeyListener,
         GLUquadric body = glu.gluNewQuadric();
         
         gl.glPushMatrix();
-        /* gl.glLoadIdentity(); */
         gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        /* gl.glRotatef(0f, 1.0f, 0.0f, 0.0f); */
         gl.glTranslatef(0.0f,0.0f, -cylinderHeight / 2);
         gl.glColor3f(0.1f,0.4f, 0.4f);
         glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
         gl.glPopMatrix();
         
         gl.glPushMatrix();
-        /* gl.glLoadIdentity(); */
         gl.glTranslatef(0.0f,0.0f,-cylinderHeight / 2);
-        /* gl.glRotatef(90.0f, 0.0f, 0.0f, 1.0f); */
-        /* gl.glRotatef(0f, 1.0f, 0.0f, 0.0f); */
         gl.glColor3f(0.0f,0.906f,0.909f);
         glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
         gl.glPopMatrix();
         
         gl.glPushMatrix();
-        /* gl.glLoadIdentity(); */
         gl.glTranslatef(-cylinderHeight / 2,0.0f,0.0f);
         gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        /* gl.glRotatef(0f, 1.0f, 0.0f, 0.0f); */
         gl.glColor3f(1f, 1f, 0.0f);
         glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
         gl.glPopMatrix();
@@ -204,8 +160,6 @@ public class Visualisation implements GLEventListener, KeyListener,
      * This method is called when the OpenGL display needs to be redrawn.
      */
     public void display(GLAutoDrawable drawable) {  
-        angle += 0.1f;
-
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -213,23 +167,6 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glPushMatrix();
         gl.glMultMatrixf(rot_matrix, 0);
 
-
-        /* gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection? */
-        /* gl.glLoadIdentity(); */
-        /* gl.glOrtho(-1,1,-1,1,-2,2); */
-        /* glu.gluPerspective(35, 1, 0.1, 10000); */
-        /* glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0); */
-
-        /* gl.glMatrixMode(GL2.GL_MODELVIEW); */
-
-        /* gl.glLoadIdentity(); // Set up modelview transform. */
-        /* gl.glRotatef(rotateY, 0, 1, 0); */
-        /* gl.glRotatef(rotateX, 1, 0, 0); */
-        /* gl.glRotatef(rotateZ, 0, 0, 1); */
-        /* gl.glMultMatrixf(rotationMatrix, 0); */
-        /* gl.glRotatef(angle, axis[0], axis[1], axis[2]); */
-
-        // TODO: add drawing code!! As an example, draw a GLUT teapot
         buildPoints(drawable);
         buildAxes(drawable);
 
@@ -263,6 +200,7 @@ public class Visualisation implements GLEventListener, KeyListener,
 		if (texture2D)	gl.glEnable(GL2.GL_TEXTURE_2D);
 		if (fog)		gl.glEnable(GL2.GL_FOG);
     }
+
     /**
      * This is called when the GLJPanel is first created. It can be used to
      * initialize the OpenGL drawing context.
@@ -277,8 +215,6 @@ public class Visualisation implements GLEventListener, KeyListener,
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8F, 0.8F, 0.8F, 1.0F);
         gl.glEnable(GL.GL_DEPTH_TEST);
-        /* gl.glEnable(GL2.GL_LIGHTING); */
-        /* gl.glEnable(GL2.GL_LIGHT0); */
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
         doLighting(gl);
 
@@ -317,7 +253,7 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 
-        glu.gluPerspective(35, 1, 0.1, 10000);
+        glu.gluPerspective(35, h, 0.1, 10000);
         glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -340,18 +276,6 @@ public class Visualisation implements GLEventListener, KeyListener,
      * Called when the user presses any key.
      */
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode(); // Tells which key was pressed.
-        if (key == KeyEvent.VK_LEFT)
-            rotateY -= 15;
-        else if (key == KeyEvent.VK_RIGHT)
-            rotateY += 15;
-        else if (key == KeyEvent.VK_DOWN)
-            rotateX += 15;
-        else if (key == KeyEvent.VK_UP)
-            rotateX -= 15;
-        else if (key == KeyEvent.VK_HOME)
-            rotateX = rotateY = 0;
-        // repaint();
     }
 
     /**
@@ -371,9 +295,6 @@ public class Visualisation implements GLEventListener, KeyListener,
     private boolean animating;
 
     private void updateFrame() {
-        // TODO: add any other updating required for the next frame.
-        rotateY += 10;
-        /* frameNumber++; */
     }
 
     public void startAnimation() {
@@ -399,9 +320,6 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     // MouseEvent support
-    private boolean dragging = false;
-    private double prevX, prevY;
-
     @Override
     public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
     }
@@ -410,48 +328,6 @@ public class Visualisation implements GLEventListener, KeyListener,
     @Override
     public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
         // TODO Auto-generated method stub
-        /* if (!dragging) { */
-        /*     return; */
-        /* } */
-        /*  */
-        /* int x = arg0.getX(); */
-        /* int y = arg0.getY(); */
-
-        /* double mouseDeltaX = x - prevX; */
-        /* double mouseDeltaY = y - prevY; */
-        // TODO: respond to mouse drag to new point (x,y)
-
-        /* trackball.drag(x, y); */
-        /* if ((rotateY % 360 > 90 && rotateY % 360 < 270) */
-        /*         || (rotateY % 360 < 0 && rotateY % 360 + 360 > 90 && rotateY % 360 + 360 < 270)) */
-        /*     rotateX -= mouseDeltaY; */
-        /* else */
-        /*     rotateX += mouseDeltaY; */
-        /* rotateY += mouseDeltaX; */
-
-        /* float[] axes = trackball.getAxis(); */
-        /* for (int i = 1; i < 4; i ++) { */
-        /*     axis[i - 1] = axes[i]; */
-        /* } */
-        /*  */
-        /* angle = axes[0]; */
-
-        /* Quaternion q = new Quaternion(axis, angle); */
-        /* rotationMatrix = q.toMatrix(); */
-        /* trackball.click(x, y); */
-        /* for (int i = 0; i < 4; i ++) */
-        /*     System.out.println(q[i]); */
-        /* angle = (float)Math.acos(q[3]); */
-        /* rotateX += mouseDeltaX; */
-        /* rotateY += mouseDeltaY; */
-        /* rotateZ += mouseDeltaZ; */
-        /* System.out.println("x: " + rotateX + "    y: " + rotateY); */
-
-        /* prevX = x; */
-        /* prevY = y; */
-
-        /* display.repaint(); */
-
         Point newMouse = new Point(arg0.getX(), arg0.getY());
 
         if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y){
@@ -517,67 +393,31 @@ public class Visualisation implements GLEventListener, KeyListener,
     @Override
     public void mouseEntered(com.jogamp.newt.event.MouseEvent arg0) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void mouseExited(com.jogamp.newt.event.MouseEvent arg0) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void mousePressed(com.jogamp.newt.event.MouseEvent arg0) {
-        /* // TODO Auto-generated method stub */
-        /* if (dragging) { */
-        /*     return; // don't start a new drag while one is already in progress */
-        /* } */
-        /* int x = arg0.getX(); */
-        /* int y = arg0.getY(); */
-        /*  */
-        /* // TODO: respond to mouse click at (x,y) */
-        /* dragging = true; // might not always be correct! */
-        /* /* prevX = startX = x; */ 
-        /* /* prevY = startY = y; */ 
-        /* /* prevX = x; */ 
-        /* /* prevY = y; */
-        /* trackball.click(x, y); */
-        /* angle = 0f; */
-        /* /* display.repaint(); */ 
-
         mouseDown = true;
         prevMouse = new Point(arg0.getX(), arg0.getY());
-        if ((arg0.getModifiers() & com.jogamp.newt.event.MouseEvent.BUTTON3_MASK) != 0){
-            mouseRButtonDown = true;
-        }
     }
 
     @Override
     public void mouseReleased(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
-        /* if (!dragging) { */
-        /*     return; */
-        /* } */
-        /* dragging = false; */
-
-        /* rotationMatrix = new Quaternion(new float[] {0f, 0f, 0f}, 1f).toMatrix(); */
-        /* angle = 0; */
-
         mouseDown = false;
-        if ((arg0.getModifiers() & com.jogamp.newt.event.MouseEvent.BUTTON3_MASK) != 0){
-            mouseRButtonDown = true;
-        }
     }
 
     @Override
     public void mouseWheelMoved(com.jogamp.newt.event.MouseEvent arg0) {
         // TODO Auto-generated method stub
-
     }
 }
