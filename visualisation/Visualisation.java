@@ -142,29 +142,35 @@ public class Visualisation implements GLEventListener, KeyListener,
     
     public void buildAxes(GLAutoDrawable drawable){
     	GL2 gl = drawable.getGL().getGL2();
-    	float cylinderRadius = 0.001f;
-    	float cylinderHeight = 1f;
+    	float cylinderRadius = 0.1f;
+    	float cylinderHeight = 30;
     	int slices = 16;
     	int stacks = 16;
     	GLUquadric body = glu.gluNewQuadric();
     	
     	gl.glPushMatrix();
+        /* gl.glLoadIdentity(); */
     	gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        gl.glTranslatef(0.0f,0.0f,-0.5f);
+    	/* gl.glRotatef(0f, 1.0f, 0.0f, 0.0f); */
+        gl.glTranslatef(0.0f,0.0f, -cylinderHeight / 2);
         gl.glColor3f(0.1f,0.4f, 0.4f);
         glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
 		gl.glPopMatrix();
 		
 		gl.glPushMatrix();
-        gl.glTranslatef(0.0f,0.0f,-0.5f);
-		gl.glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+        /* gl.glLoadIdentity(); */
+        gl.glTranslatef(0.0f,0.0f,-cylinderHeight / 2);
+		/* gl.glRotatef(90.0f, 0.0f, 0.0f, 1.0f); */
+    	/* gl.glRotatef(0f, 1.0f, 0.0f, 0.0f); */
 		gl.glColor3f(0.0f,0.906f,0.909f);
 		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
 		gl.glPopMatrix();
 		
 		gl.glPushMatrix();
-        gl.glTranslatef(-0.5f,0.0f,0.0f);
+        /* gl.glLoadIdentity(); */
+        gl.glTranslatef(-cylinderHeight / 2,0.0f,0.0f);
 		gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    	/* gl.glRotatef(0f, 1.0f, 0.0f, 0.0f); */
 		gl.glColor3f(1f, 1f, 0.0f);
 		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
 		gl.glPopMatrix();
@@ -193,25 +199,6 @@ public class Visualisation implements GLEventListener, KeyListener,
         // TODO: add drawing code!! As an example, draw a GLUT teapot
         buildPoints(drawable);
         buildAxes(drawable);
-        /* gl.glColor3f(1.0f, 1.0f, 1.0f); */
-        /* glut.glutSolidTeapot(5); */
-        // glut.glutSolidSphere(1.0, 10, 10);
-
-        /* gl.glEnable( GL2.GL_POINT_SPRITE ); // GL_POINT_SPRITE_ARB if you're */
-        /* gl.glEnable( GL2.GL_POINT_SMOOTH ); */
-        /* gl.glEnable( GL2.GL_BLEND ); */
-        /* gl.glBlendFunc( GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA ); */
-        /* gl.glPointSize(10f); */
-        /* gl.glBegin(GL.GL_POINTS); */
-        /* gl.glColor3f( 0.95f, 0.207f, 0.031f ); */
-        /* gl.glVertex3f( 0.5f, 0.5f, 0.5f); */
-        /* gl.glVertex3f( 0.5f, 0.6f, 0.6f); */
-        /* gl.glVertex3f( 0.5f, 0.8f, 0.7f); */
-        /* gl.glVertex3f( 0.5f, 0.7f, 0.8f); */
-        /* gl.glEnd(); */
-        /*  */
-        /* gl.glFinish(); */
-        /* glutSwapBuffers(); */
     }
 
     /**
