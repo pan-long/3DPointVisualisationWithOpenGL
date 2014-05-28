@@ -166,17 +166,6 @@ public class Visualisation implements GLEventListener, KeyListener,
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
         
-//        gl.glMatrixMode(GL2.GL_PROJECTION); // TODO: Set up a better projection?
-//        gl.glLoadIdentity();
-//        /* gl.glOrtho(-1,1,-1,1,-2,2); */
-//        glu.gluPerspective(35, 1, 0.1, 10000);
-//        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
-//
-//        gl.glMatrixMode(GL2.GL_MODELVIEW);
-//        gl.glLoadIdentity(); // Set up modelview transform.
-//        gl.glRotatef(rotateY, 0, 1, 0);
-//        gl.glRotatef(rotateX, 1, 0, 0);
-
         switch(cmd){
             case UPDATE:
                 gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
@@ -203,25 +192,31 @@ public class Visualisation implements GLEventListener, KeyListener,
                 gl.glRenderMode(GL2.GL_SELECT);
                 gl.glInitNames();
                 
-                gl.glMatrixMode(GL2.GL_PROJECTION);
+                gl.glMatrixMode(GL2.GL_MODELVIEW);
                 gl.glPushMatrix();
+
                 gl.glLoadIdentity();
-                
                 glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
-                glu.gluPerspective(35, 1, 0.1, 10000);
                 
                 //draw graph
+                gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
+                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+                gl.glPushMatrix();
+                gl.glMultMatrixf(rot_matrix, 0);
+
                 buildPoints(gl);
                 buildAxes(gl);
-                
-                gl.glMatrixMode(GL2.GL_PROJECTION);
+
+                gl.glPopMatrix();
+
                 gl.glPopMatrix();
                 gl.glFlush();
-                
+
                 hits = gl.glRenderMode(GL2.GL_RENDER);
                 processHits(hits, selectBuffer);
                 cmd = UPDATE;
-        	break;
+                break;
         }
 
     }
@@ -270,39 +265,39 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
     }
-    
-	public void processHits(int hits, IntBuffer buffer) {
-		System.out.println("---------------------------------");
-		System.out.println(" HITS: " + hits);
-		int offset = 0;
-		int names;
-		float z1, z2;
-		for (int i = 0; i < hits; i++) {
-			System.out.println("- - - - - - - - - - - -");
-			System.out.println(" hit: " + (i + 1));
-			names = buffer.get(offset);
-			offset++;
-			z1 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
-			offset++;
-			z2 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
-			offset++;
-			System.out.println(" number of names: " + names);
-			System.out.println(" z1: " + z1);
-			System.out.println(" z2: " + z2);
-			System.out.println(" names: ");
 
-			for (int j = 0; j < names; j++) {
-				System.out.print("       " + buffer.get(offset));
-				if (j == (names - 1))
-					System.out.println("<-");
-				else
-					System.out.println();
-				offset++;
-			}
-			System.out.println("- - - - - - - - - - - -");
-		}
-		System.out.println("---------------------------------");
-	}
+    public void processHits(int hits, IntBuffer buffer) {
+        System.out.println("---------------------------------");
+        System.out.println(" HITS: " + hits);
+        int offset = 0;
+        int names;
+        float z1, z2;
+        for (int i = 0; i < hits; i++) {
+            System.out.println("- - - - - - - - - - - -");
+            System.out.println(" hit: " + (i + 1));
+            names = buffer.get(offset);
+            offset++;
+            z1 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
+            offset++;
+            z2 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
+            offset++;
+            System.out.println(" number of names: " + names);
+            System.out.println(" z1: " + z1);
+            System.out.println(" z2: " + z2);
+            System.out.println(" names: ");
+
+            for (int j = 0; j < names; j++) {
+                System.out.print("       " + buffer.get(offset));
+                if (j == (names - 1))
+                    System.out.println("<-");
+                else
+                    System.out.println();
+                offset++;
+            }
+            System.out.println("- - - - - - - - - - - -");
+        }
+        System.out.println("---------------------------------");
+    }
 
     /**
      *
@@ -388,7 +383,7 @@ public class Visualisation implements GLEventListener, KeyListener,
     // MouseEvent support
     @Override
     public void mouseClicked(com.jogamp.newt.event.MouseEvent arg0) {
-    	
+
     }
 
     private float[] mouseMtx = new float[16];
@@ -417,35 +412,35 @@ public class Visualisation implements GLEventListener, KeyListener,
         rot_matrix[15] = 1.0f;
         float fac;
         if ((fac = (float) Math.sqrt((rot_matrix[0] * rot_matrix[0])
-                + (rot_matrix[4] * rot_matrix[4])
-                + (rot_matrix[8] * rot_matrix[8]))) != 1.0f) {
+                        + (rot_matrix[4] * rot_matrix[4])
+                        + (rot_matrix[8] * rot_matrix[8]))) != 1.0f) {
             if (fac != 0.0f) {
                 fac = 1.0f / fac;
                 rot_matrix[0] *= fac;
                 rot_matrix[4] *= fac;
                 rot_matrix[8] *= fac;
             }
-        }
+                        }
         if ((fac = (float) Math.sqrt((rot_matrix[1] * rot_matrix[1])
-                + (rot_matrix[5] * rot_matrix[5])
-                + (rot_matrix[9] * rot_matrix[9]))) != 1.0f) {
+                        + (rot_matrix[5] * rot_matrix[5])
+                        + (rot_matrix[9] * rot_matrix[9]))) != 1.0f) {
             if (fac != 0.0f) {
                 fac = 1.0f / fac;
                 rot_matrix[1] *= fac;
                 rot_matrix[5] *= fac;
                 rot_matrix[9] *= fac;
             }
-        }
+                        }
         if ((fac = (float) Math.sqrt((rot_matrix[2] * rot_matrix[2])
-                + (rot_matrix[6] * rot_matrix[6])
-                + (rot_matrix[10] * rot_matrix[10]))) != 1.0f) {
+                        + (rot_matrix[6] * rot_matrix[6])
+                        + (rot_matrix[10] * rot_matrix[10]))) != 1.0f) {
             if (fac != 0.0f) {
                 fac = 1.0f / fac;
                 rot_matrix[2] *= fac;
                 rot_matrix[6] *= fac;
                 rot_matrix[10] *= fac;
             }
-        }
+                        }
     }
 
     @Override
@@ -459,9 +454,9 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseMoved(com.jogamp.newt.event.MouseEvent arg0) {
-    	cmd = SELECT;
-    	mouseX = arg0.getX();
-    	mouseY = arg0.getY();
+        cmd = SELECT;
+        mouseX = arg0.getX();
+        mouseY = arg0.getY();
     }
 
     @Override
