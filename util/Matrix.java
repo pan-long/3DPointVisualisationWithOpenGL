@@ -14,7 +14,7 @@
 *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 *   Library General Public License for more details.
 **/
-package jahuwaldt.gl;
+package util;
 
 
 /**

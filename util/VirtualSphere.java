@@ -21,7 +21,7 @@
 **/
 package util;
 
-import java.awt.*;
+import java.awt.Point;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
