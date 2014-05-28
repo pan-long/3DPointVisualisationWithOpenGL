@@ -131,16 +131,20 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gl.glPointSize((float) radius / 2);
 
+        int pointName = 0;
+        gl.glInitNames();
         gl.glBegin(GL.GL_POINTS);
         for (point p : pointsList) {
             gl.glPushMatrix();
+            gl.glPushName(pointName);
             gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-            /* gl.glColor3f(0.95f, 0.207f, 0.031f); */
             gl.glColor3f(0.95f, 0.207f, 0.031f);
             gl.glVertex3f((float) (p.getX() * scaleFactor),
                     (float) (p.getY() * scaleFactor),
                     (float) (p.getZ() * scaleFactor));
+            gl.glPopName();
             gl.glPopMatrix();
+            pointName++;
         }
         gl.glEnd();
     }
@@ -218,8 +222,8 @@ public class Visualisation implements GLEventListener, KeyListener,
                 gl.glMatrixMode(GL2.GL_PROJECTION);
                 gl.glPushMatrix();
                 gl.glLoadIdentity();
-                glu.gluPickMatrix(x, (double) viewPort[3] - y, 2.0d, 2.0d, viewPort, 0);
-                glu.gluOrtho2D(0.0d, 1.0d, 0.0d, 1.0d);
+                glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
+                glu.gluOrtho2D(0.0d, 2.0d, 0.0d, 2.0d);
                 
                 //draw graph
                 buildPoints(drawable);
