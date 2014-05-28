@@ -314,7 +314,7 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 
-        glu.gluPerspective(35, h, 0.1, 10000);
+        glu.gluPerspective(35, 1, 0.1, 10000);
         glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
