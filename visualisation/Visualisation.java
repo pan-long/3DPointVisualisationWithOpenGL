@@ -114,7 +114,7 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glPointSize((float) radius / 2);
+        gl.glPointSize((float)radius / 2);
 
         int pointName = 0;
         gl.glBegin(GL.GL_POINTS);
@@ -225,7 +225,7 @@ public class Visualisation implements GLEventListener, KeyListener,
     public void setupVS(int w, int h) {
         cueCenter.x = w / 2;
         cueCenter.y = h / 2;
-        cueRadius = (int)Math.sqrt(w * w + h * h) / 2;
+        cueRadius = (int)(Math.sqrt(w * w + h * h) / 2);
     }
 
     /**
