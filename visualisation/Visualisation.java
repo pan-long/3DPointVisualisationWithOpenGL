@@ -120,6 +120,7 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glBegin(GL.GL_POINTS);
         for (point p : pointsList) {
             if(cmd == SELECT) gl.glLoadName(pointName);
+
         	gl.glPushMatrix();
             gl.glTranslatef(p.getX(), p.getY(), p.getZ());
             gl.glColor3f(0.95f, 0.207f, 0.031f);
@@ -307,12 +308,14 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width,
             int height) {
+        float h = (float)width / (float)height;
+
         GL2 gl = drawable.getGL().getGL2();
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 
-        glu.gluPerspective(35, 1, 0.1, 10000);
+        glu.gluPerspective(35, h, 0.1, 10000);
         glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
