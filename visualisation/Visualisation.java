@@ -189,29 +189,26 @@ public class Visualisation implements GLEventListener, KeyListener,
                 int hits = 0;
                 
                 gl.glSelectBuffer(buffsize, selectBuffer);
-                gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
                 gl.glRenderMode(GL2.GL_SELECT);
+        
+                gl.glMatrixMode(GL2.GL_PROJECTION);
+                gl.glPushMatrix();
+                gl.glLoadIdentity();
+                
+                gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
+                glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
                 gl.glInitNames();
                 
-                gl.glMatrixMode(GL2.GL_MODELVIEW);
-                gl.glPushMatrix();
-
-                gl.glLoadIdentity();
-                glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
-                
                 //draw graph
-                gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
-                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
                 gl.glPushMatrix();
                 gl.glMultMatrixf(rot_matrix, 0);
-
                 buildPoints(gl);
                 buildAxes(gl);
-
                 gl.glPopMatrix();
-
+                
+                gl.glMatrixMode(GL2.GL_PROJECTION);
                 gl.glPopMatrix();
+                gl.glMatrixMode(GL2.GL_MODELVIEW);
                 gl.glFlush();
 
                 hits = gl.glRenderMode(GL2.GL_RENDER);
