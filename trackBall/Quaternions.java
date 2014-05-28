@@ -1,152 +1,192 @@
 package trackBall;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
-public final class Vectors
+public final class Quaternions
 {
-    public static float[] add (float[] v1, float[] v2, float[] dst)
+    public static float[] add (float[] q1, float[] q2, float[] dst)
     {
-        if (dst == null) dst = new float[3];
+        if (dst == null) dst = new float[4];
         
-        for (int i = 0; i < 3; i++) dst[i] = v1[i] + v2[i];
+        for (int i = 0; i < 4; i++) dst[i] = q1[i] + q2[i];
         return dst;
     }
-    public static float[] add (float[] v, float s, float[] dst)
+    public static float[] add (float[] q, float s, float[] dst)
     {
-        if (dst == null) dst = new float[3];
+        if (dst == null) dst = new float[4];
         
-        for (int i = 0; i < 3; i++) dst[i] = v[i] + s;
-        return dst;
-    }
-    
-    public static float[] add_r (float[] v1, float[] v2)
-    {
-        return add(v1, v2, v1);
-    }
-    
-    public static float[] add_r (float[] v, float s)
-    {
-        return add(v, s, v);
-    }
-    
-    public static float[] sub (float[] v1, float[] v2, float[] dst)
-    {
-        if (dst == null) dst = new float[3];
-        
-        for (int i = 0; i < 3; i++) dst[i] = v1[i] - v2[i];
+        for (int i = 0; i < 4; i++) dst[i] = q[i] + s;
         return dst;
     }
     
-    public static float[] sub (float[] v, float s, float[] dst)
+    public static float[] add_r (float[] q1, float[] q2)
     {
-        if (dst == null) dst = new float[3];
+        return add(q1, q2, q1);
+    }
+    
+    public static float[] add_r (float[] q, float s)
+    {
+        return add(q, s, q);
+    }
+    
+    public static float[] sub (float[] q1, float[] q2, float[] dst)
+    {
+        if (dst == null) dst = new float[4];
         
-        for (int i = 0; i < 3; i++) dst[i] = v[i] - s;
+        for (int i = 0; i < 4; i++) dst[i] = q1[i] - q2[i];
         return dst;
     }
     
-    public static float[] sub_r (float[] v1, float[] v2)
+    public static float[] sub (float[] q, float s, float[] dst)
     {
-        return sub(v1, v2, v1);
-    }
-    
-    public static float[] sub_r (float[] v, float s)
-    {
-        return sub(v, s, v);
-    }
-    
-    public static float[] mul (float[] v, float s, float[] dst)
-    {
-        if (dst == null) dst = new float[3];
+        if (dst == null) dst = new float[4];
         
-        for (int i = 0; i < 3; i++) dst[i] = v[i] * s;
+        for (int i = 0; i < 4; i++) dst[i] = q[i] - s;
         return dst;
     }
     
-    public static float[] mul_r (float[] v, float s)
+    public static float[] sub_r (float[] q1, float[] q2)
     {
-        return mul(v, s, v);
+        return sub(q1, q2, q1);
     }
     
-    public static float[] div (float[] v, float s, float[] dst)
+    public static float[] sub_r (float[] q, float s)
     {
-        for (int i = 0; i < 3; i++) dst[i] = v[i] * s;
-        return dst;     
+        return sub(q, s, q);
     }
     
-    public static float[] div_r (float[] v, float s)
+    public static float[] mul (float[] q1, float[] q2, float[] dst)
     {
-        return div(v, s, v);
-    }
-    
-    public static float[] cross (float[] v1, float[] v2, float[] dst)
-    {
-        float tx = (v1[1] * v2[2]) - (v1[2] * v2[1]);
-        float ty = (v1[2] * v2[0]) - (v1[0] * v2[2]);
-        float tz = (v1[0] * v2[1]) - (v1[1] * v2[0]);
+        float[] tq1 = Arrays.copyOf(q1, q1.length);
+        float[] tq2 = Arrays.copyOf(q2, q2.length);
+        float[] tf = new float[4];
         
-        if (dst != null) { dst[0] = tx; dst[1] = ty; dst[2] = tz; }
-        else dst = new float[] {tx, ty, tz};
+        Vectors.mul_r(tq1, q2[3]);  
+        Vectors.mul_r(tq2, q1[3]);
         
-        return dst;
-    }
-    
-    public static float[] cross_r (float[] v1, float[] v2)
-    {
-        return cross(v1, v2, v1);
-    }
-    
-    public static float[] inverse (float[] v, float[] dst)
-    {
-        if (dst == null) dst = new float[3];
+        float[] cross = Vectors.cross(q1, q2, null);
+        
+        Vectors.add(tq1, tq2, tf);
+        Vectors.add_r (tf, cross);
+        
+        tf[3] = q1[3] * q2[3] - Vectors.dot(q1, q2);
 
-        for (int i = 0; i < 3; i++) dst[i] = -v[i];
+        dst[0] = tf[0];
+        dst[1] = tf[1];
+        dst[2] = tf[2];
+        dst[3] = tf[3];
+        
         return dst;
     }
     
-    public static float[] inverse_r (float[] v)
+    public static float[] mul_r (float[] q1, float[] q2)
     {
-        return inverse(v, v);
+        return mul(q1, q2, q1);
     }
     
-    public static float[] norm (float[] v, float[] dst)
+    public static float[] conjugate (float[] q, float[] dst)
     {
-        if (dst == null) dst = new float[3];
+        if (dst == null) dst = new float[4];
         
-        float l = Vectors.len(v);
-
-        for (int i = 0; i < 3; i++) dst[i] = v[i] / l;
+        for (int i = 0; i < 3; i++) dst[i] = -q[i];
+        dst[3] = q[3];
+        
         return dst;
     }
     
-    public static float[] norm_r (float[] v)
+    public static float[] conjugate_r (float[] q)
     {
-        return norm(v, v);
+        return conjugate(q, q);
     }
     
-    public static float dot (float[] v1, float[] v2)
+    public static float[] divide (float[] q, float s, float[] dst)
     {
-        float dot = 0;
+        if (dst == null) dst = new float[4];
         
-        for (int i = 0; i < 3; i++) dot += v1[i] * v2[i];
-        return dot;
+        for (int i = 0; i < i; i++) dst[i] = q[i] / s;
+        return dst;
     }
     
-    public static float len (float[] v)
+    public static float[] divide (float[] q1, float[] q2, float[] dst)
     {
-        return (float) Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        float[] tmp = inverse(q2, null);
+        return mul(q1, tmp, dst);
     }
     
-    public static String toString (float[] v)
+    public static float[] divide_r (float[] q, float s)
+    {
+        return divide(q, s, q);
+    }
+    
+    public static float[] divide_r (float[] q1, float[] q2)
+    {
+        return divide(q1, q2, q1);
+    }
+    
+    public static float[] inverse (float[] q, float[] dst)
+    {
+        if (dst == null) dst = new float[4];
+        
+        int t = 0;
+        for (int i = 0; i < 4; i++) t += q[i] * q[i];
+        
+        divide(conjugate(q, null), t, dst);
+        return dst;
+    }
+    
+    public static float[] inverse_r (float[] q)
+    {
+        return inverse(q, q);
+    }
+    
+    public static float[] norm (float[] q, float[] dst)
+    {
+        if (dst == null) dst = new float[4];
+        
+        float l = abs(q);
+        for (int i = 0; i < 4; i ++) dst[i] = q[i] / l;
+        
+        return dst;
+    }
+    
+    public static float[] norm_r (float[] q)
+    {
+        return norm(q, q);
+    }
+    
+    public static float abs (float[] q)
+    {
+        float a = 0;
+        for (int i = 0; i < 4; i++) a += q[i] * q[i];
+        
+        return a;
+    }
+    
+    public static float[] axis (float[] q, float[] dst)
+    {
+        if (dst == null) dst = new float[4];
+        
+        dst[0] = 2.0F * (float) Math.acos(q[3]);
+        
+        float m = Vectors.len(q);
+        for (int i = 1; i < 4; i++) dst[i] = q[i - 1] / m;
+        
+        return dst;
+    }
+    
+    public static String toString (float[] q)
     {
         StringBuilder s = new StringBuilder();
-        s.append("[ X: ");
-        s.append(v[0]);
-        s.append(" Y: ");
-        s.append(v[1]);
-        s.append(" Z: ");
-        s.append(v[2]);
-        s.append(" ]");
+        s.append(q[3]);
+        s.append(q[0] >= 0 ? " + " : " - ");
+        s.append(Math.abs(q[0]));
+        s.append("i");
+        s.append(q[1] >= 0 ? " + " : " - ");
+        s.append(Math.abs(q[1]));
+        s.append("j");
+        s.append(q[2] >= 0 ? " + " : " - ");
+        s.append(Math.abs(q[2]));
+        s.append("k");
         
         return s.toString();
     }
