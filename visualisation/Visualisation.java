@@ -125,40 +125,43 @@ public class Visualisation implements GLEventListener, KeyListener,
         }
         gl.glEnd();
     }
-    
-    public void buildAxes(GLAutoDrawable drawable){
+
+    public void buildAxes(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
         float cylinderRadius = 0.1f;
         float cylinderHeight = 30;
         int slices = 16;
         int stacks = 16;
         GLUquadric body = glu.gluNewQuadric();
-        
+
         gl.glPushMatrix();
         gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        gl.glTranslatef(0.0f,0.0f, -cylinderHeight / 2);
-        gl.glColor3f(0.1f,0.4f, 0.4f);
-        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+        gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
+        gl.glColor3f(0.1f, 0.4f, 0.4f);
+        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
+                slices, stacks);
         gl.glPopMatrix();
-        
+
         gl.glPushMatrix();
-        gl.glTranslatef(0.0f,0.0f,-cylinderHeight / 2);
-        gl.glColor3f(0.0f,0.906f,0.909f);
-        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+        gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
+        gl.glColor3f(0.0f, 0.906f, 0.909f);
+        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
+                slices, stacks);
         gl.glPopMatrix();
-        
+
         gl.glPushMatrix();
-        gl.glTranslatef(-cylinderHeight / 2,0.0f,0.0f);
+        gl.glTranslatef(-cylinderHeight / 2, 0.0f, 0.0f);
         gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         gl.glColor3f(1f, 1f, 0.0f);
-        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight, slices, stacks);
+        glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
+                slices, stacks);
         gl.glPopMatrix();
     }
 
     /**
      * This method is called when the OpenGL display needs to be redrawn.
      */
-    public void display(GLAutoDrawable drawable) {  
+    public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -172,10 +175,10 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glPopMatrix();
     }
 
-    public void setupVS(int w, int h){
-        cueCenter.x = w/2;
-        cueCenter.y = h/2;
-        cueRadius = Math.min(w-20, h-20)/2;
+    public void setupVS(int w, int h) {
+        cueCenter.x = w / 2;
+        cueCenter.y = h / 2;
+        cueRadius = Math.min(w - 20, h - 20) / 2;
     }
 
     /**
@@ -203,14 +206,14 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     private void doLighting(GL2 gl) {
-        float[] light_ambient=new float[] {0.3f,0.3f,0.3f,1.0f};
-        float[] light_diffuse=new float[] {1.0f,1.0f,1.0f,1.0f};
-        float[] light_specular=new float[] {1.0f,1.0f,1.0f,1.0f};
-        float[] light_position=new float[] {1.0f,1.0f,1.0f,0.0f};
-        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,light_ambient,0);
-        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,light_diffuse,0);
-        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_SPECULAR,light_specular,0);
-        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,light_position,0);
+        float[] light_ambient = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
+        float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+        float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
+        float[] light_position = new float[] { 1.0f, 1.0f, 1.0f, 0.0f };
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, light_ambient, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light_diffuse, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, light_specular, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
     }
@@ -223,7 +226,7 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width,
             int height) {
-        float h = (float)height / (float)width;
+        float h = (float) height / (float) width;
 
         GL2 gl = drawable.getGL().getGL2();
 
@@ -302,13 +305,18 @@ public class Visualisation implements GLEventListener, KeyListener,
     }
 
     private float[] mouseMtx = new float[16];
+
     @Override
     public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
         // TODO Auto-generated method stub
+        if (!mouseDown)
+            return;
+
         Point newMouse = new Point(arg0.getX(), arg0.getY());
 
-        if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y){
-            vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius, mouseMtx);
+        if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y) {
+            vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
+                    mouseMtx);
 
             rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
             fixRotationMatrix();
@@ -317,54 +325,40 @@ public class Visualisation implements GLEventListener, KeyListener,
         }
     }
 
-    private void fixRotationMatrix(){
- 		rot_matrix[3] =
-		rot_matrix[7] =
-		rot_matrix[11] =
-		rot_matrix[12] =
-		rot_matrix[13] =
-		rot_matrix[14] = 0.0f;
-		rot_matrix[15] = 1.0f;
-		float fac;
-		if ((fac = (float)Math.sqrt
-			((rot_matrix[0]*rot_matrix[0]) +
-			 (rot_matrix[4]*rot_matrix[4]) +
-			 (rot_matrix[8]*rot_matrix[8]))) != 1.0f)
-		{
-			if (fac != 0.0f)
-			{
-				fac = 1.0f/fac;
-				rot_matrix[0] *= fac;
-				rot_matrix[4] *= fac;
-				rot_matrix[8] *= fac;
-			}
-		}
-		if ((fac = (float)Math.sqrt
-			((rot_matrix[1]*rot_matrix[1]) +
-			 (rot_matrix[5]*rot_matrix[5]) +
-			 (rot_matrix[9]*rot_matrix[9]))) != 1.0f)
-		{
-			if (fac != 0.0f)
-			{
-				fac = 1.0f/fac;
-				rot_matrix[1] *= fac;
-				rot_matrix[5] *= fac;
-				rot_matrix[9] *= fac;
-			}
-		}
-		if ((fac = (float)Math.sqrt
-			((rot_matrix[2]*rot_matrix[2]) +
-			 (rot_matrix[6]*rot_matrix[6]) +
-			 (rot_matrix[10]*rot_matrix[10]))) != 1.0f)
-		{
-			if (fac != 0.0f)
-			{
-				fac = 1.0f/fac;
-				rot_matrix[2] *= fac;
-				rot_matrix[6] *= fac;
-				rot_matrix[10] *= fac;
-			}
-		}
+    private void fixRotationMatrix() {
+        rot_matrix[3] = rot_matrix[7] = rot_matrix[11] = rot_matrix[12] = rot_matrix[13] = rot_matrix[14] = 0.0f;
+        rot_matrix[15] = 1.0f;
+        float fac;
+        if ((fac = (float) Math.sqrt((rot_matrix[0] * rot_matrix[0])
+                + (rot_matrix[4] * rot_matrix[4])
+                + (rot_matrix[8] * rot_matrix[8]))) != 1.0f) {
+            if (fac != 0.0f) {
+                fac = 1.0f / fac;
+                rot_matrix[0] *= fac;
+                rot_matrix[4] *= fac;
+                rot_matrix[8] *= fac;
+            }
+        }
+        if ((fac = (float) Math.sqrt((rot_matrix[1] * rot_matrix[1])
+                + (rot_matrix[5] * rot_matrix[5])
+                + (rot_matrix[9] * rot_matrix[9]))) != 1.0f) {
+            if (fac != 0.0f) {
+                fac = 1.0f / fac;
+                rot_matrix[1] *= fac;
+                rot_matrix[5] *= fac;
+                rot_matrix[9] *= fac;
+            }
+        }
+        if ((fac = (float) Math.sqrt((rot_matrix[2] * rot_matrix[2])
+                + (rot_matrix[6] * rot_matrix[6])
+                + (rot_matrix[10] * rot_matrix[10]))) != 1.0f) {
+            if (fac != 0.0f) {
+                fac = 1.0f / fac;
+                rot_matrix[2] *= fac;
+                rot_matrix[6] *= fac;
+                rot_matrix[10] *= fac;
+            }
+        }
     }
 
     @Override
@@ -384,12 +378,18 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mousePressed(com.jogamp.newt.event.MouseEvent arg0) {
+        if (mouseDown)
+            return;
+
         mouseDown = true;
         prevMouse = new Point(arg0.getX(), arg0.getY());
     }
 
     @Override
     public void mouseReleased(com.jogamp.newt.event.MouseEvent arg0) {
+        if (!mouseDown)
+            return;
+
         mouseDown = false;
     }
 
