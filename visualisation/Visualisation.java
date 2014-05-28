@@ -307,19 +307,17 @@ public class Visualisation implements GLEventListener, KeyListener,
      */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width,
             int height) {
-        float h = (float) height / (float) width;
-
         GL2 gl = drawable.getGL().getGL2();
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 
         glu.gluPerspective(35, 1, 0.1, 10000);
-        glu.gluLookAt(0, 0, 40, 0, 0, 0, 0, 1, 0);
+        glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glTranslatef(0.0f, 0.0f, -40.0f);
+        gl.glTranslatef(0.0f, 0.0f, -30.0f);
 
         setupVS(width, height);
     }
