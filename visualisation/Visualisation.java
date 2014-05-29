@@ -41,7 +41,7 @@ import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
 public class Visualisation extends GLCanvas implements GLEventListener,
-		KeyListener, MouseListener, MouseMotionListener{
+		KeyListener, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
@@ -54,7 +54,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private VirtualSphere vs = new VirtualSphere();
 	private Point cueCenter = new Point();
 	private int cueRadius;
-	private boolean mouseDragging= false;
+	private boolean mouseDragging = false;
 	private float rot_matrix[] = Matrix.identity();
 
 	private static boolean isSetToOrigin = false;
@@ -83,30 +83,35 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final JPanel leftJPanel = new JPanel();
 				leftJPanel.setLayout(new GridLayout(10, 1));
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL,
+						1, 10, 5);
 				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceSlider);
-				
+
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
 				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
-				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1,
+						10, 5);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
-				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1)); 
+				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0,
+						100, 50);
+				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1));
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
 
-				JCheckBox setToOriginCheckBox = new JCheckBox("Set Center To Origin");
+				JCheckBox setToOriginCheckBox = new JCheckBox(
+						"Set Center To Origin");
 				setToOriginCheckBox.setSelected(false);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
-					
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						AbstractButton abstractButton = (AbstractButton)e.getSource();
+						AbstractButton abstractButton = (AbstractButton) e
+								.getSource();
 						isSetToOrigin = abstractButton.isSelected();
 					}
 				});
@@ -115,7 +120,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(curvatureJPanel);
 				leftJPanel.add(setToOriginCheckBox);
-				
+
 				final JPanel mainJPanel = new JPanel();
 				mainJPanel.setLayout(new BorderLayout());
 				mainJPanel.add(leftJPanel, BorderLayout.WEST);
@@ -182,7 +187,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						(float) (p.getY() * scaleFactor),
 						(float) (p.getZ() * scaleFactor));
 			} else {
-				gl.glVertex3f((float) (p.getX() * scaleFactor - centerOfMass[0]),
+				gl.glVertex3f(
+						(float) (p.getX() * scaleFactor - centerOfMass[0]),
 						(float) (p.getY() * scaleFactor - centerOfMass[1]),
 						(float) (p.getZ() * scaleFactor - centerOfMass[2]));
 			}
@@ -380,7 +386,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	public void mouseDragged(MouseEvent e) {
 		if (!mouseDragging)
 			return;
-		
+
 		Point newMouse = new Point(e.getX(), e.getY());
 
 		if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y) {
