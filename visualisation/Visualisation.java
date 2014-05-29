@@ -24,6 +24,7 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -83,8 +84,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				leftJPanel.setLayout(new GridLayout(10, 1, 0, 5));
 				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
 				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				JCheckBox setToOriginCheckBox = new JCheckBox("Set Center To Origin");
+
 				leftJPanel.add(cameraDistanceSlider);
 				leftJPanel.add(fieldOfViewSlider);
+				leftJPanel.add(setToOriginCheckBox);
 				
 				final JPanel mainJPanel = new JPanel();
 				mainJPanel.setLayout(new BorderLayout());
