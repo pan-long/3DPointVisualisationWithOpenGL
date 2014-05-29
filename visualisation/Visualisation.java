@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -21,14 +19,12 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 import point.point;
 import util.Matrix;
@@ -40,13 +36,11 @@ import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
 public class Visualisation extends GLCanvas implements GLEventListener,
-		KeyListener, MouseListener, MouseMotionListener, ActionListener {
+		KeyListener, MouseListener, MouseMotionListener{
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
 	private static dataReader dr = null;
-	private GLJPanel display;
-	private Timer animationTimer;
 	private GLU glu = new GLU();
 	private static ScaleConfiguration sc = null;
 
@@ -328,37 +322,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public void keyReleased(KeyEvent e) {
-	}
-
-	// --------------------------- animation support ---------------------------
-
-	/* private int frameNumber = 0; */
-
-	private boolean animating;
-
-	private void updateFrame() {
-	}
-
-	public void startAnimation() {
-		if (!animating) {
-			if (animationTimer == null) {
-				animationTimer = new Timer(30, this);
-			}
-			animationTimer.start();
-			animating = true;
-		}
-	}
-
-	public void pauseAnimation() {
-		if (animating) {
-			animationTimer.stop();
-			animating = false;
-		}
-	}
-
-	public void actionPerformed(ActionEvent evt) {
-		updateFrame();
-		display.repaint();
 	}
 
 	// MouseEvent support
