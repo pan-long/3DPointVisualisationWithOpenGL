@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -66,7 +67,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double selectedCurMin = 0;
 
 	private static String TITLE = "3D Visualisation Tool";
-	private static final int WINDOW_WIDTH = 800;
+	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final int FPS = 60;
 
@@ -80,29 +81,28 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			@Override
 			public void run() {
 				GLCanvas canvas = new Visualisation();
-
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-
+				
+				final GridLayout defaultLayout = new GridLayout(2, 1, 0, -8);
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setLayout(new GridLayout(10, 1));
+				leftJPanel.setPreferredSize(new Dimension(250, 600));
+				leftJPanel.setLayout(new GridLayout(8, 1, 0, 5));
+				
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL,
-						1, 10, 5);
-				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
+				JSlider cameraDistanceSlider = initSlider();
+				JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceSlider);
 
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
-				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1,
-						10, 5);
+				JSlider fieldOfViewSlider = initSlider();
+				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
-				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0,
-						100, 50);
-				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1));
+				JSlider curvatureJSlider = initCurvatureSlider();
+				JPanel curvatureJPanel = new JPanel(defaultLayout);
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
 
@@ -154,6 +154,45 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				animator.start();
 			}
 		});
+	}
+	
+	public static JSlider initSlider() {
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 60, 30);
+		slider.setMajorTickSpacing(10);
+		slider.setMinorTickSpacing(5);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+		labelTable.put( new Integer( 0 ), new JLabel("1/4") );
+		labelTable.put( new Integer( 10 ), new JLabel("1/3") );
+		labelTable.put( new Integer( 20 ), new JLabel("1/2") );
+		labelTable.put( new Integer( 30 ), new JLabel("1") );
+		labelTable.put( new Integer( 40 ), new JLabel("2") );
+		labelTable.put( new Integer( 50 ), new JLabel("3") );
+		labelTable.put( new Integer( 60 ), new JLabel("4") );
+		slider.setLabelTable( labelTable );
+		
+		return slider;
+	}
+	
+	public static JSlider initCurvatureSlider() {
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+		slider.setMajorTickSpacing(20);
+		slider.setMinorTickSpacing(10);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+		labelTable.put( new Integer( 0 ), new JLabel("0") );
+		labelTable.put( new Integer( 20 ), new JLabel("0.2") );
+		labelTable.put( new Integer( 40 ), new JLabel("0.4") );
+		labelTable.put( new Integer( 60 ), new JLabel("0.6") );
+		labelTable.put( new Integer( 80 ), new JLabel("0.8") );
+		labelTable.put( new Integer( 100 ), new JLabel("1") );
+		slider.setLabelTable( labelTable );
+		
+		return slider;
 	}
 
 	public Visualisation() {
