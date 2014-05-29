@@ -18,7 +18,6 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.Timer;
 
 import point.point;
-
 import util.Matrix;
 import util.VirtualSphere;
 
@@ -197,11 +196,16 @@ public class Visualisation implements GLEventListener, KeyListener,
                 
                 gl.glGetIntegerv(GL2.GL_VIEWPORT, viewPort, 0);
                 glu.gluPickMatrix(x, (double) viewPort[3] - y, 5.0d, 5.0d, viewPort, 0);
+                
+                float h = drawable.getWidth() / drawable.getHeight();
+                glu.gluPerspective(35, h, 0.1, 10000);
+
                 gl.glInitNames();
+                gl.glPushName(0xffffffff);
                 
                 //draw graph
-//                gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
-//                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+                gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
+                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
                 gl.glPushMatrix();
                 gl.glMultMatrixf(rot_matrix, 0);
