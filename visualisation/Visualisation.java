@@ -24,12 +24,15 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import point.point;
 import util.Matrix;
@@ -59,6 +62,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private boolean mouseDragging= false;
 	private float rot_matrix[] = Matrix.identity();
 
+	private static boolean isSetToOrigin = false;
+	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
 
@@ -85,6 +90,15 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
 				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
 				JCheckBox setToOriginCheckBox = new JCheckBox("Set Center To Origin");
+				setToOriginCheckBox.setSelected(false);
+				setToOriginCheckBox.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						AbstractButton abstractButton = (AbstractButton)e.getSource();
+						isSetToOrigin = abstractButton.isSelected();
+					}
+				});
 
 				leftJPanel.add(cameraDistanceSlider);
 				leftJPanel.add(fieldOfViewSlider);
@@ -134,6 +148,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
 		radius = sc.getRadius();
+		centerOfMass = sc.getCenterOfMass();
 	}
 
 	// --------------- Methods of the GLEventListener interface -----------
@@ -150,9 +165,15 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 			gl.glColor3f(0.95f, 0.207f, 0.031f);
-			gl.glVertex3f((float) (p.getX() * scaleFactor),
-					(float) (p.getY() * scaleFactor),
-					(float) (p.getZ() * scaleFactor));
+			if (!isSetToOrigin) {
+				gl.glVertex3f((float) (p.getX() * scaleFactor),
+						(float) (p.getY() * scaleFactor),
+						(float) (p.getZ() * scaleFactor));
+			} else {
+				gl.glVertex3f((float) (p.getX() * scaleFactor - centerOfMass[0]),
+						(float) (p.getY() * scaleFactor - centerOfMass[1]),
+						(float) (p.getZ() * scaleFactor - centerOfMass[2]));
+			}
 			gl.glPopMatrix();
 		}
 		gl.glEnd();
