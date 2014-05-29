@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.IntBuffer;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -22,9 +23,9 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import point.point;
@@ -75,22 +76,22 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setLayout(new GridLayout(10, 1));
+				leftJPanel.setLayout(new GridLayout(8, 1));
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
-				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
+				JSlider cameraDistanceSlider = initSlider();
+				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1, 0, -8));
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceSlider);
 				
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
-				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
+				JSlider fieldOfViewSlider = initSlider();
+				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1, 0, -8));
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
 				
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
 				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1)); 
+				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1, 0, -8)); 
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
 				
@@ -127,6 +128,24 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				animator.start();
 			}
 		});
+	}
+	
+	public static JSlider initSlider() {
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 6, 3);
+		slider.setMajorTickSpacing(1);
+		slider.setPaintLabels(true);
+		
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+		labelTable.put( new Integer( 0 ), new JLabel("1/4") );
+		labelTable.put( new Integer( 1 ), new JLabel("1/3") );
+		labelTable.put( new Integer( 2 ), new JLabel("1/2") );
+		labelTable.put( new Integer( 3 ), new JLabel("1") );
+		labelTable.put( new Integer( 4 ), new JLabel("2") );
+		labelTable.put( new Integer( 5 ), new JLabel("3") );
+		labelTable.put( new Integer( 6 ), new JLabel("4") );
+		slider.setLabelTable( labelTable );
+		
+		return slider;
 	}
 
 	public Visualisation() {
