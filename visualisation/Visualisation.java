@@ -361,10 +361,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 * Called when the user presses any key.
 	 */
 	public void keyPressed(KeyEvent e) {
-		System.out.println((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK));
 		if ((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK) == 0)
 		{
-			System.out.println("control down");
 			isControlDown = true;
 		}
 	}
@@ -376,10 +374,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public void keyReleased(KeyEvent e) {
-		System.out.println((e.getKeyCode() & InputEvent.CTRL_MASK));
 		if ((e.getKeyCode() & InputEvent.CTRL_MASK) == 0)
 		{
-			System.out.println("control released");
 			isControlDown = false;
 		}
 	}
@@ -394,7 +390,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		System.out.println(isControlDown);
 		if (!isMouseDragging)
 			return;
 
