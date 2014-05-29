@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -78,29 +79,28 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			@Override
 			public void run() {
 				GLCanvas canvas = new Visualisation();
-
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-
+				
+				final GridLayout defaultLayout = new GridLayout(2, 1, 0, -8);
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setLayout(new GridLayout(8, 1));
+				leftJPanel.setPreferredSize(new Dimension(200, 600));
+				leftJPanel.setLayout(new GridLayout(8, 1, 0, 5));
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL,
-						1, 10, 5);
-				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
+				JSlider cameraDistanceSlider = initSlider();
+				JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceSlider);
 
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
-				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1,
-						10, 5);
+				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
+				JSlider fieldOfViewSlider = initSlider();
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
 				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0,
 						100, 50);
-				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1));
+				JPanel curvatureJPanel = new JPanel(defaultLayout);
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
 
