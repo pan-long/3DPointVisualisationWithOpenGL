@@ -24,6 +24,7 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import point.point;
@@ -74,11 +75,28 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setLayout(new GridLayout(10, 1, 0, 5));
+				leftJPanel.setLayout(new GridLayout(10, 1));
+				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
 				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
+				cameraDistanceJPanel.add(cameraDistanceJLabel);
+				cameraDistanceJPanel.add(cameraDistanceSlider);
+				
+				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
 				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
-				leftJPanel.add(cameraDistanceSlider);
-				leftJPanel.add(fieldOfViewSlider);
+				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
+				fieldOfViewJPanel.add(fieldOfViewJLabel);
+				fieldOfViewJPanel.add(fieldOfViewSlider);
+				
+				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
+				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1)); 
+				curvatureJPanel.add(curvatureJLabel);
+				curvatureJPanel.add(curvatureJSlider);
+				
+				leftJPanel.add(cameraDistanceJPanel);
+				leftJPanel.add(fieldOfViewJPanel);
+				leftJPanel.add(curvatureJPanel);
 				
 				final JPanel mainJPanel = new JPanel();
 				mainJPanel.setLayout(new BorderLayout());
