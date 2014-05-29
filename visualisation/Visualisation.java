@@ -281,23 +281,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		gl.glEnable(GL2.GL_CULL_FACE);
 		gl.glEnable(GL2.GL_COLOR_MATERIAL);
-		doLighting(gl);
 
 		buildPoints(gl);
 		buildAxes(gl);
-	}
-
-	private void doLighting(GL2 gl) {
-		float[] light_ambient = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
-		float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-		float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-		float[] light_position = new float[] { 1.0f, 1.0f, 1.0f, 0.0f };
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, light_ambient, 0);
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light_diffuse, 0);
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, light_specular, 0);
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
-		gl.glEnable(GL2.GL_LIGHTING);
-		gl.glEnable(GL2.GL_LIGHT0);
 	}
 
 	public void processHits(int hits, IntBuffer buffer) {
