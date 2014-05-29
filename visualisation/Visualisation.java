@@ -398,7 +398,6 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseDragged(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
         if (!mouseDown)
             return;
 
@@ -458,7 +457,6 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseExited(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -487,6 +485,5 @@ public class Visualisation implements GLEventListener, KeyListener,
 
     @Override
     public void mouseWheelMoved(com.jogamp.newt.event.MouseEvent arg0) {
-        // TODO Auto-generated method stub
     }
 }
