@@ -93,6 +93,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				final JFrame frame = new JFrame();
 				frame.setContentPane(mainJPanel);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(canvas);
 				frame.addWindowListener(new WindowAdapter() {
 					@Override
