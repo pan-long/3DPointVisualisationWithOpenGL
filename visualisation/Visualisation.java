@@ -302,7 +302,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		
-		System.out.println(cameraDistance);
 		glu.gluPerspective(35, screenRatio, 0.1, 10000);
 		glu.gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
