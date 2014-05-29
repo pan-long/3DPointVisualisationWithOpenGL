@@ -74,10 +74,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static final int WINDOW_HEIGHT = 600;
 	private static final int FPS = 60;
 
-	static final int UPDATE = 1, SELECT = 2;
-	int cmd = UPDATE;
-	double mouseX, mouseY;
-
 	public static void main(String[] args) {
 		initDataReader();
 		SwingUtilities.invokeLater(new Runnable() {
@@ -389,9 +385,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 * Called when the user presses any key.
 	 */
 	public void keyPressed(KeyEvent e) {
-		System.out.println(e.getKeyCode());
+		System.out.println((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK));
 		if ((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK) == 0)
 		{
+			System.out.println("control down");
 			isControlDown = true;
 		}
 	}
@@ -403,9 +400,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public void keyReleased(KeyEvent e) {
-		System.out.println(e.getKeyCode());
-		if ((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK) == 0)
+		System.out.println((e.getKeyCode() & InputEvent.CTRL_MASK));
+		if ((e.getKeyCode() & InputEvent.CTRL_MASK) == 0)
 		{
+			System.out.println("control released");
 			isControlDown = false;
 		}
 	}
@@ -420,6 +418,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		System.out.println(isControlDown);
 		if (!isMouseDragging)
 			return;
 
