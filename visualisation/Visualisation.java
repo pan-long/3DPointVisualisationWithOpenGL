@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -53,7 +54,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private VirtualSphere vs = new VirtualSphere();
 	private Point cueCenter = new Point();
 	private int cueRadius;
-	private boolean mouseDragging = false;
+	private boolean isMouseDragging = false;
+	private boolean isControlDown = false;
 	private float rot_matrix[] = Matrix.identity();
 
 	private static boolean isSetToOrigin = false;
@@ -156,6 +158,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	public Visualisation() {
 		this.addGLEventListener(this);
+		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 	}
@@ -323,16 +326,25 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 * Called when the user presses any key.
 	 */
 	public void keyPressed(KeyEvent e) {
+		System.out.println(e.getKeyCode());
+		if ((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK) == 0)
+		{
+			isControlDown = true;
+		}
 	}
 
 	/**
 	 * Called when the user types a character.
 	 */
 	public void keyTyped(KeyEvent e) {
-		/* char ch = e.getKeyChar(); // Which character was typed. */
 	}
 
 	public void keyReleased(KeyEvent e) {
+		System.out.println(e.getKeyCode());
+		if ((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK) == 0)
+		{
+			isControlDown = false;
+		}
 	}
 
 	// MouseEvent support
@@ -345,18 +357,23 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (!mouseDragging)
+		if (!isMouseDragging)
 			return;
 
 		Point newMouse = new Point(e.getX(), e.getY());
 
 		if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y) {
-			vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
-					mouseMtx);
+			if (!isControlDown) {
+				vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
+						mouseMtx);
 
-			rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
-			rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
-			fixRotationMatrix();
+				rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
+				rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
+				fixRotationMatrix();
+
+			} else {
+				System.out.println("control dragging");
+			}
 
 			prevMouse = newMouse;
 		}
@@ -408,13 +425,13 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		mouseDragging = true;
+		isMouseDragging = true;
 		prevMouse = new Point(e.getX(), e.getY());
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		mouseDragging = false;
+		isMouseDragging = false;
 	}
 
 	@Override
