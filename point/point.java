@@ -6,6 +6,7 @@ public class point implements Comparable<point>
     private int color = -1;
     private int[] rgb = null;
     private float[] properties = null;
+    private float curvature = -1;
     private DataType type;
 
     public point(float x, float y, float z)
@@ -36,6 +37,14 @@ public class point implements Comparable<point>
         this.type = DataType.XYZNORMAL;
     }
 
+    public point(float x, float y, float z, float curvature)
+    {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    	this.curvature = curvature;
+    }
+
     public DataType getType()
     {
         return this.type;
@@ -54,6 +63,11 @@ public class point implements Comparable<point>
     public float getZ()
     {
         return this.z;
+    }
+
+    public float getCurvature()
+    {
+    	return this.curvature;
     }
 
     public int getRGB()

@@ -61,6 +61,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
+	private static double selectedCurMax = 1;
+	private static double selectedCurMin = 0;
 
 	private static String TITLE = "3D Visualisation Tool";
 	private static final int WINDOW_WIDTH = 800;
@@ -181,7 +183,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		for (point p : pointsList) {
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-			gl.glColor3f(0.95f, 0.207f, 0.031f);
+
+			if (p.getCurvature() > selectedCurMin
+					&& p.getCurvature() < selectedCurMax)
+				gl.glColor3f(0.95f, 0.207f, 0.031f);
+			else {
+				gl.glColor3f(0.5f, 0.5f, 0.5f);
+			}
+
 			if (!isSetToOrigin) {
 				gl.glVertex3f((float) (p.getX() * scaleFactor),
 						(float) (p.getY() * scaleFactor),
