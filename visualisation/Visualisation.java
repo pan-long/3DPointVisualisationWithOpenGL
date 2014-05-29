@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -11,8 +13,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.nio.IntBuffer;
-import java.util.Hashtable;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -22,6 +22,8 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import javax.swing.AbstractButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,7 +40,7 @@ import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
 public class Visualisation extends GLCanvas implements GLEventListener,
-		KeyListener, MouseListener, MouseMotionListener{
+		KeyListener, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
@@ -51,11 +53,15 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private VirtualSphere vs = new VirtualSphere();
 	private Point cueCenter = new Point();
 	private int cueRadius;
-	private boolean mouseDragging= false;
+	private boolean mouseDragging = false;
 	private float rot_matrix[] = Matrix.identity();
 
+	private static boolean isSetToOrigin = false;
+	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
+	private static double selectedCurMax = 1;
+	private static double selectedCurMin = 0;
 
 	private static String TITLE = "3D Visualisation Tool";
 	private static final int WINDOW_WIDTH = 800;
@@ -78,27 +84,44 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final JPanel leftJPanel = new JPanel();
 				leftJPanel.setLayout(new GridLayout(8, 1));
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-				JSlider cameraDistanceSlider = initSlider();
-				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1, 0, -8));
+				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL,
+						1, 10, 5);
+				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceSlider);
-				
+
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				JSlider fieldOfViewSlider = initSlider();
-				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1, 0, -8));
+				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
+				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1,
+						10, 5);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
-				
+
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
-				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1, 0, -8)); 
+				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0,
+						100, 50);
+				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1));
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
-				
+
+				JCheckBox setToOriginCheckBox = new JCheckBox(
+						"Set Center To Origin");
+				setToOriginCheckBox.setSelected(false);
+				setToOriginCheckBox.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						AbstractButton abstractButton = (AbstractButton) e
+								.getSource();
+						isSetToOrigin = abstractButton.isSelected();
+					}
+				});
+
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(curvatureJPanel);
-				
+				leftJPanel.add(setToOriginCheckBox);
+
 				final JPanel mainJPanel = new JPanel();
 				mainJPanel.setLayout(new BorderLayout());
 				mainJPanel.add(leftJPanel, BorderLayout.WEST);
@@ -106,6 +129,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				final JFrame frame = new JFrame();
 				frame.setContentPane(mainJPanel);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(canvas);
 				frame.addWindowListener(new WindowAdapter() {
 					@Override
@@ -160,6 +184,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
 		radius = sc.getRadius();
+		centerOfMass = sc.getCenterOfMass();
 	}
 
 	// --------------- Methods of the GLEventListener interface -----------
@@ -175,10 +200,24 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		for (point p : pointsList) {
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-			gl.glColor3f(0.95f, 0.207f, 0.031f);
-			gl.glVertex3f((float) (p.getX() * scaleFactor),
-					(float) (p.getY() * scaleFactor),
-					(float) (p.getZ() * scaleFactor));
+
+			if (p.getCurvature() > selectedCurMin
+					&& p.getCurvature() < selectedCurMax)
+				gl.glColor3f(0.95f, 0.207f, 0.031f);
+			else {
+				gl.glColor3f(0.5f, 0.5f, 0.5f);
+			}
+
+			if (!isSetToOrigin) {
+				gl.glVertex3f((float) (p.getX() * scaleFactor),
+						(float) (p.getY() * scaleFactor),
+						(float) (p.getZ() * scaleFactor));
+			} else {
+				gl.glVertex3f(
+						(float) (p.getX() * scaleFactor - centerOfMass[0]),
+						(float) (p.getY() * scaleFactor - centerOfMass[1]),
+						(float) (p.getZ() * scaleFactor - centerOfMass[2]));
+			}
 			gl.glPopMatrix();
 		}
 		gl.glEnd();
@@ -259,56 +298,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		gl.glEnable(GL2.GL_CULL_FACE);
 		gl.glEnable(GL2.GL_COLOR_MATERIAL);
-		doLighting(gl);
 
 		buildPoints(gl);
 		buildAxes(gl);
-	}
-
-	private void doLighting(GL2 gl) {
-		float[] light_ambient = new float[] { 0.3f, 0.3f, 0.3f, 1.0f };
-		float[] light_diffuse = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-		float[] light_specular = new float[] { 1.0f, 1.0f, 1.0f, 1.0f };
-		float[] light_position = new float[] { 1.0f, 1.0f, 1.0f, 0.0f };
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, light_ambient, 0);
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light_diffuse, 0);
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, light_specular, 0);
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
-		gl.glEnable(GL2.GL_LIGHTING);
-		gl.glEnable(GL2.GL_LIGHT0);
-	}
-
-	public void processHits(int hits, IntBuffer buffer) {
-		System.out.println("---------------------------------");
-		System.out.println(" HITS: " + hits);
-		int offset = 0;
-		int names;
-		float z1, z2;
-		for (int i = 0; i < hits; i++) {
-			System.out.println("- - - - - - - - - - - -");
-			System.out.println(" hit: " + (i + 1));
-			names = buffer.get(offset);
-			offset++;
-			z1 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
-			offset++;
-			z2 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
-			offset++;
-			System.out.println(" number of names: " + names);
-			System.out.println(" z1: " + z1);
-			System.out.println(" z2: " + z2);
-			System.out.println(" names: ");
-
-			for (int j = 0; j < names; j++) {
-				System.out.print("       " + buffer.get(offset));
-				if (j == (names - 1))
-					System.out.println("<-");
-				else
-					System.out.println();
-				offset++;
-			}
-			System.out.println("- - - - - - - - - - - -");
-		}
-		System.out.println("---------------------------------");
 	}
 
 	/**
@@ -373,7 +365,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	public void mouseDragged(MouseEvent e) {
 		if (!mouseDragging)
 			return;
-		
+
 		Point newMouse = new Point(e.getX(), e.getY());
 
 		if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y) {
