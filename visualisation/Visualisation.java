@@ -117,21 +117,21 @@ public class Visualisation implements GLEventListener, KeyListener,
         gl.glPointSize((float)radius / 2);
 
         int pointName = 0;
-        gl.glBegin(GL.GL_POINTS);
         for (point p : pointsList) {
             if(cmd == SELECT) gl.glLoadName(pointName);
 
-        	gl.glPushMatrix();
-            gl.glTranslatef(p.getX(), p.getY(), p.getZ());
-            gl.glColor3f(0.95f, 0.207f, 0.031f);
-            gl.glVertex3f((float) (p.getX() * scaleFactor),
-                    (float) (p.getY() * scaleFactor),
-                    (float) (p.getZ() * scaleFactor));
-            gl.glPopMatrix();
-            pointName++;
-        }
-        gl.glEnd();
-    }
+			gl.glBegin(GL.GL_POINTS);
+			gl.glPushMatrix();
+			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
+			gl.glColor3f(0.95f, 0.207f, 0.031f);
+			gl.glVertex3f((float) (p.getX() * scaleFactor),
+					(float) (p.getY() * scaleFactor),
+					(float) (p.getZ() * scaleFactor));
+			gl.glPopMatrix();
+			gl.glEnd();
+			pointName++;
+		}
+	}
    
     public void buildAxes(GL2 gl){
     	float cylinderRadius = 0.1f;
@@ -200,6 +200,9 @@ public class Visualisation implements GLEventListener, KeyListener,
                 gl.glInitNames();
                 
                 //draw graph
+//                gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
+//                gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
                 gl.glPushMatrix();
                 gl.glMultMatrixf(rot_matrix, 0);
                 buildPoints(gl);
