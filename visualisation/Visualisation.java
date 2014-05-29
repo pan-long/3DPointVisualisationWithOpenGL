@@ -1,9 +1,8 @@
 package visualisation;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +26,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -76,20 +76,23 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			@Override
 			public void run() {
 				GLCanvas canvas = new Visualisation();
-				canvas.setPreferredSize(new Dimension(WINDOW_WIDTH - 100,
-						WINDOW_HEIGHT));
 
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
-				final Container container = new Container();
-				container.add(canvas);
-				final JPanel jPanel = new JPanel();
-				jPanel.setLayout(new BorderLayout());
-				jPanel.add(container, BorderLayout.CENTER);
-				jPanel.add(new Button("west"), BorderLayout.WEST);
+				final JPanel leftJPanel = new JPanel();
+				leftJPanel.setLayout(new GridLayout(10, 1, 0, 5));
+				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				leftJPanel.add(cameraDistanceSlider);
+				leftJPanel.add(fieldOfViewSlider);
+				
+				final JPanel mainJPanel = new JPanel();
+				mainJPanel.setLayout(new BorderLayout());
+				mainJPanel.add(leftJPanel, BorderLayout.WEST);
+				mainJPanel.add(canvas, BorderLayout.CENTER);
 
 				final JFrame frame = new JFrame();
-				frame.setContentPane(jPanel);
+				frame.setContentPane(mainJPanel);
 				frame.getContentPane().add(canvas);
 				frame.addWindowListener(new WindowAdapter() {
 					@Override
