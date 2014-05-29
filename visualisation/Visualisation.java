@@ -31,6 +31,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import point.point;
 import util.Matrix;
@@ -49,9 +51,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static dataReader dr = null;
 	private GLU glu = new GLU();
 	private static ScaleConfiguration sc = null;
-
+	private double screenRatio = 10/6.0;
+	
 	private Point prevMouse;
-
 	private VirtualSphere vs = new VirtualSphere();
 	private Point cueCenter = new Point();
 	private int cueRadius;
@@ -65,7 +67,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double radius;
 	private static double selectedCurMax = 1;
 	private static double selectedCurMin = 0;
-
+	private static double cameraDistance = 30;
+	
 	private static String TITLE = "3D Visualisation Tool";
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
@@ -90,6 +93,19 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
 				JSlider cameraDistanceSlider = initSlider();
+				cameraDistanceSlider.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						JSlider source = (JSlider)e.getSource();
+						int v = source.getValue();
+						if (v < 30) {
+							cameraDistance = 30.0 * 10.0 / (40.0 - v); 
+						} else {
+							cameraDistance = 30.0 * (v - 20.0)/10.0;
+							
+						}
+					}
+				});
 				JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceSlider);
@@ -286,7 +302,15 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
+		
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		
+		System.out.println(cameraDistance);
+		glu.gluPerspective(35, screenRatio, 0.1, 10000);
+		glu.gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
+		gl.glMatrixMode(GL2.GL_MODELVIEW);
+		
 		gl.glPushMatrix();
 		gl.glMultMatrixf(rot_matrix, 0);
 
@@ -335,14 +359,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 */
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
-		float h = (float) width / (float) height;
+		screenRatio = (float) width / (float) height;
 
 		GL2 gl = drawable.getGL().getGL2();
 
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		glu.gluPerspective(35, h, 0.1, 10000);
+		glu.gluPerspective(35, screenRatio, 0.1, 10000);
 		glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
