@@ -21,18 +21,15 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import point.point;
 import util.Matrix;
@@ -44,13 +41,11 @@ import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
 public class Visualisation extends GLCanvas implements GLEventListener,
-		KeyListener, MouseListener, MouseMotionListener, ActionListener {
+		KeyListener, MouseListener, MouseMotionListener{
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
 	private static dataReader dr = null;
-	private GLJPanel display;
-	private Timer animationTimer;
 	private GLU glu = new GLU();
 	private static ScaleConfiguration sc = null;
 
@@ -86,9 +81,25 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setLayout(new GridLayout(10, 1, 0, 5));
+				leftJPanel.setLayout(new GridLayout(10, 1));
+				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
 				JSlider cameraDistanceSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				JPanel cameraDistanceJPanel = new JPanel(new GridLayout(2, 1));
+				cameraDistanceJPanel.add(cameraDistanceJLabel);
+				cameraDistanceJPanel.add(cameraDistanceSlider);
+				
+				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
+				JPanel fieldOfViewJPanel = new JPanel(new GridLayout(2, 1));
 				JSlider fieldOfViewSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 5);
+				fieldOfViewJPanel.add(fieldOfViewJLabel);
+				fieldOfViewJPanel.add(fieldOfViewSlider);
+
+				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
+				JSlider curvatureJSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
+				JPanel curvatureJPanel = new JPanel(new GridLayout(2, 1)); 
+				curvatureJPanel.add(curvatureJLabel);
+				curvatureJPanel.add(curvatureJSlider);
+
 				JCheckBox setToOriginCheckBox = new JCheckBox("Set Center To Origin");
 				setToOriginCheckBox.setSelected(false);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
@@ -100,8 +111,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					}
 				});
 
-				leftJPanel.add(cameraDistanceSlider);
-				leftJPanel.add(fieldOfViewSlider);
+				leftJPanel.add(cameraDistanceJPanel);
+				leftJPanel.add(fieldOfViewJPanel);
+				leftJPanel.add(curvatureJPanel);
 				leftJPanel.add(setToOriginCheckBox);
 				
 				final JPanel mainJPanel = new JPanel();
@@ -354,37 +366,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public void keyReleased(KeyEvent e) {
-	}
-
-	// --------------------------- animation support ---------------------------
-
-	/* private int frameNumber = 0; */
-
-	private boolean animating;
-
-	private void updateFrame() {
-	}
-
-	public void startAnimation() {
-		if (!animating) {
-			if (animationTimer == null) {
-				animationTimer = new Timer(30, this);
-			}
-			animationTimer.start();
-			animating = true;
-		}
-	}
-
-	public void pauseAnimation() {
-		if (animating) {
-			animationTimer.stop();
-			animating = false;
-		}
-	}
-
-	public void actionPerformed(ActionEvent evt) {
-		updateFrame();
-		display.repaint();
 	}
 
 	// MouseEvent support
