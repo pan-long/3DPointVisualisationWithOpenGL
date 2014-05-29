@@ -72,7 +72,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	public static void main(String[] args) {
 		initDataReader();
-		// Run the GUI codes in the event-dispatching thread for thread safety
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -95,9 +94,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				frame.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
-						// Use a dedicate thread to run the stop() to ensure
-						// that the
-						// animator stops before program exits.
 						new Thread() {
 							@Override
 							public void run() {
@@ -113,7 +109,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						WINDOW_HEIGHT));
 				frame.pack();
 				frame.setVisible(true);
-				animator.start(); // start the animation loop
+				animator.start();
 			}
 		});
 	}
