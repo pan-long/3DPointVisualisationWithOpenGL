@@ -13,7 +13,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.nio.IntBuffer;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -284,39 +283,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		buildPoints(gl);
 		buildAxes(gl);
-	}
-
-	public void processHits(int hits, IntBuffer buffer) {
-		System.out.println("---------------------------------");
-		System.out.println(" HITS: " + hits);
-		int offset = 0;
-		int names;
-		float z1, z2;
-		for (int i = 0; i < hits; i++) {
-			System.out.println("- - - - - - - - - - - -");
-			System.out.println(" hit: " + (i + 1));
-			names = buffer.get(offset);
-			offset++;
-			z1 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
-			offset++;
-			z2 = (float) (buffer.get(offset) & 0xffffffffL) / 0x7fffffff;
-			offset++;
-			System.out.println(" number of names: " + names);
-			System.out.println(" z1: " + z1);
-			System.out.println(" z2: " + z2);
-			System.out.println(" names: ");
-
-			for (int j = 0; j < names; j++) {
-				System.out.print("       " + buffer.get(offset));
-				if (j == (names - 1))
-					System.out.println("<-");
-				else
-					System.out.println();
-				offset++;
-			}
-			System.out.println("- - - - - - - - - - - -");
-		}
-		System.out.println("---------------------------------");
 	}
 
 	/**
