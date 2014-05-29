@@ -337,7 +337,7 @@ public class GLTools {
 	}
 	
 	//	****  The following are used by the CORDIC fixed point trigonometry routines ****
-	private static final int COSCALE=0x11616E8E;	//	291597966 = 0.2715717684432241*2^30, valid for j>13
+//	private static final int COSCALE=0x11616E8E;	//	291597966 = 0.2715717684432241*2^30, valid for j>13
 	private static final int QUARTER = 90<<16;
 	private static final int MAXITER=22;
 	//	Table of Cordic values for arctangent in degrees.
