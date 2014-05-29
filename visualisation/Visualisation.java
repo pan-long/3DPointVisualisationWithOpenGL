@@ -1,20 +1,28 @@
 package visualisation;
 
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.nio.IntBuffer;
 import java.util.List;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import point.point;
@@ -24,18 +32,15 @@ import util.VirtualSphere;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseListener;
-import com.jogamp.newt.event.WindowAdapter;
-import com.jogamp.newt.event.WindowEvent;
-import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
-public class Visualisation implements GLEventListener, KeyListener,
+public class Visualisation extends GLCanvas implements GLEventListener, KeyListener,
         MouseListener, ActionListener {
-    static final long serialVersionUID = 1l;
-    private static List<point> pointsList = null;
+	private static final long serialVersionUID = 1L;
+	private static List<point> pointsList = null;
     private static dataReader dr = null;
     private GLJPanel display;
     private Timer animationTimer;
@@ -64,37 +69,50 @@ public class Visualisation implements GLEventListener, KeyListener,
     
     public static void main(String[] args) {
         initDataReader();
-        GLProfile glp = GLProfile.getDefault();
-        GLCapabilities caps = new GLCapabilities(glp);
-        GLWindow window = GLWindow.create(caps);
-
-        final FPSAnimator animator = new FPSAnimator(window, FPS, true);
-
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowDestroyNotify(WindowEvent arg0) {
-                // Use a dedicate thread to run the stop() to ensure that the
-                // animator stops before program exits.
-                new Thread() {
-                    @Override
-                    public void run() {
-                        animator.stop(); // stop the animator loop
-                        System.exit(0);
-                    }
-                }.start();
-            };
+     // Run the GUI codes in the event-dispatching thread for thread safety
+        SwingUtilities.invokeLater(new Runnable() {
+           @Override
+           public void run() {
+              GLCanvas canvas = new Visualisation();
+              canvas.setPreferredSize(new Dimension(WINDOW_WIDTH-100, WINDOW_HEIGHT));
+   
+              final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
+              
+              final Container container = new Container();
+              container.add(canvas);
+              final JPanel jPanel = new JPanel();
+              jPanel.setLayout(new BorderLayout());
+              jPanel.add(container, BorderLayout.CENTER);
+              jPanel.add(new Button("west"), BorderLayout.WEST);
+              
+              final JFrame frame = new JFrame();
+              frame.setContentPane(jPanel);
+              frame.getContentPane().add(canvas);
+              frame.addWindowListener(new WindowAdapter() {
+                 @Override
+                 public void windowClosing(WindowEvent e) {
+                    // Use a dedicate thread to run the stop() to ensure that the
+                    // animator stops before program exits.
+                    new Thread() {
+                       @Override
+                       public void run() {
+                          if (animator.isStarted()) animator.stop();
+                          System.exit(0);
+                       }
+                    }.start();
+                 }
+              });
+              frame.setTitle(TITLE);
+              frame.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
+              frame.pack();
+              frame.setVisible(true);
+              animator.start(); // start the animation loop
+           }
         });
-
-        Visualisation v = new Visualisation();
-        window.addGLEventListener(v);
-        window.addMouseListener(v);
-        window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        window.setTitle(TITLE);
-        window.setVisible(true);
-        animator.start();
     }
 
     public Visualisation() {
+    	this.addGLEventListener(this);
     }
 
     public static void initDataReader() {
