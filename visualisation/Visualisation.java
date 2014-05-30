@@ -85,7 +85,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
 
-	private static String TITLE = "3D Visualisation Tool";
+	private static final String TITLE = "3D Visualisation Tool";
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final double MAX_ABS_COORDINATE = 10;
