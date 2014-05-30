@@ -300,7 +300,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		fieldOfViewSlider.setValue(30);
 		fieldOfView = 30;
 		curvatureJSlider.setValue(30);
-		// TODO: reset curvature back to 30
+		selectedCurMin = 0;
+		selectedCurMax = 1.0;
 		cameraDistanceSlider.setValue(30);
 		cameraDistance = 25;
 
