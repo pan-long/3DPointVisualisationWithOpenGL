@@ -187,7 +187,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final JLabel curvatureJLabel = new JLabel(
 						"  Range Of Curvature");
 				final JLabel curvatureValueJLabel = new JLabel(String.format(
-						"%.2f", curvature));
+						"%.2f", 0.5));
 				curvatureJSlider = initCurvatureSlider();
 				curvatureJSlider.addChangeListener(new ChangeListener() {
 					@Override
