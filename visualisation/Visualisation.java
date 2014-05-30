@@ -66,8 +66,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double defaultRadius;
 	private static double selectedCurMax = 1;
 	private static double selectedCurMin = 0;
-	private static double cameraDistance = 30;
-	private static double fieldOfView = 35;
+	private static double cameraDistance = 25;
+	private static double fieldOfView = 30;
 	private static double lookAtX = 0;
 	private static double lookAtY = 0;
 
@@ -98,7 +98,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				final JLabel cameraDistanceJLabel = new JLabel(
 						"  Camera Distance");
-				final JLabel cameraDistanceValueJLabel = new JLabel("30.00");
+				final JLabel cameraDistanceValueJLabel = new JLabel("25.00");
 				cameraDistanceSlider = initSlider();
 				cameraDistanceSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -106,9 +106,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
 						if (v < 30) {
-							cameraDistance = 30.0 * 10.0 / (40.0 - v);
+							cameraDistance = 25.0 * 10.0 / (40.0 - v);
 						} else {
-							cameraDistance = 30.0 * (v - 20.0) / 10.0;
+							cameraDistance = 25.0 * (v - 20.0) / 10.0;
 						}
 						cameraDistanceValueJLabel.setText(String.format("%.2f",
 								cameraDistance));
@@ -125,7 +125,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				cameraDistanceJPanel.add(cameraDistanceValueJPanel);
 
 				final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				final JLabel fieldOfViewValueJLabel = new JLabel("35.00");
+				final JLabel fieldOfViewValueJLabel = new JLabel("30.00");
 				fieldOfViewSlider = initSlider();
 				fieldOfViewSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -134,9 +134,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						int v = source.getValue();
 
 						if (v < 30) {
-							fieldOfView = 35.0 * 10.0 / (40.0 - v);
+							fieldOfView = 30.0 * 10.0 / (40.0 - v);
 						} else {
-							fieldOfView = 35.0 * (v - 20.0) / 10.0;
+							fieldOfView = 30.0 * (v - 20.0) / 10.0;
 						}
 						fieldOfViewValueJLabel.setText(String.format("%.2f",
 								fieldOfView));
@@ -302,7 +302,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		curvatureJSlider.setValue(30);
 		// TODO: reset curvature back to 30
 		cameraDistanceSlider.setValue(30);
-		cameraDistance = 30;
+		cameraDistance = 25;
 
 		// reset look at point
 		lookAtX = lookAtY = 0;
@@ -464,7 +464,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		gl.glTranslatef(0.0f, 0.0f, -30.0f);
+		gl.glTranslatef(0.0f, 0.0f, -25.0f);
 
 		setupVS(width, height);
 	}
@@ -502,9 +502,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 			} else {
 				lookAtX -= (newMouse.x - prevMouse.x)
-						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
+						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE)) * (cameraDistance / 25) * (fieldOfView / 30);
 				lookAtY += (newMouse.y - prevMouse.y)
-						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
+						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE)) * (cameraDistance / 25) * (fieldOfView / 30);
 			}
 
 			prevMouse = newMouse;
