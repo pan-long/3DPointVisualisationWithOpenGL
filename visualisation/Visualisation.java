@@ -126,6 +126,19 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
+				
+				JLabel radiusJLabel = new JLabel("  Point Radius");
+				JSlider radiusJSlider = initSlider();
+				radiusJSlider.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				JPanel radiusJPanel = new JPanel(defaultLayout);
+				radiusJPanel.add(radiusJLabel);
+				radiusJPanel.add(radiusJSlider);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
 				JSlider curvatureJSlider = initCurvatureSlider();
@@ -137,7 +150,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						"Set Center To Origin");
 				setToOriginCheckBox.setSelected(false);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
-
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						AbstractButton abstractButton = (AbstractButton) e
@@ -149,7 +161,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JCheckBox setAxeVisibleCheckBox = new JCheckBox("Show Axes");
 				setAxeVisibleCheckBox.setSelected(true);
 				setAxeVisibleCheckBox.addActionListener(new ActionListener() {
-
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						AbstractButton abstractButton = (AbstractButton) e.getSource();
@@ -159,6 +170,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
+				leftJPanel.add(radiusJPanel);
 				leftJPanel.add(curvatureJPanel);
 				leftJPanel.add(setToOriginCheckBox);
 				leftJPanel.add(setAxeVisibleCheckBox);
