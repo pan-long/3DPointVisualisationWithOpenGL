@@ -7,7 +7,7 @@ This visualisation tool is for Point Cloud Research Project, to help visualise 3
 ![visualisation tool img](https://raw.githubusercontent.com/pan-long/3DPointVisualisationWithOpenGL/master/img.png)
 
 ####System Requirement
-- this tool is developed and tested under `jdk 1.6`
+- this tool is developed and tested under `jdk 1.6` && `jogl`
 - known issue: UI layout got problems under `jdk 1.7`
 
 
