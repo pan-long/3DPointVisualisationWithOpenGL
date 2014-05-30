@@ -43,6 +43,7 @@ public class point implements Comparable<point>
     	this.y = y;
     	this.z = z;
     	this.curvature = curvature;
+        this.type = DataType.XYZC;
     }
 
     public DataType getType()
