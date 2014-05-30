@@ -66,6 +66,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
+	private static double defaultRadius;
 	private static double selectedCurMax = 1;
 	private static double selectedCurMin = 0;
 	private static double cameraDistance = 30;
@@ -134,6 +135,26 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
+				
+				JLabel radiusJLabel = new JLabel("  Point Radius");
+				JSlider radiusJSlider = initSlider();
+				radiusJSlider.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						JSlider source = (JSlider)e.getSource();
+						int v = source.getValue();
+						
+						if (v < 30) {
+							radius = defaultRadius * 10.0 / (40.0 - v);
+						} else {
+							radius = defaultRadius * (v - 20.0) / 10.0;
+						}
+						System.out.println(defaultRadius);
+					}
+				});
+				JPanel radiusJPanel = new JPanel(defaultLayout);
+				radiusJPanel.add(radiusJLabel);
+				radiusJPanel.add(radiusJSlider);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
 				curvatureJSlider = initCurvatureSlider();
@@ -145,7 +166,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						"Set Center To Origin");
 				setToOriginCheckBox.setSelected(false);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
-
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						AbstractButton abstractButton = (AbstractButton) e
@@ -157,7 +177,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				setAxeVisibleCheckBox = new JCheckBox("Show Axes");
 				setAxeVisibleCheckBox.setSelected(true);
 				setAxeVisibleCheckBox.addActionListener(new ActionListener() {
-
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						AbstractButton abstractButton = (AbstractButton) e.getSource();
@@ -167,6 +186,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
+				leftJPanel.add(radiusJPanel);
 				leftJPanel.add(curvatureJPanel);
 				leftJPanel.add(setToOriginCheckBox);
 				leftJPanel.add(setAxeVisibleCheckBox);
@@ -268,6 +288,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
 		radius = sc.getRadius();
+		defaultRadius = radius;
 		centerOfMass = sc.getCenterOfMass();
 	}
 
