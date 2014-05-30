@@ -195,7 +195,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
 
-						curvature = v / 60.0;
+						curvature = v / 100.0;
 						selectedCurMin = curvature - DEFAULT_PRECISION;
 						selectedCurMax = curvature + DEFAULT_PRECISION;
 
@@ -209,7 +209,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						BorderLayout.EAST);
 				JPanel curvatureJPanel = new JPanel(defaultLayout);
 				curvatureJPanel.add(curvatureJLabel);
-				curvatureJPanel.add(curvatureJSlider);
+				curvatureJPanel.add(curvatureValueJPanel);
 
 				setChooseCurvatureCheckBox = new JCheckBox("Select Curvature");
 				setChooseCurvatureCheckBox.setSelected(false);
