@@ -66,6 +66,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
+	private static double defaultRadius;
 	private static double selectedCurMax = 1;
 	private static double selectedCurMin = 0;
 	private static double cameraDistance = 30;
@@ -131,9 +132,16 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JSlider radiusJSlider = initSlider();
 				radiusJSlider.addChangeListener(new ChangeListener() {
 					@Override
-					public void stateChanged(ChangeEvent arg0) {
-						// TODO Auto-generated method stub
+					public void stateChanged(ChangeEvent e) {
+						JSlider source = (JSlider)e.getSource();
+						int v = source.getValue();
 						
+						if (v < 30) {
+							radius = defaultRadius * 10.0 / (40.0 - v);
+						} else {
+							radius = defaultRadius * (v - 20.0) / 10.0;
+						}
+						System.out.println(defaultRadius);
 					}
 				});
 				JPanel radiusJPanel = new JPanel(defaultLayout);
@@ -259,6 +267,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
 		radius = sc.getRadius();
+		defaultRadius = radius;
 		centerOfMass = sc.getCenterOfMass();
 	}
 
