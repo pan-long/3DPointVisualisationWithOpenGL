@@ -6,9 +6,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -44,7 +41,7 @@ import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
 public class Visualisation extends GLCanvas implements GLEventListener,
-		KeyListener, MouseListener, MouseMotionListener {
+		MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
@@ -58,7 +55,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private Point cueCenter = new Point();
 	private int cueRadius;
 	private boolean isMouseDragging = false;
-	private boolean isControlDown = false;
 	private float rot_matrix[] = Matrix.identity();
 
 	private static boolean isSetToOrigin = false;
@@ -71,6 +67,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double selectedCurMin = 0;
 	private static double cameraDistance = 30;
 	private static double fieldOfView = 35;
+	private static double lookAtX = 0;
+	private static double lookAtY = 0;
 
 	private static JSlider cameraDistanceSlider = null;
 	private static JSlider fieldOfViewSlider = null;
@@ -81,6 +79,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static String TITLE = "3D Visualisation Tool";
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
+	private static final double MAX_ABS_COORDINATE = 10;
 	private static final int FPS = 60;
 
 	public static void main(String[] args) {
@@ -278,9 +277,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	public Visualisation() {
 		addGLEventListener(this);
-		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		this.requestFocusInWindow();
 	}
 
 	public void reset(){
@@ -294,6 +293,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		// TODO: reset curvature back to 30
 		cameraDistanceSlider.setValue(30);
 		cameraDistance = 30;
+
+		// reset look at point
+		lookAtX = lookAtY = 0;
 	}
 
 	public static void initDataReader() {
@@ -386,7 +388,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glLoadIdentity();
 
 		glu.gluPerspective(fieldOfView, screenRatio, 0.1, 10000);
-		glu.gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
+		glu.gluLookAt(0, 0, cameraDistance, lookAtX, lookAtY, 0, 0, 1, 0);
+
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 
 		gl.glPushMatrix();
@@ -447,8 +450,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		glu.gluPerspective(35, screenRatio, 0.1, 10000);
-		glu.gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
+		glu.gluPerspective(fieldOfView, screenRatio, 0.1, 10000);
+		glu.gluLookAt(0, 0, cameraDistance, lookAtX, lookAtY, 0, 0, 1, 0);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -462,31 +465,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 * release OpenGL resources.
 	 */
 	public void dispose(GLAutoDrawable drawable) {
-	}
-
-	// ------------ Support for keyboard handling ------------
-
-	/**
-	 * Called when the user presses any key.
-	 */
-	public void keyPressed(KeyEvent e) {
-		if ((e.getKeyCode() & InputEvent.CTRL_DOWN_MASK) == 0)
-		{
-			isControlDown = true;
-		}
-	}
-
-	/**
-	 * Called when the user types a character.
-	 */
-	public void keyTyped(KeyEvent e) {
-	}
-
-	public void keyReleased(KeyEvent e) {
-		if ((e.getKeyCode() & InputEvent.CTRL_MASK) == 0)
-		{
-			isControlDown = false;
-		}
 	}
 
 	// MouseEvent support
@@ -505,7 +483,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		Point newMouse = new Point(e.getX(), e.getY());
 
 		if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y) {
-			if (!isControlDown) {
+			if (!e.isControlDown()) {
 				vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
 						mouseMtx);
 
@@ -514,7 +492,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				fixRotationMatrix();
 
 			} else {
-				System.out.println("control dragging");
+				lookAtX -= (newMouse.x - prevMouse.x) / (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
+				lookAtY += (newMouse.y - prevMouse.y) / (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
 			}
 
 			prevMouse = newMouse;
