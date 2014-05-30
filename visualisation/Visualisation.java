@@ -440,14 +440,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glPushMatrix();
 		gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 		gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
-		gl.glColor3f(0.1f, 0.4f, 0.4f);
+		gl.glColor3f(0.0f, 1.0f, 0.0f);
 		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
 				slices, stacks);
 		gl.glPopMatrix();
 
 		gl.glPushMatrix();
 		gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
-		gl.glColor3f(0.0f, 0.906f, 0.909f);
+		gl.glColor3f(0.0f, 1.0f, 1.0f);
 		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
 				slices, stacks);
 		gl.glPopMatrix();
