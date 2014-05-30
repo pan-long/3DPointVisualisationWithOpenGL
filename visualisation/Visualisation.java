@@ -303,8 +303,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		pointsList = dr.getPoints();
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
-		radius = sc.getRadius();
-		defaultRadius = radius * scaleFactor;
+		defaultRadius = radius = sc.getRadius()
+				* (WINDOW_HEIGHT / MAX_ABS_COORDINATE);
 		centerOfMass = sc.getCenterOfMass();
 	}
 
