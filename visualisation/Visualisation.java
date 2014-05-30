@@ -94,7 +94,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final GridLayout defaultLayout = new GridLayout(2, 1, 0, -8);
 				final JPanel leftJPanel = new JPanel();
 				leftJPanel.setPreferredSize(new Dimension(250, 600));
-				leftJPanel.setLayout(new GridLayout(8, 1, 0, 5));
+				leftJPanel.setLayout(new GridLayout(7, 1, 0, 0));
 
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
 				cameraDistanceSlider = initSlider();
@@ -184,12 +184,15 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					}
 				});
 
+				JPanel checkboxJPanel = new JPanel(defaultLayout);
+				checkboxJPanel.add(setToOriginCheckBox);
+				checkboxJPanel.add(setAxeVisibleCheckBox);
+				
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(radiusJPanel);
 				leftJPanel.add(curvatureJPanel);
-				leftJPanel.add(setToOriginCheckBox);
-				leftJPanel.add(setAxeVisibleCheckBox);
+				leftJPanel.add(checkboxJPanel);
 
 				final JPanel mainJPanel = new JPanel();
 				mainJPanel.setLayout(new BorderLayout());
