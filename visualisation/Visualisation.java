@@ -49,6 +49,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
+	private static File file = null;
 	private static dataReader dr = null;
 	private GLU glu = new GLU();
 	private static ScaleConfiguration sc = null;
@@ -87,7 +88,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static final int FPS = 60;
 
 	public static void main(String[] args) {
-		initDataReader();
+//		initDataReader(new File("output1.pcd"));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -225,8 +226,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						fileChooser.setCurrentDirectory(new File("./"));
 						int rVal = fileChooser.showOpenDialog(canvas);
 						if (rVal == JFileChooser.APPROVE_OPTION) {
-							File file = fileChooser.getSelectedFile();
-							dr = new dataReader(file);
+							file = fileChooser.getSelectedFile();
 							fileJLabel.setText(file.getName());
 						}
 					}
@@ -235,8 +235,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				buildButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						pointsList = dr.getPoints();
 						reset();
+						initDataReader(file);
 					}
 				});
 				fileChooserJPanel.add(openButton, BorderLayout.WEST);
@@ -345,8 +345,9 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		lookAtX = lookAtY = 0;
 	}
 
-	public static void initDataReader() {
-		dr = new dataReader("output1.pcd");
+	public static void initDataReader(File file) {
+		if (file == null) return;
+		dr = new dataReader(file);
 		pointsList = dr.getPoints();
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
@@ -427,8 +428,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 */
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-
-		gl.glClearColor(0.8f, 0.8f, 0.8f, 0);
+		gl.glClearColor(0.8F, 0.8F, 0.8F, 1.0F);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
 		gl.glMatrixMode(GL2.GL_PROJECTION);
@@ -442,8 +442,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glPushMatrix();
 		gl.glMultMatrixf(rot_matrix, 0);
 
-		buildPoints(gl);
-
+		if (pointsList != null)
+			buildPoints(gl);
 		if (isAxesVisible)
 			buildAxes(gl);
 
@@ -476,9 +476,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		gl.glEnable(GL2.GL_CULL_FACE);
 		gl.glEnable(GL2.GL_COLOR_MATERIAL);
-
-		buildPoints(gl);
-		buildAxes(gl);
 	}
 
 	/**
