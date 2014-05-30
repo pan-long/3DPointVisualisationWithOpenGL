@@ -11,6 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,13 +33,13 @@ import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import point.point;
 import util.Matrix;
 import util.VirtualSphere;
 
 import com.jogamp.opengl.util.FPSAnimator;
-
 import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
@@ -198,11 +201,42 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				checkboxJPanel.add(setToOriginCheckBox);
 				checkboxJPanel.add(setAxeVisibleCheckBox);
 				
+				final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(2, 1, 1, 1));
+				final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
+				JLabel fileJLabel = new JLabel("No File Chosen");
+				JButton openButton = new JButton("Choose File...");
+				openButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser fileChooser = new JFileChooser();
+						FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						        "Point Cloud Data Format", "pcd");
+						fileChooser.setFileFilter(filter);
+						int rVal = fileChooser.showOpenDialog(fileChooserJPanel);
+						if (rVal == JFileChooser.APPROVE_OPTION) {
+							File file = fileChooser.getSelectedFile();
+							dr = new dataReader(file);
+						}
+					}
+				});
+				JButton buildButton = new JButton("Build");
+				buildButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
+				fileChooserJPanel.add(openButton, BorderLayout.WEST);
+				fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
+				fileChooserRowJPanel.add(fileChooserJPanel);
+				fileChooserRowJPanel.add(buildButton);
+				
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(radiusJPanel);
 				leftJPanel.add(curvatureJPanel);
 				leftJPanel.add(checkboxJPanel);
+				leftJPanel.add(fileChooserRowJPanel);
 
 				final JPanel mainJPanel = new JPanel();
 				mainJPanel.setLayout(new BorderLayout());
