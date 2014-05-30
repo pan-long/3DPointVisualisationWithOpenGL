@@ -373,7 +373,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		isSetToOrigin = false;
 		fieldOfViewSlider.setValue(30);
 		fieldOfView = 30;
-		curvatureJSlider.setValue(30);
+		curvatureJSlider.setValue(50);
 		curvatureJSlider.setEnabled(false);
 		selectedCurMin = 0;
 		selectedCurMax = 1.0;
