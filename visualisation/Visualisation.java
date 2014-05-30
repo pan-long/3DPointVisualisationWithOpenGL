@@ -70,6 +70,12 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double selectedCurMin = 0;
 	private static double cameraDistance = 30;
 
+	private static JSlider cameraDistanceSlider = null;
+	private static JSlider fieldOfViewSlider = null;
+	private static JSlider curvatureJSlider = null;
+	private static JCheckBox setToOriginCheckBox = null;
+	private static JCheckBox setAxeVisibleCheckBox = null;
+
 	private static String TITLE = "3D Visualisation Tool";
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
@@ -89,7 +95,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				leftJPanel.setLayout(new GridLayout(8, 1, 0, 5));
 
 				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-				JSlider cameraDistanceSlider = initSlider();
+				cameraDistanceSlider = initSlider();
 				cameraDistanceSlider.addChangeListener(new ChangeListener() {
 					@Override
 					public void stateChanged(ChangeEvent e) {
@@ -108,18 +114,18 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				cameraDistanceJPanel.add(cameraDistanceSlider);
 
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				JSlider fieldOfViewSlider = initSlider();
+				fieldOfViewSlider = initSlider();
 				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
-				JSlider curvatureJSlider = initCurvatureSlider();
+				curvatureJSlider = initCurvatureSlider();
 				JPanel curvatureJPanel = new JPanel(defaultLayout);
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
 
-				JCheckBox setToOriginCheckBox = new JCheckBox(
+				setToOriginCheckBox = new JCheckBox(
 						"Set Center To Origin");
 				setToOriginCheckBox.setSelected(false);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
@@ -132,7 +138,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					}
 				});
 
-				JCheckBox setAxeVisibleCheckBox = new JCheckBox("Show Axes");
+				setAxeVisibleCheckBox = new JCheckBox("Show Axes");
 				setAxeVisibleCheckBox.setSelected(true);
 				setAxeVisibleCheckBox.addActionListener(new ActionListener() {
 
@@ -225,6 +231,19 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+	}
+
+	public void reset(){
+		setAxeVisibleCheckBox.setSelected(true);
+		isAxesVisible = true;
+		setToOriginCheckBox.setSelected(false);
+		isSetToOrigin = false;
+		fieldOfViewSlider.setValue(30);
+		// TODO: reset field of view back to 30
+		curvatureJSlider.setValue(30);
+		// TODO: reset curvature back to 30
+		cameraDistanceSlider.setValue(30);
+		cameraDistance = 30;
 	}
 
 	public static void initDataReader() {
