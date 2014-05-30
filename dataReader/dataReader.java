@@ -17,6 +17,10 @@ public class dataReader
     {
         openFile(new File(filename));
     }
+    
+    public dataReader(File file) {
+		openFile(file);
+	}
 
     public List<point> getPoints()
     {

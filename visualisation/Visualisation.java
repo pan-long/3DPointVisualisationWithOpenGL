@@ -91,7 +91,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				GLCanvas canvas = new Visualisation();
+				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
 				final GridLayout defaultLayout = new GridLayout(2, 1, 0, -8);
@@ -213,7 +213,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(2, 1, 1, 1));
 				final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
-				JLabel fileJLabel = new JLabel("No File Chosen");
+				final JLabel fileJLabel = new JLabel("No File Chosen");
 				JButton openButton = new JButton("Choose File...");
 				openButton.addActionListener(new ActionListener() {
 					@Override
@@ -222,10 +222,12 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						FileNameExtensionFilter filter = new FileNameExtensionFilter(
 						        "Point Cloud Data Format", "pcd");
 						fileChooser.setFileFilter(filter);
-						int rVal = fileChooser.showOpenDialog(fileChooserJPanel);
+						fileChooser.setCurrentDirectory(new File("./"));
+						int rVal = fileChooser.showOpenDialog(canvas);
 						if (rVal == JFileChooser.APPROVE_OPTION) {
 							File file = fileChooser.getSelectedFile();
 							dr = new dataReader(file);
+							fileJLabel.setText(file.getName());
 						}
 					}
 				});
@@ -233,7 +235,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				buildButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						
+						pointsList = dr.getPoints();
+						reset();
 					}
 				});
 				fileChooserJPanel.add(openButton, BorderLayout.WEST);
@@ -326,7 +329,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		this.requestFocusInWindow();
 	}
 
-	public void reset() {
+	public static void reset() {
 		setAxeVisibleCheckBox.setSelected(true);
 		isAxesVisible = true;
 		setToOriginCheckBox.setSelected(false);
