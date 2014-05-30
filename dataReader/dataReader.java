@@ -26,7 +26,7 @@ public class dataReader {
 
     private void openFile(File file)
     {
-        points = new ArrayList<point>();;
+        points = new ArrayList<point>();
         try
         {
             BufferedReader reader = new BufferedReader(new FileReader(file));
