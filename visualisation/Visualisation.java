@@ -185,7 +185,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				setChooseCurvatureCheckBox = new JCheckBox("Enable Selection Of Curvature");
 				final JLabel curvatureValueJLabel = new JLabel(String.format(
-						"%5.2f", curvature));
+						"%5.2f", 0.5));
 				curvatureJSlider = initCurvatureSlider();
 				curvatureJSlider.addChangeListener(new ChangeListener() {
 					@Override
