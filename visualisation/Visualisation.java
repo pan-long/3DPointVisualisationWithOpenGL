@@ -96,7 +96,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				leftJPanel.setPreferredSize(new Dimension(250, 600));
 				leftJPanel.setLayout(new GridLayout(7, 1, 0, 0));
 
-				JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
+				final JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
+				final JLabel cameraDistanceValueJLabel = new JLabel("30.00");
 				cameraDistanceSlider = initSlider();
 				cameraDistanceSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -106,17 +107,20 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						if (v < 30) {
 							cameraDistance = 30.0 * 10.0 / (40.0 - v);
 						} else {
-							cameraDistance = 30.0 * (v - 20.0)/10.0;
-
+							cameraDistance = 30.0 * (v - 20.0) / 10.0;
 						}
+						cameraDistanceValueJLabel.setText(String.format("%.2f", cameraDistance));
 					}
 				});
+				JPanel cameraDistanceValueJPanel = new JPanel(new BorderLayout());
+				cameraDistanceValueJPanel.add(cameraDistanceSlider, BorderLayout.CENTER);
+				cameraDistanceValueJPanel.add(cameraDistanceValueJLabel, BorderLayout.EAST);
 				JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
-				cameraDistanceJPanel.add(cameraDistanceSlider);
+				cameraDistanceJPanel.add(cameraDistanceValueJPanel);
 
-				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-
+				final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
+				final JLabel fieldOfViewValueJLabel = new JLabel("35.00");
 				fieldOfViewSlider = initSlider();
 				fieldOfViewSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -127,16 +131,20 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						if (v < 30) {
 							fieldOfView = 35.0 * 10.0 / (40.0 - v);
 						} else {
-							fieldOfView = 35.0 * (v - 20.0)/10.0;
+							fieldOfView = 35.0 * (v - 20.0) / 10.0;
 						}
+						fieldOfViewValueJLabel.setText(String.format("%.2f", fieldOfView));
 					}
 				});
-
+				JPanel fieldOfViewValueJPanel = new JPanel(new BorderLayout());
+				fieldOfViewValueJPanel.add(fieldOfViewSlider, BorderLayout.CENTER);
+				fieldOfViewValueJPanel.add(fieldOfViewValueJLabel, BorderLayout.EAST);
 				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
-				fieldOfViewJPanel.add(fieldOfViewSlider);
+				fieldOfViewJPanel.add(fieldOfViewValueJPanel);
 				
-				JLabel radiusJLabel = new JLabel("  Point Radius");
+				final JLabel radiusJLabel = new JLabel("  Point Radius");
+				final JLabel radiusValueJLabel = new JLabel(String.format("%.2f", radius));
 				JSlider radiusJSlider = initSlider();
 				radiusJSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -149,12 +157,15 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						} else {
 							radius = defaultRadius * (v - 20.0) / 10.0;
 						}
-						System.out.println(defaultRadius);
+						radiusValueJLabel.setText(String.format("%.2f", radius));
 					}
 				});
+				JPanel radiusValueJPanel = new JPanel(new BorderLayout());
+				radiusValueJPanel.add(radiusJSlider, BorderLayout.CENTER);
+				radiusValueJPanel.add(radiusValueJLabel, BorderLayout.EAST);
 				JPanel radiusJPanel = new JPanel(defaultLayout);
 				radiusJPanel.add(radiusJLabel);
-				radiusJPanel.add(radiusJSlider);
+				radiusJPanel.add(radiusValueJPanel);
 
 				JLabel curvatureJLabel = new JLabel("  Range Of Curvature");
 				curvatureJSlider = initCurvatureSlider();
