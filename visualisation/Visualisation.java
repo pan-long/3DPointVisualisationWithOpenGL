@@ -211,6 +211,36 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				checkboxJPanel.add(setToOriginCheckBox);
 				checkboxJPanel.add(setAxeVisibleCheckBox);
 
+				final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(2, 1, 1, 1));
+				final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
+				JLabel fileJLabel = new JLabel("No File Chosen");
+				JButton openButton = new JButton("Choose File...");
+				openButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser fileChooser = new JFileChooser();
+						FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						        "Point Cloud Data Format", "pcd");
+						fileChooser.setFileFilter(filter);
+						int rVal = fileChooser.showOpenDialog(fileChooserJPanel);
+						if (rVal == JFileChooser.APPROVE_OPTION) {
+							File file = fileChooser.getSelectedFile();
+							dr = new dataReader(file);
+						}
+					}
+				});
+				JButton buildButton = new JButton("Build");
+				buildButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
+				fileChooserJPanel.add(openButton, BorderLayout.WEST);
+				fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
+				fileChooserRowJPanel.add(fileChooserJPanel);
+				fileChooserRowJPanel.add(buildButton);
+				
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(radiusJPanel);
