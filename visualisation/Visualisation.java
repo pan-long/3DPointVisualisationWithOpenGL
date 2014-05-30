@@ -69,6 +69,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double selectedCurMax = 1;
 	private static double selectedCurMin = 0;
 	private static double cameraDistance = 30;
+	private static double fieldOfView = 35;
 
 	private static JSlider cameraDistanceSlider = null;
 	private static JSlider fieldOfViewSlider = null;
@@ -114,7 +115,22 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				cameraDistanceJPanel.add(cameraDistanceSlider);
 
 				JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
+
 				fieldOfViewSlider = initSlider();
+				fieldOfViewSlider.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						JSlider source = (JSlider)e.getSource();
+						int v = source.getValue();
+						
+						if (v < 30) {
+							fieldOfView = 35.0 * 10.0 / (40.0 - v);
+						} else {
+							fieldOfView = 35.0 * (v - 20.0)/10.0;
+						}
+					}
+				});
+
 				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewSlider);
@@ -334,7 +350,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		glu.gluPerspective(35, screenRatio, 0.1, 10000);
+		glu.gluPerspective(fieldOfView, screenRatio, 0.1, 10000);
 		glu.gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 
