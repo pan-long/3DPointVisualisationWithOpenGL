@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import point.DataType;
 import point.point;
 import util.Matrix;
 import util.VirtualSphere;
@@ -331,11 +332,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 
-			if (p.getCurvature() > selectedCurMin
-					&& p.getCurvature() < selectedCurMax)
+			if (p.getType() != DataType.XYZC || (p.getCurvature() > selectedCurMin
+					&& p.getCurvature() < selectedCurMax))
 				gl.glColor3f(0.95f, 0.207f, 0.031f);
 			else {
-				gl.glColor3f(0.5f, 0.5f, 0.5f);
+				gl.glColor3d(0, 154, 199);
 			}
 
 			if (!isSetToOrigin) {
