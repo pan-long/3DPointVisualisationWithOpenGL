@@ -49,18 +49,19 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	private static final long serialVersionUID = 1L;
 	private static List<point> pointsList = null;
-	private static File file = null;
-	private static dataReader dr = null;
-	private GLU glu = new GLU();
 	private static ScaleConfiguration sc = null;
-	private double screenRatio = 10 / 6.0;
-
-	private Point prevMouse;
-	private VirtualSphere vs = new VirtualSphere();
-	private Point cueCenter = new Point();
+	private static dataReader dr = null;
+	private static File file = null;
+	private GLU glu = new GLU();
+	
+	
 	private int cueRadius;
+	private Point prevMouse;
+	private Point cueCenter = new Point();
+	private double screenRatio = 10 / 6.0;
 	private boolean isMouseDragging = false;
 	private float rot_matrix[] = Matrix.identity();
+	private VirtualSphere vs = new VirtualSphere();
 
 	private static boolean isSetToOrigin = false;
 	private static boolean isAxesVisible = true;
