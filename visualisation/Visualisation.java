@@ -332,8 +332,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 
-			if (p.getType() != DataType.XYZC || (p.getCurvature() > selectedCurMin
-					&& p.getCurvature() < selectedCurMax))
+			if (p.getType() != DataType.XYZC
+					|| (p.getCurvature() > selectedCurMin && p.getCurvature() < selectedCurMax))
 				gl.glColor3f(0.95f, 0.207f, 0.031f);
 			else {
 				gl.glColor3d(0, 154, 199);
@@ -502,9 +502,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 			} else {
 				lookAtX -= (newMouse.x - prevMouse.x)
-						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE)) * (cameraDistance / 25) * (fieldOfView / 30);
+						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE))
+						* (cameraDistance / 25) * (fieldOfView / 30);
 				lookAtY += (newMouse.y - prevMouse.y)
-						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE)) * (cameraDistance / 25) * (fieldOfView / 30);
+						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE))
+						* (cameraDistance / 25) * (fieldOfView / 30);
 			}
 
 			prevMouse = newMouse;
