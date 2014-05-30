@@ -48,7 +48,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static dataReader dr = null;
 	private GLU glu = new GLU();
 	private static ScaleConfiguration sc = null;
-	private double screenRatio = 10/6.0;
+	private double screenRatio = 10 / 6.0;
 
 	private Point prevMouse;
 	private VirtualSphere vs = new VirtualSphere();
@@ -95,25 +95,30 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				leftJPanel.setPreferredSize(new Dimension(250, 600));
 				leftJPanel.setLayout(new GridLayout(7, 1, 0, 0));
 
-				final JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
+				final JLabel cameraDistanceJLabel = new JLabel(
+						"  Camera Distance");
 				final JLabel cameraDistanceValueJLabel = new JLabel("30.00");
 				cameraDistanceSlider = initSlider();
 				cameraDistanceSlider.addChangeListener(new ChangeListener() {
 					@Override
 					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider)e.getSource();
+						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
 						if (v < 30) {
 							cameraDistance = 30.0 * 10.0 / (40.0 - v);
 						} else {
 							cameraDistance = 30.0 * (v - 20.0) / 10.0;
 						}
-						cameraDistanceValueJLabel.setText(String.format("%.2f", cameraDistance));
+						cameraDistanceValueJLabel.setText(String.format("%.2f",
+								cameraDistance));
 					}
 				});
-				JPanel cameraDistanceValueJPanel = new JPanel(new BorderLayout());
-				cameraDistanceValueJPanel.add(cameraDistanceSlider, BorderLayout.CENTER);
-				cameraDistanceValueJPanel.add(cameraDistanceValueJLabel, BorderLayout.EAST);
+				JPanel cameraDistanceValueJPanel = new JPanel(
+						new BorderLayout());
+				cameraDistanceValueJPanel.add(cameraDistanceSlider,
+						BorderLayout.CENTER);
+				cameraDistanceValueJPanel.add(cameraDistanceValueJLabel,
+						BorderLayout.EAST);
 				JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 				cameraDistanceJPanel.add(cameraDistanceJLabel);
 				cameraDistanceJPanel.add(cameraDistanceValueJPanel);
@@ -124,33 +129,37 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				fieldOfViewSlider.addChangeListener(new ChangeListener() {
 					@Override
 					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider)e.getSource();
+						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
-						
+
 						if (v < 30) {
 							fieldOfView = 35.0 * 10.0 / (40.0 - v);
 						} else {
 							fieldOfView = 35.0 * (v - 20.0) / 10.0;
 						}
-						fieldOfViewValueJLabel.setText(String.format("%.2f", fieldOfView));
+						fieldOfViewValueJLabel.setText(String.format("%.2f",
+								fieldOfView));
 					}
 				});
 				JPanel fieldOfViewValueJPanel = new JPanel(new BorderLayout());
-				fieldOfViewValueJPanel.add(fieldOfViewSlider, BorderLayout.CENTER);
-				fieldOfViewValueJPanel.add(fieldOfViewValueJLabel, BorderLayout.EAST);
+				fieldOfViewValueJPanel.add(fieldOfViewSlider,
+						BorderLayout.CENTER);
+				fieldOfViewValueJPanel.add(fieldOfViewValueJLabel,
+						BorderLayout.EAST);
 				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 				fieldOfViewJPanel.add(fieldOfViewJLabel);
 				fieldOfViewJPanel.add(fieldOfViewValueJPanel);
-				
+
 				final JLabel radiusJLabel = new JLabel("  Point Radius");
-				final JLabel radiusValueJLabel = new JLabel(String.format("%.2f", radius));
+				final JLabel radiusValueJLabel = new JLabel(String.format(
+						"%.2f", radius));
 				JSlider radiusJSlider = initSlider();
 				radiusJSlider.addChangeListener(new ChangeListener() {
 					@Override
 					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider)e.getSource();
+						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
-						
+
 						if (v < 30) {
 							radius = defaultRadius * 10.0 / (40.0 - v);
 						} else {
@@ -172,8 +181,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				curvatureJPanel.add(curvatureJLabel);
 				curvatureJPanel.add(curvatureJSlider);
 
-				setToOriginCheckBox = new JCheckBox(
-						"Set Center To Origin");
+				setToOriginCheckBox = new JCheckBox("Set Center To Origin");
 				setToOriginCheckBox.setSelected(false);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
 					@Override
@@ -189,7 +197,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				setAxeVisibleCheckBox.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						AbstractButton abstractButton = (AbstractButton) e.getSource();
+						AbstractButton abstractButton = (AbstractButton) e
+								.getSource();
 						isAxesVisible = abstractButton.isSelected();
 					}
 				});
@@ -197,7 +206,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JPanel checkboxJPanel = new JPanel(defaultLayout);
 				checkboxJPanel.add(setToOriginCheckBox);
 				checkboxJPanel.add(setAxeVisibleCheckBox);
-				
+
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(radiusJPanel);
@@ -244,14 +253,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		slider.setPaintLabels(true);
 
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put( new Integer( 0 ), new JLabel("1/4") );
-		labelTable.put( new Integer( 10 ), new JLabel("1/3") );
-		labelTable.put( new Integer( 20 ), new JLabel("1/2") );
-		labelTable.put( new Integer( 30 ), new JLabel("1") );
-		labelTable.put( new Integer( 40 ), new JLabel("2") );
-		labelTable.put( new Integer( 50 ), new JLabel("3") );
-		labelTable.put( new Integer( 60 ), new JLabel("4") );
-		slider.setLabelTable( labelTable );
+		labelTable.put(new Integer(0), new JLabel("1/4"));
+		labelTable.put(new Integer(10), new JLabel("1/3"));
+		labelTable.put(new Integer(20), new JLabel("1/2"));
+		labelTable.put(new Integer(30), new JLabel("1"));
+		labelTable.put(new Integer(40), new JLabel("2"));
+		labelTable.put(new Integer(50), new JLabel("3"));
+		labelTable.put(new Integer(60), new JLabel("4"));
+		slider.setLabelTable(labelTable);
 
 		return slider;
 	}
@@ -264,13 +273,13 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		slider.setPaintLabels(true);
 
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put( new Integer( 0 ), new JLabel("0") );
-		labelTable.put( new Integer( 20 ), new JLabel("0.2") );
-		labelTable.put( new Integer( 40 ), new JLabel("0.4") );
-		labelTable.put( new Integer( 60 ), new JLabel("0.6") );
-		labelTable.put( new Integer( 80 ), new JLabel("0.8") );
-		labelTable.put( new Integer( 100 ), new JLabel("1") );
-		slider.setLabelTable( labelTable );
+		labelTable.put(new Integer(0), new JLabel("0"));
+		labelTable.put(new Integer(20), new JLabel("0.2"));
+		labelTable.put(new Integer(40), new JLabel("0.4"));
+		labelTable.put(new Integer(60), new JLabel("0.6"));
+		labelTable.put(new Integer(80), new JLabel("0.8"));
+		labelTable.put(new Integer(100), new JLabel("1"));
+		slider.setLabelTable(labelTable);
 
 		return slider;
 	}
@@ -282,7 +291,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		this.requestFocusInWindow();
 	}
 
-	public void reset(){
+	public void reset() {
 		setAxeVisibleCheckBox.setSelected(true);
 		isAxesVisible = true;
 		setToOriginCheckBox.setSelected(false);
@@ -315,7 +324,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glEnable(GL2.GL_POINT_SMOOTH);
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glPointSize((float)radius);
+		gl.glPointSize((float) radius);
 
 		gl.glBegin(GL.GL_POINTS);
 		for (point p : pointsList) {
@@ -399,7 +408,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 		if (isAxesVisible)
 			buildAxes(gl);
-	
 
 		gl.glPopMatrix();
 	}
@@ -492,8 +500,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				fixRotationMatrix();
 
 			} else {
-				lookAtX -= (newMouse.x - prevMouse.x) / (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
-				lookAtY += (newMouse.y - prevMouse.y) / (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
+				lookAtX -= (newMouse.x - prevMouse.x)
+						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
+				lookAtY += (newMouse.y - prevMouse.y)
+						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE));
 			}
 
 			prevMouse = newMouse;
