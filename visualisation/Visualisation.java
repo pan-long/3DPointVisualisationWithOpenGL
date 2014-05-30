@@ -243,10 +243,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public Visualisation() {
-		this.addGLEventListener(this);
-		this.addKeyListener(this);
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
+		addGLEventListener(this);
+		addKeyListener(this);
+		addMouseListener(this);
+		addMouseMotionListener(this);
 	}
 
 	public void reset(){
@@ -278,7 +278,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glEnable(GL2.GL_POINT_SMOOTH);
 		gl.glEnable(GL2.GL_BLEND);
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glPointSize((float) radius / 2);
+		gl.glPointSize((float)radius);
 
 		gl.glBegin(GL.GL_POINTS);
 		for (point p : pointsList) {
