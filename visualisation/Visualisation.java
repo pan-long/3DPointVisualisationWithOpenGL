@@ -298,7 +298,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		setToOriginCheckBox.setSelected(false);
 		isSetToOrigin = false;
 		fieldOfViewSlider.setValue(30);
-		// TODO: reset field of view back to 30
+		fieldOfView = 30;
 		curvatureJSlider.setValue(30);
 		// TODO: reset curvature back to 30
 		cameraDistanceSlider.setValue(30);
