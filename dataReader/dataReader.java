@@ -1,7 +1,7 @@
 package dataReader;
 
-import java.io.File;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,23 +9,20 @@ import java.util.List;
 
 import point.point;
 
-public class dataReader
-{
+public class dataReader {
 	private List<point> points = null;
-	
-    public dataReader(String filename)
-    {
-        openFile(new File(filename));
-    }
-    
-    public dataReader(File file) {
+
+	public dataReader(String filename) {
+		openFile(new File(filename));
+	}
+
+	public dataReader(File file) {
 		openFile(file);
 	}
 
-    public List<point> getPoints()
-    {
-        return points;
-    }
+	public List<point> getPoints() {
+		return points;
+	}
 
     private void openFile(File file)
     {
