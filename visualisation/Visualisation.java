@@ -218,6 +218,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 								AbstractButton abstractButton = (AbstractButton) e
 										.getSource();
 								curvatureJSlider.setEnabled(abstractButton.isSelected()); 
+								if (!abstractButton.isSelected()) {
+									selectedCurMin = 0;
+									selectedCurMax = 1;
+								}
 							}
 						});
 
