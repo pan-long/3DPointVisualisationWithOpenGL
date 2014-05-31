@@ -41,6 +41,7 @@ import util.Matrix;
 import util.VirtualSphere;
 
 import com.jogamp.opengl.util.FPSAnimator;
+
 import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
@@ -53,8 +54,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static dataReader dr = null;
 	private static File file = null;
 	private GLU glu = new GLU();
-	
-	
+
 	private int cueRadius;
 	private Point prevMouse;
 	private Point cueCenter = new Point();
@@ -118,8 +118,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						} else {
 							cameraDistance = 25.0 * (v - 20.0) / 10.0;
 						}
-						cameraDistanceValueJLabel.setText(String.format("%5.2f",
-								cameraDistance));
+						cameraDistanceValueJLabel.setText(String.format(
+								"%5.2f", cameraDistance));
 					}
 				});
 				JPanel cameraDistanceValueJPanel = new JPanel(
@@ -174,7 +174,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						} else {
 							radius = defaultRadius * (v - 20.0) / 10.0;
 						}
-						radiusValueJLabel.setText(String.format("%5.2f", radius));
+						radiusValueJLabel.setText(String
+								.format("%5.2f", radius));
 					}
 				});
 				JPanel radiusValueJPanel = new JPanel(new BorderLayout());
@@ -184,7 +185,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				radiusJPanel.add(radiusJLabel);
 				radiusJPanel.add(radiusValueJPanel);
 
-				setChooseCurvatureCheckBox = new JCheckBox("Enable Selection Of Curvature");
+				setChooseCurvatureCheckBox = new JCheckBox(
+						"Enable Selection Of Curvature");
 				final JLabel curvatureValueJLabel = new JLabel(String.format(
 						"%5.2f", 0.5));
 				curvatureJSlider = initCurvatureSlider();
@@ -217,7 +219,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 							public void actionPerformed(ActionEvent e) {
 								AbstractButton abstractButton = (AbstractButton) e
 										.getSource();
-								curvatureJSlider.setEnabled(abstractButton.isSelected()); 
+								curvatureJSlider.setEnabled(abstractButton
+										.isSelected());
 								if (!abstractButton.isSelected()) {
 									selectedCurMin = 0;
 									selectedCurMax = 1;
@@ -251,7 +254,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				checkboxJPanel.add(setToOriginCheckBox);
 				checkboxJPanel.add(setAxeVisibleCheckBox);
 
-				final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(2, 1, 1, 1));
+				final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(
+						2, 1, 1, 1));
 				final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
 				final JLabel fileJLabel = new JLabel("No File Chosen");
 				JButton openButton = new JButton("Choose File...");
@@ -260,7 +264,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					public void actionPerformed(ActionEvent e) {
 						JFileChooser fileChooser = new JFileChooser();
 						FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						        "Point Cloud Data Format", "pcd");
+								"Point Cloud Data Format", "pcd");
 						fileChooser.setFileFilter(filter);
 						fileChooser.setCurrentDirectory(new File("./"));
 						int rVal = fileChooser.showOpenDialog(canvas);
@@ -282,7 +286,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
 				fileChooserRowJPanel.add(fileChooserJPanel);
 				fileChooserRowJPanel.add(buildButton);
-				
+
 				leftJPanel.add(cameraDistanceJPanel);
 				leftJPanel.add(fieldOfViewJPanel);
 				leftJPanel.add(radiusJPanel);
@@ -370,13 +374,13 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public static void reset() {
-		setChooseCurvatureCheckBox.setSelected(false);
 		setAxeVisibleCheckBox.setSelected(true);
 		isAxesVisible = true;
 		setToOriginCheckBox.setSelected(false);
 		isSetToOrigin = false;
 		fieldOfViewSlider.setValue(30);
 		fieldOfView = 30;
+		setChooseCurvatureCheckBox.setSelected(false);
 		curvatureJSlider.setValue(50);
 		curvatureJSlider.setEnabled(false);
 		selectedCurMin = 0;
@@ -384,12 +388,13 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		cameraDistanceSlider.setValue(30);
 		cameraDistance = 25;
 
-		// reset look at point
+		// reset look at point for camera
 		lookAtX = lookAtY = 0;
 	}
 
 	public static void initDataReader(File file) {
-		if (file == null) return;
+		if (file == null)
+			return;
 		dr = new dataReader(file);
 		pointsList = dr.getPoints();
 		sc = new ScaleConfiguration(pointsList, 10);
@@ -569,7 +574,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		Point newMouse = new Point(e.getX(), e.getY());
 
 		if (newMouse.x != prevMouse.x || newMouse.y != prevMouse.y) {
-			if (!e.isControlDown()) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
 				vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
 						mouseMtx);
 
@@ -577,7 +582,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
 				fixRotationMatrix();
 
-			} else {
+			} else if (SwingUtilities.isRightMouseButton(e)) {
 				lookAtX -= (newMouse.x - prevMouse.x)
 						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE))
 						* (cameraDistance / 25) * (fieldOfView / 30);
