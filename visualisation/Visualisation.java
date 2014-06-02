@@ -117,6 +117,25 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
 
+<<<<<<< HEAD
+=======
+	private static final String TITLE = "3D Visualisation Tool";
+	private static final int WINDOW_WIDTH = 1000;
+	private static final int WINDOW_HEIGHT = 600;
+	private static final double MAX_ABS_COORDINATE = 10;
+	private static final double DEFAULT_PRECISION = 0.05;
+	private static final int FPS = 60;
+	private static final int DEFAULT_LAYOUT_ROW = 2;
+	private static final int DEFAULT_LAYOUT_COLUMN = 1;
+	private static final int DEFAULT_LAYOUT_H_GAP = 0;
+	private static final int DEFAULT_LAYOUT_V_GAP = -8;
+	private static final int LEFT_PANEL_LAYOUT_ROW = 7;
+	private static final int LEFT_PANEL_LAYOUT_COLUMN = 1;
+	private static final int LEFT_PANEL_WIDTH = 250;
+	private static final int LEFT_PANEL_HEIGHT = 600;
+	
+	
+>>>>>>> 8a642f523226ae7aeefbf74f73657635343b0277
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -124,10 +143,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
-				final GridLayout defaultLayout = new GridLayout(2, 1, 0, -8);
+				final GridLayout defaultLayout = new GridLayout(DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN, DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setPreferredSize(new Dimension(250, 600));
-				leftJPanel.setLayout(new GridLayout(7, 1, 0, 0));
+				leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH, LEFT_PANEL_HEIGHT));
+				leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW, LEFT_PANEL_LAYOUT_COLUMN));
 
 				final JLabel cameraDistanceJLabel = new JLabel(
 						"  Camera Distance");
@@ -471,7 +490,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 
-			if (p.getType() != DataType.XYZC
+			if (p.getType() == DataType.XYZRGB) {
+				int[] color = p.parseRGB();
+				gl.glColor3d(color[0], color[1], color[2]);
+			}
+			else if (p.getType() != DataType.XYZC
 					|| (p.getCurvature() > selectedCurMin && p.getCurvature() < selectedCurMax))
 				gl.glColor3f(0.95f, 0.207f, 0.031f);
 			else {

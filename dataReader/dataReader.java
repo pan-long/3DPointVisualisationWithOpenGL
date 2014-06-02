@@ -55,8 +55,13 @@ public class dataReader {
                     float normal_z = (float)Double.parseDouble(coordinates[5]);
                     points.add(new point(x, y, z, normal_x, normal_y, normal_z));
                 } else if (coordinates.length == 4) {
-                    float color = (float)Double.parseDouble(coordinates[3]);
-                    points.add(new point(x, y, z, color));   
+                	float temp = (float)Double.parseDouble(coordinates[3]);
+                	if (temp > 1) {
+						int color = (int)temp;
+						points.add(new point(x, y, z, color));
+					} else {
+						points.add(new point(x, y, z, temp));
+					} 
                 } else {
                     points.add(new point(x, y, z));
                 }
