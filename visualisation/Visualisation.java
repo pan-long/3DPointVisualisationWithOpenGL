@@ -91,7 +91,8 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static JSlider curvatureJSlider = null;
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
-
+	private static JCheckBox setNormalVisibleCheckBox = null;
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -115,6 +116,7 @@ public class Visualisation extends GLCanvas implements Constants,
 		leftJPanel.add(configFieldOfViewSlider());
 		leftJPanel.add(configRadiusSlider());
 		leftJPanel.add(configCurvatureSlider());
+		leftJPanel.add(configSetCurvaturePrecision());
 		leftJPanel.add(configCheckbox());
 		leftJPanel.add(configFileChooser(canvas));
 
@@ -283,9 +285,28 @@ public class Visualisation extends GLCanvas implements Constants,
 			}
 		});
 		
+		setNormalVisibleCheckBox = new JCheckBox("Show Normal Vectors");
+		setNormalVisibleCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		
+		JPanel checkboxJPanel = new JPanel(new GridLayout(3, 1));
+		checkboxJPanel.add(setToOriginCheckBox);
+		checkboxJPanel.add(setNormalVisibleCheckBox);
+		checkboxJPanel.add(setAxeVisibleCheckBox);
+
+		return checkboxJPanel;
+	}
+	
+	public static JPanel configSetCurvaturePrecision(){
+		JLabel label = new JLabel("  Set Curvature Precision(0~1)");
+		
 		JPanel curvaturePrecistionJPanel = new JPanel(new BorderLayout());
 		final JTextField curvatureTextField = new JTextField(String.format("%.2f", curvaturePrecision), 5);
-		final JButton setPrecisionJButton = new JButton("Curvature Precision(0~1)");
+		final JButton setPrecisionJButton = new JButton("update");
 		setPrecisionJButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -298,13 +319,13 @@ public class Visualisation extends GLCanvas implements Constants,
 		});
 		curvaturePrecistionJPanel.add(curvatureTextField, BorderLayout.CENTER);
 		curvaturePrecistionJPanel.add(setPrecisionJButton, BorderLayout.EAST);
-
-		JPanel checkboxJPanel = new JPanel(new GridLayout(3, 1));
-		checkboxJPanel.add(curvaturePrecistionJPanel);
-		checkboxJPanel.add(setToOriginCheckBox);
-		checkboxJPanel.add(setAxeVisibleCheckBox);
-
-		return checkboxJPanel;
+		
+		JPanel jPanel = new JPanel(new GridLayout(3, 1));
+		jPanel.add(new JLabel("-------------------------------"));
+		jPanel.add(label, 1);
+		jPanel.add(curvaturePrecistionJPanel, 2);
+		
+		return jPanel;
 	}
 
 	public static JPanel configFileChooser(final GLCanvas canvas) {
