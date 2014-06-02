@@ -42,56 +42,14 @@ import util.VirtualSphere;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
+import configuration.Constants;
 import configuration.ScaleConfiguration;
 import dataReader.dataReader;
 
-public class Visualisation extends GLCanvas implements GLEventListener,
-		MouseListener, MouseMotionListener {
+public class Visualisation extends GLCanvas implements Constants,
+		GLEventListener, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final String TITLE = "3D Visualisation Tool";
-	private static final int DEFAULT_WINDOW_WIDTH = 1000;
-	private static final int DEFAULT_WINDOW_HEIGHT = 600;
-	private static final Dimension DEFAULT_JLABEL_DIMENSION = new Dimension(50,
-			20);
-	private static final double DEFAULT_CAMERA_DISTANCE = 25;
-	private static final double DEFAULT_FIELD_OF_VIEW = 30;
-	private static final double DEFAULT_SCREEN_RATIO = (double) DEFAULT_WINDOW_WIDTH
-			/ (double) DEFAULT_WINDOW_HEIGHT;
-	private static final double DEFAULT_MAX_ABS_COORIDINATE = 10;
-	private static final double DEFAULT_PRECISION = 0.05;
-	private static final double DEFAULT_MAX_SELECTED_CURVATURE = 1;
-	private static final double DEFAULT_MIN_SELECTED_CURVATURE = 0;
-	private static final double DEFAULT_SELECTED_CURVATURE = 0.5;
-	private static final double DEFAULT_LOOK_AT_POINT_X = 0;
-	private static final double DEFAULT_LOOK_AT_POINT_Y = 0;
-	private static final double DEFAULT_CAMERA_NEAR_CLIP = 0.1;
-	private static final double DEFAULT_CAMERA_FAR_CLIP = 10000;
-	private static final int DEFAULT_SLIDER_MIN = 0;
-	private static final int DEFAULT_SLIDER_MAX = 60;
-	private static final int DEFAULT_SLIDER_VALUE = 30;
-	private static final int DEFAULT_MAJOR_TICK_SPACING = 10;
-	private static final int DEFAULT_MINOR_TICK_SPACING = 5;
-	private static final int DEFAULT_NUMBER_OF_TICK = 7;
-	private static final int DEFAULT_NUMBER_OF_TICK_CURVATURE = 6;
-	private static final int DEFAULT_CYLINDER_SLICE = 16;
-	private static final int DEFAULT_CYLINDER_STACK = 16;
-	private static final int DEFAULT_CAMERA_ANGLE_X = 30;
-	private static final int DEFAULT_CAMERA_ANGLE_Y = 20;
-	private static final int DEFAULT_LAYOUT_ROW = 2;
-	private static final int DEFAULT_LAYOUT_COLUMN = 1;
-	private static final int DEFAULT_LAYOUT_H_GAP = 0;
-	private static final int DEFAULT_LAYOUT_V_GAP = -8;
-	private static final int FILECHOOSER_LAYOUT_V_GAP = 1;
-	private static final int LEFT_PANEL_LAYOUT_ROW = 7;
-	private static final int LEFT_PANEL_LAYOUT_COLUMN = 1;
-	private static final int LEFT_PANEL_WIDTH = 250;
-	private static final int LEFT_PANEL_HEIGHT = 600;
-	private static final boolean DEFAULT_IS_AXES_VISIBLE = true;
-	private static final boolean DEFAULT_IS_SET_TO_ORIGIN = false;
-	private static final boolean DEFAULT_IS_SELECTING_CURVATURE = false;
-	private static final int FPS = 60;
 
 	private GLU glu = new GLU();
 
@@ -130,44 +88,40 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static JSlider curvatureJSlider = null;
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
-	private static final GridLayout defaultLayout = new GridLayout(
-			DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN,
-			DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
-	
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-				
+
 				initJFrame(canvas, animator);
 			}
 		});
 	}
-	
+
 	public static JPanel initLeftPanel(final GLCanvas canvas) {
 		final JPanel leftJPanel = new JPanel();
 		leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH,
 				LEFT_PANEL_HEIGHT));
 		leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW,
 				LEFT_PANEL_LAYOUT_COLUMN));
-		
+
 		leftJPanel.add(configCameraDistanceSlider());
 		leftJPanel.add(configFieldOfViewSlider());
 		leftJPanel.add(configRadiusSlider());
 		leftJPanel.add(configCurvatureSlider());
 		leftJPanel.add(configCheckbox());
 		leftJPanel.add(configFileChooser(canvas));
-		
+
 		return leftJPanel;
 	}
-	
-	public static JPanel configCameraDistanceSlider(){
-		final JLabel cameraDistanceJLabel = new JLabel(
-				"  Camera Distance");
-		final JLabel cameraDistanceValueJLabel = new JLabel(String
-				.format("%.2f", DEFAULT_CAMERA_DISTANCE));
+
+	public static JPanel configCameraDistanceSlider() {
+		final JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
+		final JLabel cameraDistanceValueJLabel = new JLabel(String.format(
+				"%.2f", DEFAULT_CAMERA_DISTANCE));
 		cameraDistanceSlider = initSlider();
 		cameraDistanceSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -181,29 +135,27 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					cameraDistance = DEFAULT_CAMERA_DISTANCE
 							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 				}
-				cameraDistanceValueJLabel.setText(String.format(
-"%.2f",
+				cameraDistanceValueJLabel.setText(String.format("%.2f",
 						cameraDistance));
 			}
 		});
-		JPanel cameraDistanceValueJPanel = new JPanel(
-				new BorderLayout());
-		cameraDistanceValueJPanel.add(cameraDistanceSlider,
-				BorderLayout.CENTER);
+		JPanel cameraDistanceValueJPanel = new JPanel(new BorderLayout());
+		cameraDistanceValueJPanel
+				.add(cameraDistanceSlider, BorderLayout.CENTER);
 		cameraDistanceValueJPanel.add(cameraDistanceValueJLabel,
 				BorderLayout.EAST);
 		cameraDistanceValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 		cameraDistanceJPanel.add(cameraDistanceJLabel);
 		cameraDistanceJPanel.add(cameraDistanceValueJPanel);
-		
+
 		return cameraDistanceJPanel;
 	}
-	
-	public static JPanel configFieldOfViewSlider(){
+
+	public static JPanel configFieldOfViewSlider() {
 		final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-		final JLabel fieldOfViewValueJLabel = new JLabel(String.format(
-				"%.2f", DEFAULT_FIELD_OF_VIEW));
+		final JLabel fieldOfViewValueJLabel = new JLabel(String.format("%.2f",
+				DEFAULT_FIELD_OF_VIEW));
 		fieldOfViewSlider = initSlider();
 		fieldOfViewSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -223,22 +175,19 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			}
 		});
 		JPanel fieldOfViewValueJPanel = new JPanel(new BorderLayout());
-		fieldOfViewValueJPanel.add(fieldOfViewSlider,
-				BorderLayout.CENTER);
-		fieldOfViewValueJPanel.add(fieldOfViewValueJLabel,
-				BorderLayout.EAST);
+		fieldOfViewValueJPanel.add(fieldOfViewSlider, BorderLayout.CENTER);
+		fieldOfViewValueJPanel.add(fieldOfViewValueJLabel, BorderLayout.EAST);
 		fieldOfViewValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 		fieldOfViewJPanel.add(fieldOfViewJLabel);
 		fieldOfViewJPanel.add(fieldOfViewValueJPanel);
-		
+
 		return fieldOfViewJPanel;
 	}
-	
-	public static JPanel configRadiusSlider(){
+
+	public static JPanel configRadiusSlider() {
 		final JLabel radiusJLabel = new JLabel("  Point Radius");
-		final JLabel radiusValueJLabel = new JLabel(String.format(
-"%.2f",
+		final JLabel radiusValueJLabel = new JLabel(String.format("%.2f",
 				radius));
 		radiusJSlider = initSlider();
 		radiusJSlider.addChangeListener(new ChangeListener() {
@@ -251,11 +200,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					radius = defaultRadius * 10.0
 							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
 				} else {
-					radius = defaultRadius
-							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
+					radius = defaultRadius * (v - DEFAULT_SLIDER_VALUE + 10.0)
+							/ 10.0;
 				}
-				radiusValueJLabel.setText(String
-.format("%.2f", radius));
+				radiusValueJLabel.setText(String.format("%.2f", radius));
 			}
 		});
 		JPanel radiusValueJPanel = new JPanel(new BorderLayout());
@@ -265,15 +213,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		JPanel radiusJPanel = new JPanel(defaultLayout);
 		radiusJPanel.add(radiusJLabel);
 		radiusJPanel.add(radiusValueJPanel);
-		
+
 		return radiusJPanel;
 	}
-	
-	public static JPanel configCurvatureSlider(){
+
+	public static JPanel configCurvatureSlider() {
 		setChooseCurvatureCheckBox = new JCheckBox(
 				"Enable Selection Of Curvature");
-		final JLabel curvatureValueJLabel = new JLabel(String.format(
-"%.2f",
+		final JLabel curvatureValueJLabel = new JLabel(String.format("%.2f",
 				DEFAULT_SELECTED_CURVATURE));
 		curvatureJSlider = initCurvatureSlider();
 		curvatureJSlider.addChangeListener(new ChangeListener() {
@@ -286,47 +233,40 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				selectedCurMin = curvature - DEFAULT_PRECISION;
 				selectedCurMax = curvature + DEFAULT_PRECISION;
 
-				curvatureValueJLabel.setText(String.format("%.2f",
-						curvature));
+				curvatureValueJLabel.setText(String.format("%.2f", curvature));
 			}
 		});
 		JPanel curvatureValueJPanel = new JPanel(new BorderLayout());
 		curvatureValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		curvatureValueJPanel.add(curvatureJSlider, BorderLayout.CENTER);
-		curvatureValueJPanel.add(curvatureValueJLabel,
-				BorderLayout.EAST);
+		curvatureValueJPanel.add(curvatureValueJLabel, BorderLayout.EAST);
 		JPanel curvatureJPanel = new JPanel(defaultLayout);
 		curvatureJPanel.add(setChooseCurvatureCheckBox);
 		curvatureJPanel.add(curvatureValueJPanel);
 
-		setChooseCurvatureCheckBox
-				.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
-		setChooseCurvatureCheckBox
-				.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						AbstractButton abstractButton = (AbstractButton) e
-								.getSource();
-						curvatureJSlider.setEnabled(abstractButton
-								.isSelected());
-						if (!abstractButton.isSelected()) {
-							selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
-							selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
-						}
-					}
-				});
-		
+		setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
+		setChooseCurvatureCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				curvatureJSlider.setEnabled(abstractButton.isSelected());
+				if (!abstractButton.isSelected()) {
+					selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+					selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
+				}
+			}
+		});
+
 		return curvatureJPanel;
 	}
-	
-	public static JPanel configCheckbox(){
+
+	public static JPanel configCheckbox() {
 		setToOriginCheckBox = new JCheckBox("Set Center To Origin");
 		setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
 		setToOriginCheckBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AbstractButton abstractButton = (AbstractButton) e
-						.getSource();
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				isSetToOrigin = abstractButton.isSelected();
 			}
 		});
@@ -335,8 +275,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		setAxeVisibleCheckBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AbstractButton abstractButton = (AbstractButton) e
-						.getSource();
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				isAxesVisible = abstractButton.isSelected();
 			}
 		});
@@ -344,13 +283,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		JPanel checkboxJPanel = new JPanel(defaultLayout);
 		checkboxJPanel.add(setToOriginCheckBox);
 		checkboxJPanel.add(setAxeVisibleCheckBox);
-		
+
 		return checkboxJPanel;
 	}
-	
+
 	public static JPanel configFileChooser(final GLCanvas canvas) {
 		final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(
-				DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN, DEFAULT_LAYOUT_H_GAP, FILECHOOSER_LAYOUT_V_GAP));
+				DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN,
+				DEFAULT_LAYOUT_H_GAP, FILECHOOSER_LAYOUT_V_GAP));
 		final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
 		final JLabel fileJLabel = new JLabel("No File Chosen");
 		JButton openButton = new JButton("Choose File...");
@@ -381,20 +321,21 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
 		fileChooserRowJPanel.add(fileChooserJPanel);
 		fileChooserRowJPanel.add(buildButton);
-		
+
 		return fileChooserRowJPanel;
 	}
-	
+
 	public static JPanel configMainJPanel(GLCanvas canvas) {
 		final JPanel mainJPanel = new JPanel();
 		mainJPanel.setLayout(new BorderLayout());
 		mainJPanel.add(initLeftPanel(canvas), BorderLayout.WEST);
 		mainJPanel.add(canvas, BorderLayout.CENTER);
-		
+
 		return mainJPanel;
 	}
-	
-	public static void initJFrame(final GLCanvas canvas, final FPSAnimator animator){
+
+	public static void initJFrame(final GLCanvas canvas,
+			final FPSAnimator animator) {
 		final JFrame frame = new JFrame();
 		frame.setContentPane(configMainJPanel(canvas));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
