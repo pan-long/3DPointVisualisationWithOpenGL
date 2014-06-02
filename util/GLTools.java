@@ -590,5 +590,3 @@ public class GLTools {
 	}
 	
 }
-
-

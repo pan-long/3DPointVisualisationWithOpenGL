@@ -717,12 +717,16 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		if (isMouseDragging)
+			return;
 		isMouseDragging = true;
 		prevMouse = new Point(e.getX(), e.getY());
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if (!isMouseDragging)
+			return;
 		isMouseDragging = false;
 	}
 
