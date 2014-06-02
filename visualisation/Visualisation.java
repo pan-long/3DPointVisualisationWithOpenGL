@@ -554,7 +554,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public void buildAxes(GL2 gl) {
-		float cylinderRadius = (float) (0.1 * ((cameraDistance / DEFAULT_CAMERA_DISTANCE) * (fieldOfView / DEFAULT_FIELD_OF_VIEW)));
+		float cylinderRadius = (float) (0.1 * (Math.pow(cameraDistance
+				/ DEFAULT_CAMERA_DISTANCE, 1.0 / 2) * (fieldOfView / DEFAULT_FIELD_OF_VIEW)));
 		float cylinderHeight = (float) (3 * DEFAULT_MAX_ABS_COORIDINATE);
 		int slices = DEFAULT_CYLINDER_SLICE;
 		int stacks = DEFAULT_CYLINDER_STACK;
