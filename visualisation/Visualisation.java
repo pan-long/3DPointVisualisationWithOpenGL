@@ -68,6 +68,7 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static File file = null;
 	private static boolean isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
 	private static boolean isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
+	private static boolean isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
 	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
@@ -464,7 +465,6 @@ public class Visualisation extends GLCanvas implements Constants,
 
 	// --------------- Methods of the GLEventListener interface -----------
 	public void buildPoints(GL2 gl) {
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL2.GL_POINT_SPRITE);
 		gl.glEnable(GL2.GL_POINT_SMOOTH);
 		gl.glEnable(GL2.GL_BLEND);
@@ -533,6 +533,44 @@ public class Visualisation extends GLCanvas implements Constants,
 		gl.glPopMatrix();
 	}
 
+	public void buildNormalVector(GL2 gl) {
+		gl.glLineWidth((float) radius / 2);
+		gl.glBegin(GL.GL_LINES);
+		if (pointsList != null)
+			for (point p : pointsList) {
+				if (p.getType() == DataType.XYZNORMAL
+						|| p.getType() == DataType.XYZCNORMAL) {
+				double[] shift = null;
+				if (!isSetToOrigin)
+					shift = new double[] { 0, 0, 0 };
+				else {
+					shift = centerOfMass;
+				}
+
+				gl.glVertex3f((float) (p.getX() * scaleFactor - shift[0]),
+						(float) (p.getY() * scaleFactor - shift[1]),
+						(float) (p.getZ() * scaleFactor - shift[2]));
+
+					float[] n = p.getNormal();
+					float length = (float) Math.sqrt(n[0] * n[0] + n[1] * n[1]
+							+ n[2] * n[2]);
+				gl.glVertex3f((float) (p.getX() * scaleFactor - shift[0] + n[0]
+						/ length * DEFAULT_NORMAL_VECTOR_LENGTH * radius
+						/ scaleFactor),
+						(float) (p.getY() * scaleFactor - shift[1] + n[1]
+ / length
+						* DEFAULT_NORMAL_VECTOR_LENGTH * radius
+						/ scaleFactor), (float) (p.getZ()
+								* scaleFactor - shift[2] + n[2] / length
+ * DEFAULT_NORMAL_VECTOR_LENGTH
+								* radius / scaleFactor));
+					System.out.println(length);
+					System.out.println(radius);
+				}
+			}
+		gl.glEnd();
+	}
+
 	/**
 	 * This method is called when the OpenGL display needs to be redrawn.
 	 */
@@ -557,6 +595,8 @@ public class Visualisation extends GLCanvas implements Constants,
 			buildPoints(gl);
 		if (isAxesVisible)
 			buildAxes(gl);
+		if (isNormalVectorVisible)
+			buildNormalVector(gl);
 
 		gl.glPopMatrix();
 	}

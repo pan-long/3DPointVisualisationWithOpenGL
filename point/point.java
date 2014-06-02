@@ -5,6 +5,7 @@ public class point implements Comparable<point> {
 	private int color = -1;
 	private int[] rgb = null;
 	private float[] properties = null;
+	private float[] normal = null;
 	private float curvature = -1;
 	private DataType type;
 
@@ -78,6 +79,23 @@ public class point implements Comparable<point> {
 		return this.color;
 	}
 
+	public float getNormalX() {
+		return this.normal_x;
+	}
+
+	public float getNormalY() {
+		return this.normal_y;
+	}
+
+	public float getNormalZ() {
+		return this.normal_z;
+	}
+
+	public float[] getNormal() {
+		if (normal == null)
+			normal = new float[] { this.normal_x, this.normal_y, this.normal_z };
+		return normal;
+	}
 	public int[] parseRGB() {
 		if (rgb == null && color != -1) {
 			rgb = new int[3];
