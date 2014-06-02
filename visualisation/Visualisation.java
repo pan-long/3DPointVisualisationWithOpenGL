@@ -61,6 +61,7 @@ public class Visualisation extends GLCanvas implements Constants,
 	private float rot_matrix[] = Matrix.identity();
 	private VirtualSphere vs = new VirtualSphere();
 
+	private static Visualisation visualisation = null;
 	private static List<point> pointsList = null;
 	private static ScaleConfiguration sc = null;
 	private static dataReader dr = null;
@@ -93,7 +94,7 @@ public class Visualisation extends GLCanvas implements Constants,
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				final GLCanvas canvas = new Visualisation();
+				final GLCanvas canvas = getVisualisationInstance();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
 				initJFrame(canvas, animator);
@@ -416,11 +417,17 @@ public class Visualisation extends GLCanvas implements Constants,
 		return slider;
 	}
 
-	public Visualisation() {
+	private Visualisation() {
 		addGLEventListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		this.requestFocusInWindow();
+	}
+
+	public static Visualisation getVisualisationInstance() {
+		if (visualisation == null)
+			visualisation = new Visualisation();
+		return visualisation;
 	}
 
 	public static void reset() {
