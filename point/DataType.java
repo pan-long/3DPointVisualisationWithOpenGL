@@ -1,5 +1,5 @@
 package point;
 
 public enum DataType {
-	XYZ, XYZC, XYZRGB, XYZNORMAL
+	XYZ, XYZC, XYZRGB, XYZNORMAL, XYZCNORMAL
 }

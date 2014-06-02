@@ -46,6 +46,18 @@ public class point implements Comparable<point>
         this.type = DataType.XYZC;
     }
 
+	public point(float x, float y, float z, float curvature, float normal_x,
+			float normal_y, float normal_z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.curvature = curvature;
+		this.normal_x = normal_x;
+		this.normal_y = normal_y;
+		this.normal_z = normal_z;
+		this.type = DataType.XYZCNORMAL;
+	}
+
     public DataType getType()
     {
         return this.type;
