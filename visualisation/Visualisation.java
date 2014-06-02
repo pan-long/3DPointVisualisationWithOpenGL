@@ -76,6 +76,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static final int DEFAULT_CYLINDER_STACK = 16;
 	private static final int DEFAULT_CAMERA_ANGLE_X = 30;
 	private static final int DEFAULT_CAMERA_ANGLE_Y = 20;
+	private static final int DEFAULT_LAYOUT_ROW = 2;
+	private static final int DEFAULT_LAYOUT_COLUMN = 1;
+	private static final int DEFAULT_LAYOUT_H_GAP = 0;
+	private static final int DEFAULT_LAYOUT_V_GAP = -8;
+	private static final int LEFT_PANEL_LAYOUT_ROW = 7;
+	private static final int LEFT_PANEL_LAYOUT_COLUMN = 1;
+	private static final int LEFT_PANEL_WIDTH = 250;
+	private static final int LEFT_PANEL_HEIGHT = 600;
 	private static final boolean DEFAULT_IS_AXES_VISIBLE = true;
 	private static final boolean DEFAULT_IS_SET_TO_ORIGIN = false;
 	private static final boolean DEFAULT_IS_SELECTING_CURVATURE = false;
@@ -117,25 +125,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
 
-<<<<<<< HEAD
-=======
-	private static final String TITLE = "3D Visualisation Tool";
-	private static final int WINDOW_WIDTH = 1000;
-	private static final int WINDOW_HEIGHT = 600;
-	private static final double MAX_ABS_COORDINATE = 10;
-	private static final double DEFAULT_PRECISION = 0.05;
-	private static final int FPS = 60;
-	private static final int DEFAULT_LAYOUT_ROW = 2;
-	private static final int DEFAULT_LAYOUT_COLUMN = 1;
-	private static final int DEFAULT_LAYOUT_H_GAP = 0;
-	private static final int DEFAULT_LAYOUT_V_GAP = -8;
-	private static final int LEFT_PANEL_LAYOUT_ROW = 7;
-	private static final int LEFT_PANEL_LAYOUT_COLUMN = 1;
-	private static final int LEFT_PANEL_WIDTH = 250;
-	private static final int LEFT_PANEL_HEIGHT = 600;
-	
-	
->>>>>>> 8a642f523226ae7aeefbf74f73657635343b0277
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -143,10 +132,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
-				final GridLayout defaultLayout = new GridLayout(DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN, DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
+				final GridLayout defaultLayout = new GridLayout(
+						DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN,
+						DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
 				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH, LEFT_PANEL_HEIGHT));
-				leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW, LEFT_PANEL_LAYOUT_COLUMN));
+				leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH,
+						LEFT_PANEL_HEIGHT));
+				leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW,
+						LEFT_PANEL_LAYOUT_COLUMN));
 
 				final JLabel cameraDistanceJLabel = new JLabel(
 						"  Camera Distance");
@@ -493,8 +486,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			if (p.getType() == DataType.XYZRGB) {
 				int[] color = p.parseRGB();
 				gl.glColor3d(color[0], color[1], color[2]);
-			}
-			else if (p.getType() != DataType.XYZC
+			} else if (p.getType() != DataType.XYZC
 					|| (p.getCurvature() > selectedCurMin && p.getCurvature() < selectedCurMax))
 				gl.glColor3f(0.95f, 0.207f, 0.031f);
 			else {
