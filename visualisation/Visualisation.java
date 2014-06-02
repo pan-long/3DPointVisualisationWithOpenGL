@@ -404,8 +404,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			}
 		});
 		frame.setTitle(TITLE);
-		frame.setPreferredSize(new Dimension(WINDOW_WIDTH,
-				WINDOW_HEIGHT));
+		frame.setPreferredSize(new Dimension(DEFAULT_WINDOW_WIDTH,
+				DEFAULT_WINDOW_HEIGHT));
 		frame.pack();
 		frame.setVisible(true);
 		animator.start();
