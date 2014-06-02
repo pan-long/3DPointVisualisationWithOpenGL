@@ -111,10 +111,27 @@ public class point implements Comparable<point>
                 return getXYZRGBProperties();
             case XYZNORMAL:
                 return getXYZNORMALProperties();
+		case XYZC:
+			return getXYZCProperties();
+		case XYZCNORMAL:
+			return getXYZCNORMALProperties();
             default:
                 return null;
         }
     }
+
+	private float[] getXYZCProperties() {
+		if (properties == null)
+			properties = new float[] { this.x, this.y, this.z, this.curvature };
+		return properties;
+	}
+
+	private float[] getXYZCNORMALProperties() {
+		if (properties == null)
+			properties = new float[] { this.x, this.y, this.z, this.curvature,
+					this.color };
+		return properties;
+	}
 
     private float[] getXYZProperties()
     {
