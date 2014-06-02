@@ -51,11 +51,12 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static final long serialVersionUID = 1L;
 
 	private static final String TITLE = "3D Visualisation Tool";
-	private static final int WINDOW_WIDTH = 1000;
-	private static final int WINDOW_HEIGHT = 600;
+	private static final int DEFAULT_WINDOW_WIDTH = 1000;
+	private static final int DEFAULT_WINDOW_HEIGHT = 600;
 	private static final double DEFAULT_CAMERA_DISTANCE = 25;
 	private static final double DEFAULT_FIELD_OF_VIEW = 30;
-	private static final double DEFAULT_SCREEN_RATIO = 10 / 6.0;
+	private static final double DEFAULT_SCREEN_RATIO = (double) DEFAULT_WINDOW_WIDTH
+			/ (double) DEFAULT_WINDOW_HEIGHT;
 	private static final double DEFAULT_MAX_ABS_COORIDINATE = 10;
 	private static final double DEFAULT_PRECISION = 0.05;
 	private static final double DEFAULT_MAX_SELECTED_CURVATURE = 1;
@@ -116,6 +117,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static double fieldOfView = DEFAULT_FIELD_OF_VIEW;
 	private static double lookAtX = DEFAULT_LOOK_AT_POINT_X;
 	private static double lookAtY = DEFAULT_LOOK_AT_POINT_Y;
+	private static int window_height = DEFAULT_WINDOW_HEIGHT;
+	private static int window_width = DEFAULT_WINDOW_WIDTH;
 
 	private static JSlider cameraDistanceSlider = null;
 	private static JSlider fieldOfViewSlider = null;
@@ -499,7 +502,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
 		defaultRadius = radius = sc.getRadius()
-				* (WINDOW_HEIGHT / DEFAULT_MAX_ABS_COORIDINATE);
+				* (window_height / DEFAULT_MAX_ABS_COORIDINATE);
 		centerOfMass = sc.getCenterOfMass();
 	}
 
@@ -637,7 +640,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	 */
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
-		screenRatio = (float) width / (float) height;
+		window_height = height;
+		window_width = width;
+
+		screenRatio = (float) window_width / (float) window_height;
 
 		GL2 gl = drawable.getGL().getGL2();
 
@@ -688,11 +694,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 			} else if (SwingUtilities.isRightMouseButton(e)) {
 				lookAtX -= (newMouse.x - prevMouse.x)
-						/ (WINDOW_HEIGHT / (2 * DEFAULT_MAX_ABS_COORIDINATE))
+						/ (window_height / (2 * DEFAULT_MAX_ABS_COORIDINATE))
 						* (cameraDistance / DEFAULT_CAMERA_DISTANCE)
 						* (fieldOfView / DEFAULT_FIELD_OF_VIEW);
 				lookAtY += (newMouse.y - prevMouse.y)
-						/ (WINDOW_HEIGHT / (2 * DEFAULT_MAX_ABS_COORIDINATE))
+						/ (window_height / (2 * DEFAULT_MAX_ABS_COORIDINATE))
 						* (cameraDistance / DEFAULT_CAMERA_DISTANCE)
 						* (fieldOfView / DEFAULT_FIELD_OF_VIEW);
 			}
