@@ -289,8 +289,9 @@ public class Visualisation extends GLCanvas implements Constants,
 		setNormalVisibleCheckBox = new JCheckBox("Show Normal Vectors");
 		setNormalVisibleCheckBox.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
+			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				isNormalVectorVisible = abstractButton.isSelected();
 			}
 		});
 		
@@ -479,6 +480,8 @@ public class Visualisation extends GLCanvas implements Constants,
 		fieldOfViewSlider.setValue(DEFAULT_SLIDER_VALUE);
 		fieldOfView = DEFAULT_FIELD_OF_VIEW;
 		setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
+		setNormalVisibleCheckBox.setSelected(DEFAULT_IS_NORMAL_VECTOR_VISIBLE);
+		isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
 		curvatureJSlider.setValue(DEFAULT_SLIDER_VALUE);
 		curvatureJSlider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
 		selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
