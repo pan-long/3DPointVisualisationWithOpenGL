@@ -124,252 +124,288 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static JSlider curvatureJSlider = null;
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
-
+	private static final GridLayout defaultLayout = new GridLayout(
+			DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN,
+			DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-
-				final GridLayout defaultLayout = new GridLayout(
-						DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN,
-						DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
-				final JPanel leftJPanel = new JPanel();
-				leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH,
-						LEFT_PANEL_HEIGHT));
-				leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW,
-						LEFT_PANEL_LAYOUT_COLUMN));
-
-				final JLabel cameraDistanceJLabel = new JLabel(
-						"  Camera Distance");
-				final JLabel cameraDistanceValueJLabel = new JLabel(String
-						.format("%.2f", DEFAULT_CAMERA_DISTANCE));
-				cameraDistanceSlider = initSlider();
-				cameraDistanceSlider.addChangeListener(new ChangeListener() {
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider) e.getSource();
-						int v = source.getValue();
-						if (v < DEFAULT_SLIDER_VALUE) {
-							cameraDistance = DEFAULT_CAMERA_DISTANCE * 10.0
-									/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
-						} else {
-							cameraDistance = DEFAULT_CAMERA_DISTANCE
-									* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
-						}
-						cameraDistanceValueJLabel.setText(String.format(
-								"%5.2f", cameraDistance));
-					}
-				});
-				JPanel cameraDistanceValueJPanel = new JPanel(
-						new BorderLayout());
-				cameraDistanceValueJPanel.add(cameraDistanceSlider,
-						BorderLayout.CENTER);
-				cameraDistanceValueJPanel.add(cameraDistanceValueJLabel,
-						BorderLayout.EAST);
-				JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
-				cameraDistanceJPanel.add(cameraDistanceJLabel);
-				cameraDistanceJPanel.add(cameraDistanceValueJPanel);
-
-				final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				final JLabel fieldOfViewValueJLabel = new JLabel(String.format(
-						"%.2f", DEFAULT_FIELD_OF_VIEW));
-				fieldOfViewSlider = initSlider();
-				fieldOfViewSlider.addChangeListener(new ChangeListener() {
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider) e.getSource();
-						int v = source.getValue();
-
-						if (v < DEFAULT_SLIDER_VALUE) {
-							fieldOfView = DEFAULT_FIELD_OF_VIEW * 10.0
-									/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
-						} else {
-							fieldOfView = DEFAULT_FIELD_OF_VIEW
-									* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
-						}
-						fieldOfViewValueJLabel.setText(String.format("%5.2f",
-								fieldOfView));
-					}
-				});
-				JPanel fieldOfViewValueJPanel = new JPanel(new BorderLayout());
-				fieldOfViewValueJPanel.add(fieldOfViewSlider,
-						BorderLayout.CENTER);
-				fieldOfViewValueJPanel.add(fieldOfViewValueJLabel,
-						BorderLayout.EAST);
-				JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
-				fieldOfViewJPanel.add(fieldOfViewJLabel);
-				fieldOfViewJPanel.add(fieldOfViewValueJPanel);
-
-				final JLabel radiusJLabel = new JLabel("  Point Radius");
-				final JLabel radiusValueJLabel = new JLabel(String.format(
-						"%5.2f", radius));
-				radiusJSlider = initSlider();
-				radiusJSlider.addChangeListener(new ChangeListener() {
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider) e.getSource();
-						int v = source.getValue();
-
-						if (v < DEFAULT_SLIDER_VALUE) {
-							radius = defaultRadius * 10.0
-									/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
-						} else {
-							radius = defaultRadius
-									* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
-						}
-						radiusValueJLabel.setText(String
-								.format("%5.2f", radius));
-					}
-				});
-				JPanel radiusValueJPanel = new JPanel(new BorderLayout());
-				radiusValueJPanel.add(radiusJSlider, BorderLayout.CENTER);
-				radiusValueJPanel.add(radiusValueJLabel, BorderLayout.EAST);
-				JPanel radiusJPanel = new JPanel(defaultLayout);
-				radiusJPanel.add(radiusJLabel);
-				radiusJPanel.add(radiusValueJPanel);
-
-				setChooseCurvatureCheckBox = new JCheckBox(
-						"Enable Selection Of Curvature");
-				final JLabel curvatureValueJLabel = new JLabel(String.format(
-						"%5.2f", DEFAULT_SELECTED_CURVATURE));
-				curvatureJSlider = initCurvatureSlider();
-				curvatureJSlider.addChangeListener(new ChangeListener() {
-					@Override
-					public void stateChanged(ChangeEvent e) {
-						JSlider source = (JSlider) e.getSource();
-						int v = source.getValue();
-
-						curvature = v / DEFAULT_SLIDER_MAX;
-						selectedCurMin = curvature - DEFAULT_PRECISION;
-						selectedCurMax = curvature + DEFAULT_PRECISION;
-
-						curvatureValueJLabel.setText(String.format("%5.2f",
-								curvature));
-					}
-				});
-				JPanel curvatureValueJPanel = new JPanel(new BorderLayout());
-				curvatureValueJPanel.add(curvatureJSlider, BorderLayout.CENTER);
-				curvatureValueJPanel.add(curvatureValueJLabel,
-						BorderLayout.EAST);
-				JPanel curvatureJPanel = new JPanel(defaultLayout);
-				curvatureJPanel.add(setChooseCurvatureCheckBox);
-				curvatureJPanel.add(curvatureValueJPanel);
-
-				setChooseCurvatureCheckBox
-						.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
-				setChooseCurvatureCheckBox
-						.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								AbstractButton abstractButton = (AbstractButton) e
-										.getSource();
-								curvatureJSlider.setEnabled(abstractButton
-										.isSelected());
-								if (!abstractButton.isSelected()) {
-									selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
-									selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
-								}
-							}
-						});
-
-				setToOriginCheckBox = new JCheckBox("Set Center To Origin");
-				setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
-				setToOriginCheckBox.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						AbstractButton abstractButton = (AbstractButton) e
-								.getSource();
-						isSetToOrigin = abstractButton.isSelected();
-					}
-				});
-
-				setAxeVisibleCheckBox = new JCheckBox("Show Axes");
-				setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
-				setAxeVisibleCheckBox.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						AbstractButton abstractButton = (AbstractButton) e
-								.getSource();
-						isAxesVisible = abstractButton.isSelected();
-					}
-				});
-
-				JPanel checkboxJPanel = new JPanel(defaultLayout);
-				checkboxJPanel.add(setToOriginCheckBox);
-				checkboxJPanel.add(setAxeVisibleCheckBox);
-
-				final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(
-						2, 1, 1, 1));
-				final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
-				final JLabel fileJLabel = new JLabel("No File Chosen");
-				JButton openButton = new JButton("Choose File...");
-				openButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						JFileChooser fileChooser = new JFileChooser();
-						FileNameExtensionFilter filter = new FileNameExtensionFilter(
-								"Point Cloud Data Format", "pcd");
-						fileChooser.setFileFilter(filter);
-						fileChooser.setCurrentDirectory(new File("./"));
-						int rVal = fileChooser.showOpenDialog(canvas);
-						if (rVal == JFileChooser.APPROVE_OPTION) {
-							file = fileChooser.getSelectedFile();
-							fileJLabel.setText(file.getName());
-						}
-					}
-				});
-				JButton buildButton = new JButton("Build");
-				buildButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						reset();
-						initDataReader(file);
-					}
-				});
-				fileChooserJPanel.add(openButton, BorderLayout.WEST);
-				fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
-				fileChooserRowJPanel.add(fileChooserJPanel);
-				fileChooserRowJPanel.add(buildButton);
-
-				leftJPanel.add(cameraDistanceJPanel);
-				leftJPanel.add(fieldOfViewJPanel);
-				leftJPanel.add(radiusJPanel);
-				leftJPanel.add(curvatureJPanel);
-				leftJPanel.add(checkboxJPanel);
-				leftJPanel.add(fileChooserRowJPanel);
-
-				final JPanel mainJPanel = new JPanel();
-				mainJPanel.setLayout(new BorderLayout());
-				mainJPanel.add(leftJPanel, BorderLayout.WEST);
-				mainJPanel.add(canvas, BorderLayout.CENTER);
-
-				final JFrame frame = new JFrame();
-				frame.setContentPane(mainJPanel);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.getContentPane().add(canvas);
-				frame.addWindowListener(new WindowAdapter() {
-					@Override
-					public void windowClosing(WindowEvent e) {
-						new Thread() {
-							@Override
-							public void run() {
-								if (animator.isStarted())
-									animator.stop();
-								System.exit(0);
-							}
-						}.start();
-					}
-				});
-				frame.setTitle(TITLE);
-				frame.setPreferredSize(new Dimension(WINDOW_WIDTH,
-						WINDOW_HEIGHT));
-				frame.pack();
-				frame.setVisible(true);
-				animator.start();
+				
+				configMainJPanel(canvas);
+				initJFrame(canvas, animator);
 			}
 		});
+	}
+	
+	public static JPanel initLeftPanel(final GLCanvas canvas) {
+		final JPanel leftJPanel = new JPanel();
+		leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH,
+				LEFT_PANEL_HEIGHT));
+		leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW,
+				LEFT_PANEL_LAYOUT_COLUMN));
+		
+		leftJPanel.add(configCameraDistanceSlider());
+		leftJPanel.add(configFieldOfViewSlider());
+		leftJPanel.add(configRadiusSlider());
+		leftJPanel.add(configCurvatureSlider());
+		leftJPanel.add(configCheckbox());
+		leftJPanel.add(configFileChooser(canvas));
+		
+		return leftJPanel;
+	}
+	
+	public static JPanel configCameraDistanceSlider(){
+		final JLabel cameraDistanceJLabel = new JLabel(
+				"  Camera Distance");
+		final JLabel cameraDistanceValueJLabel = new JLabel(String
+				.format("%.2f", DEFAULT_CAMERA_DISTANCE));
+		cameraDistanceSlider = initSlider();
+		cameraDistanceSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				int v = source.getValue();
+				if (v < DEFAULT_SLIDER_VALUE) {
+					cameraDistance = DEFAULT_CAMERA_DISTANCE * 10.0
+							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
+				} else {
+					cameraDistance = DEFAULT_CAMERA_DISTANCE
+							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
+				}
+				cameraDistanceValueJLabel.setText(String.format(
+						"%5.2f", cameraDistance));
+			}
+		});
+		JPanel cameraDistanceValueJPanel = new JPanel(
+				new BorderLayout());
+		cameraDistanceValueJPanel.add(cameraDistanceSlider,
+				BorderLayout.CENTER);
+		cameraDistanceValueJPanel.add(cameraDistanceValueJLabel,
+				BorderLayout.EAST);
+		JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
+		cameraDistanceJPanel.add(cameraDistanceJLabel);
+		cameraDistanceJPanel.add(cameraDistanceValueJPanel);
+		
+		return cameraDistanceJPanel;
+	}
+	
+	public static JPanel configFieldOfViewSlider(){
+		final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
+		final JLabel fieldOfViewValueJLabel = new JLabel(String.format(
+				"%.2f", DEFAULT_FIELD_OF_VIEW));
+		fieldOfViewSlider = initSlider();
+		fieldOfViewSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				int v = source.getValue();
+
+				if (v < DEFAULT_SLIDER_VALUE) {
+					fieldOfView = DEFAULT_FIELD_OF_VIEW * 10.0
+							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
+				} else {
+					fieldOfView = DEFAULT_FIELD_OF_VIEW
+							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
+				}
+				fieldOfViewValueJLabel.setText(String.format("%5.2f",
+						fieldOfView));
+			}
+		});
+		JPanel fieldOfViewValueJPanel = new JPanel(new BorderLayout());
+		fieldOfViewValueJPanel.add(fieldOfViewSlider,
+				BorderLayout.CENTER);
+		fieldOfViewValueJPanel.add(fieldOfViewValueJLabel,
+				BorderLayout.EAST);
+		JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
+		fieldOfViewJPanel.add(fieldOfViewJLabel);
+		fieldOfViewJPanel.add(fieldOfViewValueJPanel);
+		
+		return fieldOfViewJPanel;
+	}
+	
+	public static JPanel configRadiusSlider(){
+		final JLabel radiusJLabel = new JLabel("  Point Radius");
+		final JLabel radiusValueJLabel = new JLabel(String.format(
+				"%5.2f", radius));
+		radiusJSlider = initSlider();
+		radiusJSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				int v = source.getValue();
+
+				if (v < DEFAULT_SLIDER_VALUE) {
+					radius = defaultRadius * 10.0
+							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
+				} else {
+					radius = defaultRadius
+							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
+				}
+				radiusValueJLabel.setText(String
+						.format("%5.2f", radius));
+			}
+		});
+		JPanel radiusValueJPanel = new JPanel(new BorderLayout());
+		radiusValueJPanel.add(radiusJSlider, BorderLayout.CENTER);
+		radiusValueJPanel.add(radiusValueJLabel, BorderLayout.EAST);
+		JPanel radiusJPanel = new JPanel(defaultLayout);
+		radiusJPanel.add(radiusJLabel);
+		radiusJPanel.add(radiusValueJPanel);
+		
+		return radiusJPanel;
+	}
+	
+	public static JPanel configCurvatureSlider(){
+		setChooseCurvatureCheckBox = new JCheckBox(
+				"Enable Selection Of Curvature");
+		final JLabel curvatureValueJLabel = new JLabel(String.format(
+				"%5.2f", DEFAULT_SELECTED_CURVATURE));
+		curvatureJSlider = initCurvatureSlider();
+		curvatureJSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				int v = source.getValue();
+
+				curvature = v / DEFAULT_SLIDER_MAX;
+				selectedCurMin = curvature - DEFAULT_PRECISION;
+				selectedCurMax = curvature + DEFAULT_PRECISION;
+
+				curvatureValueJLabel.setText(String.format("%5.2f",
+						curvature));
+			}
+		});
+		JPanel curvatureValueJPanel = new JPanel(new BorderLayout());
+		curvatureValueJPanel.add(curvatureJSlider, BorderLayout.CENTER);
+		curvatureValueJPanel.add(curvatureValueJLabel,
+				BorderLayout.EAST);
+		JPanel curvatureJPanel = new JPanel(defaultLayout);
+		curvatureJPanel.add(setChooseCurvatureCheckBox);
+		curvatureJPanel.add(curvatureValueJPanel);
+
+		setChooseCurvatureCheckBox
+				.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
+		setChooseCurvatureCheckBox
+				.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						AbstractButton abstractButton = (AbstractButton) e
+								.getSource();
+						curvatureJSlider.setEnabled(abstractButton
+								.isSelected());
+						if (!abstractButton.isSelected()) {
+							selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+							selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
+						}
+					}
+				});
+		
+		return curvatureJPanel;
+	}
+	
+	public static JPanel configCheckbox(){
+		setToOriginCheckBox = new JCheckBox("Set Center To Origin");
+		setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
+		setToOriginCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e
+						.getSource();
+				isSetToOrigin = abstractButton.isSelected();
+			}
+		});
+		setAxeVisibleCheckBox = new JCheckBox("Show Axes");
+		setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
+		setAxeVisibleCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e
+						.getSource();
+				isAxesVisible = abstractButton.isSelected();
+			}
+		});
+
+		JPanel checkboxJPanel = new JPanel(defaultLayout);
+		checkboxJPanel.add(setToOriginCheckBox);
+		checkboxJPanel.add(setAxeVisibleCheckBox);
+		
+		return checkboxJPanel;
+	}
+	
+	public static JPanel configFileChooser(final GLCanvas canvas) {
+		final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(
+				2, 1, 1, 1));
+		final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
+		final JLabel fileJLabel = new JLabel("No File Chosen");
+		JButton openButton = new JButton("Choose File...");
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"Point Cloud Data Format", "pcd");
+				fileChooser.setFileFilter(filter);
+				fileChooser.setCurrentDirectory(new File("./"));
+				int rVal = fileChooser.showOpenDialog(canvas);
+				if (rVal == JFileChooser.APPROVE_OPTION) {
+					file = fileChooser.getSelectedFile();
+					fileJLabel.setText(file.getName());
+				}
+			}
+		});
+		JButton buildButton = new JButton("Build");
+		buildButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				reset();
+				initDataReader(file);
+			}
+		});
+		fileChooserJPanel.add(openButton, BorderLayout.WEST);
+		fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
+		fileChooserRowJPanel.add(fileChooserJPanel);
+		fileChooserRowJPanel.add(buildButton);
+		
+		return fileChooserRowJPanel;
+	}
+	
+	public static JPanel configMainJPanel(GLCanvas canvas) {
+		final JPanel mainJPanel = new JPanel();
+		mainJPanel.setLayout(new BorderLayout());
+		mainJPanel.add(initLeftPanel(canvas), BorderLayout.WEST);
+		mainJPanel.add(canvas, BorderLayout.CENTER);
+		
+		return mainJPanel;
+	}
+	
+	public static void initJFrame(final GLCanvas canvas, final FPSAnimator animator){
+		final JFrame frame = new JFrame();
+		frame.setContentPane(configMainJPanel(canvas));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frame.getContentPane().add(canvas);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				new Thread() {
+					@Override
+					public void run() {
+						if (animator.isStarted())
+							animator.stop();
+						System.exit(0);
+					}
+				}.start();
+			}
+		});
+		frame.setTitle(TITLE);
+		frame.setPreferredSize(new Dimension(WINDOW_WIDTH,
+				WINDOW_HEIGHT));
+		frame.pack();
+		frame.setVisible(true);
+		animator.start();
 	}
 
 	public static JSlider initSlider() {
