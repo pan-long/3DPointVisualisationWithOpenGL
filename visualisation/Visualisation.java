@@ -49,33 +49,65 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
-	private static List<point> pointsList = null;
-	private static ScaleConfiguration sc = null;
-	private static dataReader dr = null;
-	private static File file = null;
+
+	private static final String TITLE = "3D Visualisation Tool";
+	private static final int WINDOW_WIDTH = 1000;
+	private static final int WINDOW_HEIGHT = 600;
+	private static final double DEFAULT_CAMERA_DISTANCE = 25;
+	private static final double DEFAULT_FIELD_OF_VIEW = 30;
+	private static final double DEFAULT_SCREEN_RATIO = 10 / 6.0;
+	private static final double DEFAULT_MAX_ABS_COORIDINATE = 10;
+	private static final double DEFAULT_PRECISION = 0.05;
+	private static final double DEFAULT_MAX_SELECTED_CURVATURE = 1;
+	private static final double DEFAULT_MIN_SELECTED_CURVATURE = 0;
+	private static final double DEFAULT_SELECTED_CURVATURE = 0.5;
+	private static final double DEFAULT_LOOK_AT_POINT_X = 0;
+	private static final double DEFAULT_LOOK_AT_POINT_Y = 0;
+	private static final double DEFAULT_CAMERA_NEAR_CLIP = 0.1;
+	private static final double DEFAULT_CAMERA_FAR_CLIP = 10000;
+	private static final int DEFAULT_SLIDER_MIN = 0;
+	private static final int DEFAULT_SLIDER_MAX = 60;
+	private static final int DEFAULT_SLIDER_VALUE = 30;
+	private static final int DEFAULT_MAJOR_TICK_SPACING = 10;
+	private static final int DEFAULT_MINOR_TICK_SPACING = 5;
+	private static final int DEFAULT_NUMBER_OF_TICK = 7;
+	private static final int DEFAULT_NUMBER_OF_TICK_CURVATURE = 6;
+	private static final int DEFAULT_CYLINDER_SLICE = 16;
+	private static final int DEFAULT_CYLINDER_STACK = 16;
+	private static final int DEFAULT_CAMERA_ANGLE_X = 30;
+	private static final int DEFAULT_CAMERA_ANGLE_Y = 20;
+	private static final boolean DEFAULT_IS_AXES_VISIBLE = true;
+	private static final boolean DEFAULT_IS_SET_TO_ORIGIN = false;
+	private static final boolean DEFAULT_IS_SELECTING_CURVATURE = false;
+	private static final int FPS = 60;
+
 	private GLU glu = new GLU();
 
 	private int cueRadius;
 	private Point prevMouse;
 	private Point cueCenter = new Point();
-	private double screenRatio = 10 / 6.0;
+	private double screenRatio = DEFAULT_SCREEN_RATIO;
 	private boolean isMouseDragging = false;
 	private float rot_matrix[] = Matrix.identity();
 	private VirtualSphere vs = new VirtualSphere();
 
-	private static boolean isSetToOrigin = false;
-	private static boolean isAxesVisible = true;
+	private static List<point> pointsList = null;
+	private static ScaleConfiguration sc = null;
+	private static dataReader dr = null;
+	private static File file = null;
+	private static boolean isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
+	private static boolean isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
 	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
 	private static double curvature;
 	private static double defaultRadius;
-	private static double selectedCurMax = 1;
-	private static double selectedCurMin = 0;
-	private static double cameraDistance = 25;
-	private static double fieldOfView = 30;
-	private static double lookAtX = 0;
-	private static double lookAtY = 0;
+	private static double selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
+	private static double selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+	private static double cameraDistance = DEFAULT_CAMERA_DISTANCE;
+	private static double fieldOfView = DEFAULT_FIELD_OF_VIEW;
+	private static double lookAtX = DEFAULT_LOOK_AT_POINT_X;
+	private static double lookAtY = DEFAULT_LOOK_AT_POINT_Y;
 
 	private static JSlider cameraDistanceSlider = null;
 	private static JSlider fieldOfViewSlider = null;
@@ -84,13 +116,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static JSlider curvatureJSlider = null;
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
-
-	private static final String TITLE = "3D Visualisation Tool";
-	private static final int WINDOW_WIDTH = 1000;
-	private static final int WINDOW_HEIGHT = 600;
-	private static final double MAX_ABS_COORDINATE = 10;
-	private static final double DEFAULT_PRECISION = 0.05;
-	private static final int FPS = 60;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -106,17 +131,20 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 				final JLabel cameraDistanceJLabel = new JLabel(
 						"  Camera Distance");
-				final JLabel cameraDistanceValueJLabel = new JLabel("25.00");
+				final JLabel cameraDistanceValueJLabel = new JLabel(String
+						.format("%.2f", DEFAULT_CAMERA_DISTANCE));
 				cameraDistanceSlider = initSlider();
 				cameraDistanceSlider.addChangeListener(new ChangeListener() {
 					@Override
 					public void stateChanged(ChangeEvent e) {
 						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
-						if (v < 30) {
-							cameraDistance = 25.0 * 10.0 / (40.0 - v);
+						if (v < DEFAULT_SLIDER_VALUE) {
+							cameraDistance = DEFAULT_CAMERA_DISTANCE * 10.0
+									/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
 						} else {
-							cameraDistance = 25.0 * (v - 20.0) / 10.0;
+							cameraDistance = DEFAULT_CAMERA_DISTANCE
+									* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 						}
 						cameraDistanceValueJLabel.setText(String.format(
 								"%5.2f", cameraDistance));
@@ -133,7 +161,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				cameraDistanceJPanel.add(cameraDistanceValueJPanel);
 
 				final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-				final JLabel fieldOfViewValueJLabel = new JLabel("30.00");
+				final JLabel fieldOfViewValueJLabel = new JLabel(String.format(
+						"%.2f", DEFAULT_FIELD_OF_VIEW));
 				fieldOfViewSlider = initSlider();
 				fieldOfViewSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -141,10 +170,12 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
 
-						if (v < 30) {
-							fieldOfView = 30.0 * 10.0 / (40.0 - v);
+						if (v < DEFAULT_SLIDER_VALUE) {
+							fieldOfView = DEFAULT_FIELD_OF_VIEW * 10.0
+									/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
 						} else {
-							fieldOfView = 30.0 * (v - 20.0) / 10.0;
+							fieldOfView = DEFAULT_FIELD_OF_VIEW
+									* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 						}
 						fieldOfViewValueJLabel.setText(String.format("%5.2f",
 								fieldOfView));
@@ -169,10 +200,12 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
 
-						if (v < 30) {
-							radius = defaultRadius * 10.0 / (40.0 - v);
+						if (v < DEFAULT_SLIDER_VALUE) {
+							radius = defaultRadius * 10.0
+									/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
 						} else {
-							radius = defaultRadius * (v - 20.0) / 10.0;
+							radius = defaultRadius
+									* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 						}
 						radiusValueJLabel.setText(String
 								.format("%5.2f", radius));
@@ -188,7 +221,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				setChooseCurvatureCheckBox = new JCheckBox(
 						"Enable Selection Of Curvature");
 				final JLabel curvatureValueJLabel = new JLabel(String.format(
-						"%5.2f", 0.5));
+						"%5.2f", DEFAULT_SELECTED_CURVATURE));
 				curvatureJSlider = initCurvatureSlider();
 				curvatureJSlider.addChangeListener(new ChangeListener() {
 					@Override
@@ -196,7 +229,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 						JSlider source = (JSlider) e.getSource();
 						int v = source.getValue();
 
-						curvature = v / 100.0;
+						curvature = v / DEFAULT_SLIDER_MAX;
 						selectedCurMin = curvature - DEFAULT_PRECISION;
 						selectedCurMax = curvature + DEFAULT_PRECISION;
 
@@ -212,7 +245,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				curvatureJPanel.add(setChooseCurvatureCheckBox);
 				curvatureJPanel.add(curvatureValueJPanel);
 
-				setChooseCurvatureCheckBox.setSelected(false);
+				setChooseCurvatureCheckBox
+						.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
 				setChooseCurvatureCheckBox
 						.addActionListener(new ActionListener() {
 							@Override
@@ -222,14 +256,14 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 								curvatureJSlider.setEnabled(abstractButton
 										.isSelected());
 								if (!abstractButton.isSelected()) {
-									selectedCurMin = 0;
-									selectedCurMax = 1;
+									selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+									selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
 								}
 							}
 						});
 
 				setToOriginCheckBox = new JCheckBox("Set Center To Origin");
-				setToOriginCheckBox.setSelected(false);
+				setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
 				setToOriginCheckBox.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -240,7 +274,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				});
 
 				setAxeVisibleCheckBox = new JCheckBox("Show Axes");
-				setAxeVisibleCheckBox.setSelected(true);
+				setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
 				setAxeVisibleCheckBox.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -327,40 +361,58 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public static JSlider initSlider() {
-		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 60, 30);
-		slider.setMajorTickSpacing(10);
-		slider.setMinorTickSpacing(5);
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, DEFAULT_SLIDER_MIN,
+				DEFAULT_SLIDER_MAX, DEFAULT_SLIDER_VALUE);
+		slider.setMajorTickSpacing(DEFAULT_MAJOR_TICK_SPACING);
+		slider.setMinorTickSpacing(DEFAULT_MINOR_TICK_SPACING);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
 
+		int numberOfTick = DEFAULT_NUMBER_OF_TICK;
+		if (DEFAULT_NUMBER_OF_TICK % 2 == 0)
+			numberOfTick++;
+
+		int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
+				/ (numberOfTick - 1);
+
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put(new Integer(0), new JLabel("1/4"));
-		labelTable.put(new Integer(10), new JLabel("1/3"));
-		labelTable.put(new Integer(20), new JLabel("1/2"));
-		labelTable.put(new Integer(30), new JLabel("1"));
-		labelTable.put(new Integer(40), new JLabel("2"));
-		labelTable.put(new Integer(50), new JLabel("3"));
-		labelTable.put(new Integer(60), new JLabel("4"));
+		for (int i = 0; i < numberOfTick / 2; i++) {
+			labelTable.put(
+					new Integer(i * spacing),
+					new JLabel(String
+							.format("1/%d", (numberOfTick / 2) - i + 1)));
+		}
+		labelTable
+				.put(new Integer(numberOfTick / 2 * spacing), new JLabel("1"));
+		for (int i = numberOfTick / 2 + 1; i <= numberOfTick; i++) {
+			labelTable.put(new Integer(i * spacing),
+					new JLabel(String.format("%d", i - numberOfTick / 2 + 1)));
+		}
 		slider.setLabelTable(labelTable);
 
 		return slider;
 	}
 
 	public static JSlider initCurvatureSlider() {
-		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
-		slider.setMajorTickSpacing(20);
-		slider.setMinorTickSpacing(10);
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, DEFAULT_SLIDER_MIN,
+				DEFAULT_SLIDER_MAX, DEFAULT_SLIDER_VALUE);
+		slider.setMajorTickSpacing(DEFAULT_MAJOR_TICK_SPACING);
+		slider.setMinorTickSpacing(DEFAULT_MINOR_TICK_SPACING);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
-		slider.setEnabled(false);
+		slider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
 
+		int numberOfTick = DEFAULT_NUMBER_OF_TICK_CURVATURE;
+
+		int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
+				/ (numberOfTick - 1);
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put(new Integer(0), new JLabel("0"));
-		labelTable.put(new Integer(20), new JLabel("0.2"));
-		labelTable.put(new Integer(40), new JLabel("0.4"));
-		labelTable.put(new Integer(60), new JLabel("0.6"));
-		labelTable.put(new Integer(80), new JLabel("0.8"));
-		labelTable.put(new Integer(100), new JLabel("1"));
+		for (int i = 0; i < numberOfTick; i++) {
+			labelTable.put(
+					new Integer(i * spacing),
+					new JLabel(String.format("%.1f", 1.0 * i * spacing
+							/ DEFAULT_SLIDER_MAX)));
+		}
 		slider.setLabelTable(labelTable);
 
 		return slider;
@@ -374,22 +426,23 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public static void reset() {
-		setAxeVisibleCheckBox.setSelected(true);
-		isAxesVisible = true;
-		setToOriginCheckBox.setSelected(false);
-		isSetToOrigin = false;
-		fieldOfViewSlider.setValue(30);
-		fieldOfView = 30;
-		setChooseCurvatureCheckBox.setSelected(false);
-		curvatureJSlider.setValue(50);
-		curvatureJSlider.setEnabled(false);
-		selectedCurMin = 0;
-		selectedCurMax = 1.0;
-		cameraDistanceSlider.setValue(30);
-		cameraDistance = 25;
+		setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
+		isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
+		setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
+		isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
+		fieldOfViewSlider.setValue(DEFAULT_SLIDER_VALUE);
+		fieldOfView = DEFAULT_FIELD_OF_VIEW;
+		setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
+		curvatureJSlider.setValue(DEFAULT_SLIDER_VALUE);
+		curvatureJSlider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
+		selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+		selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
+		cameraDistanceSlider.setValue(DEFAULT_SLIDER_VALUE);
+		cameraDistance = DEFAULT_CAMERA_DISTANCE;
 
 		// reset look at point for camera
-		lookAtX = lookAtY = 0;
+		lookAtX = DEFAULT_LOOK_AT_POINT_X;
+		lookAtY = DEFAULT_LOOK_AT_POINT_Y;
 	}
 
 	public static void initDataReader(File file) {
@@ -400,7 +453,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		sc = new ScaleConfiguration(pointsList, 10);
 		scaleFactor = sc.getScaleFactor();
 		defaultRadius = radius = sc.getRadius()
-				* (WINDOW_HEIGHT / MAX_ABS_COORDINATE);
+				* (WINDOW_HEIGHT / DEFAULT_MAX_ABS_COORIDINATE);
 		centerOfMass = sc.getCenterOfMass();
 	}
 
@@ -441,10 +494,10 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	}
 
 	public void buildAxes(GL2 gl) {
-		float cylinderRadius = (float) (0.1 * ((cameraDistance / 25) * (fieldOfView / 30)));
-		float cylinderHeight = 30;
-		int slices = 16;
-		int stacks = 16;
+		float cylinderRadius = (float) (0.1 * ((cameraDistance / DEFAULT_CAMERA_DISTANCE) * (fieldOfView / DEFAULT_FIELD_OF_VIEW)));
+		float cylinderHeight = (float) (3 * DEFAULT_MAX_ABS_COORIDINATE);
+		int slices = DEFAULT_CYLINDER_SLICE;
+		int stacks = DEFAULT_CYLINDER_STACK;
 		GLUquadric body = glu.gluNewQuadric();
 
 		gl.glPushMatrix();
@@ -482,7 +535,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		glu.gluPerspective(fieldOfView, screenRatio, 0.1, 10000);
+		glu.gluPerspective(fieldOfView, screenRatio, DEFAULT_CAMERA_NEAR_CLIP,
+				DEFAULT_CAMERA_FAR_CLIP);
 		glu.gluLookAt(0, 0, cameraDistance, lookAtX, lookAtY, 0, 0, 1, 0);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -512,8 +566,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		// called when the panel is created
 		setupVS(drawable.getWidth(), drawable.getHeight());
 
-		Matrix.rotateY(Matrix.deg2Rad(30), rot_matrix);
-		Matrix.rotateX(Matrix.deg2Rad(20), rot_matrix);
+		Matrix.rotateY(Matrix.deg2Rad(DEFAULT_CAMERA_ANGLE_X), rot_matrix);
+		Matrix.rotateX(Matrix.deg2Rad(DEFAULT_CAMERA_ANGLE_Y), rot_matrix);
 
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClearColor(0.8F, 0.8F, 0.8F, 1.0F);
@@ -541,7 +595,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		glu.gluPerspective(fieldOfView, screenRatio, 0.1, 10000);
+		glu.gluPerspective(fieldOfView, screenRatio, DEFAULT_CAMERA_NEAR_CLIP,
+				DEFAULT_CAMERA_FAR_CLIP);
 		glu.gluLookAt(0, 0, cameraDistance, lookAtX, lookAtY, 0, 0, 1, 0);
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -584,11 +639,13 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 
 			} else if (SwingUtilities.isRightMouseButton(e)) {
 				lookAtX -= (newMouse.x - prevMouse.x)
-						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE))
-						* (cameraDistance / 25) * (fieldOfView / 30);
+						/ (WINDOW_HEIGHT / (2 * DEFAULT_MAX_ABS_COORIDINATE))
+						* (cameraDistance / DEFAULT_CAMERA_DISTANCE)
+						* (fieldOfView / DEFAULT_FIELD_OF_VIEW);
 				lookAtY += (newMouse.y - prevMouse.y)
-						/ (WINDOW_HEIGHT / (2 * MAX_ABS_COORDINATE))
-						* (cameraDistance / 25) * (fieldOfView / 30);
+						/ (WINDOW_HEIGHT / (2 * DEFAULT_MAX_ABS_COORIDINATE))
+						* (cameraDistance / DEFAULT_CAMERA_DISTANCE)
+						* (fieldOfView / DEFAULT_FIELD_OF_VIEW);
 			}
 
 			prevMouse = newMouse;
