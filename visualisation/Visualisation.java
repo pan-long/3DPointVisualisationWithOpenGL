@@ -52,15 +52,15 @@ public class Visualisation extends GLCanvas implements Constants,
 
 	private static final long serialVersionUID = 1L;
 
-	private GLU glu = new GLU();
+	private static GLU glu = new GLU();
 
-	private int cueRadius;
-	private Point prevMouse;
-	private Point cueCenter = new Point();
-	private double screenRatio = DEFAULT_SCREEN_RATIO;
-	private boolean isMouseDragging = false;
-	private float rot_matrix[] = Matrix.identity();
-	private VirtualSphere vs = new VirtualSphere();
+	private static int cueRadius;
+	private static Point prevMouse;
+	private static Point cueCenter = new Point();
+	private static double screenRatio = DEFAULT_SCREEN_RATIO;
+	private static boolean isMouseDragging = false;
+	private static float rot_matrix[] = Matrix.identity();
+	private static VirtualSphere vs = new VirtualSphere();
 
 	private static Visualisation visualisation = null;
 	private static List<point> pointsList = null;
