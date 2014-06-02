@@ -58,6 +58,7 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static Point prevMouse;
 	private static Point cueCenter = new Point();
 	private static double screenRatio = DEFAULT_SCREEN_RATIO;
+	private static double curvaturePrecision = DEFAULT_PRECISION;
 	private static boolean isMouseDragging = false;
 	private static float rot_matrix[] = Matrix.identity();
 	private static VirtualSphere vs = new VirtualSphere();
@@ -232,8 +233,8 @@ public class Visualisation extends GLCanvas implements Constants,
 				int v = source.getValue();
 
 				curvature = (double) v / DEFAULT_SLIDER_MAX;
-				selectedCurMin = curvature - DEFAULT_PRECISION;
-				selectedCurMax = curvature + DEFAULT_PRECISION;
+				selectedCurMin = curvature - curvaturePrecision;
+				selectedCurMax = curvature + curvaturePrecision;
 
 				curvatureValueJLabel.setText(String.format("%.2f", curvature));
 			}
@@ -283,12 +284,16 @@ public class Visualisation extends GLCanvas implements Constants,
 		});
 		
 		JPanel curvaturePrecistionJPanel = new JPanel(new BorderLayout());
-		JTextField curvatureTextField = new JTextField("0.05", 5);
-		JButton setPrecisionJButton = new JButton("Set Curvature Precision");
+		final JTextField curvatureTextField = new JTextField(String.format("%.2f", curvaturePrecision), 5);
+		final JButton setPrecisionJButton = new JButton("Set Curvature Precision");
 		setPrecisionJButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				double newVal = Double.parseDouble(curvatureTextField.getText());
+				if (newVal >= 0 && newVal < 1) {
+					curvaturePrecision = newVal;
+					curvatureTextField.setText(String.format("%.2f", curvaturePrecision));
+				}
 			}
 		});
 		curvaturePrecistionJPanel.add(curvatureTextField, BorderLayout.CENTER);
@@ -458,7 +463,8 @@ public class Visualisation extends GLCanvas implements Constants,
 		selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
 		cameraDistanceSlider.setValue(DEFAULT_SLIDER_VALUE);
 		cameraDistance = DEFAULT_CAMERA_DISTANCE;
-
+		curvaturePrecision = DEFAULT_PRECISION;
+		
 		// reset look at point for camera
 		lookAtX = DEFAULT_LOOK_AT_POINT_X;
 		lookAtY = DEFAULT_LOOK_AT_POINT_Y;
