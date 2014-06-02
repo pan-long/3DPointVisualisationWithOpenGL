@@ -53,6 +53,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static final String TITLE = "3D Visualisation Tool";
 	private static final int DEFAULT_WINDOW_WIDTH = 1000;
 	private static final int DEFAULT_WINDOW_HEIGHT = 600;
+	private static final Dimension DEFAULT_JLABEL_DIMENSION = new Dimension(50,
+			20);
 	private static final double DEFAULT_CAMERA_DISTANCE = 25;
 	private static final double DEFAULT_FIELD_OF_VIEW = 30;
 	private static final double DEFAULT_SCREEN_RATIO = (double) DEFAULT_WINDOW_WIDTH
@@ -180,7 +182,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 				}
 				cameraDistanceValueJLabel.setText(String.format(
-						"%5.2f", cameraDistance));
+"%.2f",
+						cameraDistance));
 			}
 		});
 		JPanel cameraDistanceValueJPanel = new JPanel(
@@ -189,6 +192,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				BorderLayout.CENTER);
 		cameraDistanceValueJPanel.add(cameraDistanceValueJLabel,
 				BorderLayout.EAST);
+		cameraDistanceValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
 		cameraDistanceJPanel.add(cameraDistanceJLabel);
 		cameraDistanceJPanel.add(cameraDistanceValueJPanel);
@@ -214,7 +218,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 					fieldOfView = DEFAULT_FIELD_OF_VIEW
 							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 				}
-				fieldOfViewValueJLabel.setText(String.format("%5.2f",
+				fieldOfViewValueJLabel.setText(String.format("%.2f",
 						fieldOfView));
 			}
 		});
@@ -223,6 +227,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				BorderLayout.CENTER);
 		fieldOfViewValueJPanel.add(fieldOfViewValueJLabel,
 				BorderLayout.EAST);
+		fieldOfViewValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
 		fieldOfViewJPanel.add(fieldOfViewJLabel);
 		fieldOfViewJPanel.add(fieldOfViewValueJPanel);
@@ -233,7 +238,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	public static JPanel configRadiusSlider(){
 		final JLabel radiusJLabel = new JLabel("  Point Radius");
 		final JLabel radiusValueJLabel = new JLabel(String.format(
-				"%5.2f", radius));
+"%.2f",
+				radius));
 		radiusJSlider = initSlider();
 		radiusJSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -249,10 +255,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
 				}
 				radiusValueJLabel.setText(String
-						.format("%5.2f", radius));
+.format("%.2f", radius));
 			}
 		});
 		JPanel radiusValueJPanel = new JPanel(new BorderLayout());
+		radiusValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		radiusValueJPanel.add(radiusJSlider, BorderLayout.CENTER);
 		radiusValueJPanel.add(radiusValueJLabel, BorderLayout.EAST);
 		JPanel radiusJPanel = new JPanel(defaultLayout);
@@ -266,7 +273,8 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		setChooseCurvatureCheckBox = new JCheckBox(
 				"Enable Selection Of Curvature");
 		final JLabel curvatureValueJLabel = new JLabel(String.format(
-				"%5.2f", DEFAULT_SELECTED_CURVATURE));
+"%.2f",
+				DEFAULT_SELECTED_CURVATURE));
 		curvatureJSlider = initCurvatureSlider();
 		curvatureJSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -278,11 +286,12 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				selectedCurMin = curvature - DEFAULT_PRECISION;
 				selectedCurMax = curvature + DEFAULT_PRECISION;
 
-				curvatureValueJLabel.setText(String.format("%5.2f",
+				curvatureValueJLabel.setText(String.format("%.2f",
 						curvature));
 			}
 		});
 		JPanel curvatureValueJPanel = new JPanel(new BorderLayout());
+		curvatureValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
 		curvatureValueJPanel.add(curvatureJSlider, BorderLayout.CENTER);
 		curvatureValueJPanel.add(curvatureValueJLabel,
 				BorderLayout.EAST);
