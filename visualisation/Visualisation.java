@@ -427,7 +427,11 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 
-			if (p.getType() != DataType.XYZC
+			if (p.getType() == DataType.XYZRGB) {
+				int[] color = p.parseRGB();
+				gl.glColor3d(color[0], color[1], color[2]);
+			}
+			else if (p.getType() != DataType.XYZC
 					|| (p.getCurvature() > selectedCurMin && p.getCurvature() < selectedCurMax))
 				gl.glColor3f(0.95f, 0.207f, 0.031f);
 			else {
