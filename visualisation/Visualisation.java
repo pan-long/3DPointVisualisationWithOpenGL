@@ -30,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -280,8 +281,21 @@ public class Visualisation extends GLCanvas implements Constants,
 				isAxesVisible = abstractButton.isSelected();
 			}
 		});
+		
+		JPanel curvaturePrecistionJPanel = new JPanel(new BorderLayout());
+		JTextField curvatureTextField = new JTextField("0.05", 5);
+		JButton setPrecisionJButton = new JButton("Set Curvature Precision");
+		setPrecisionJButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		curvaturePrecistionJPanel.add(curvatureTextField, BorderLayout.CENTER);
+		curvaturePrecistionJPanel.add(setPrecisionJButton, BorderLayout.EAST);
 
-		JPanel checkboxJPanel = new JPanel(defaultLayout);
+		JPanel checkboxJPanel = new JPanel(new GridLayout(3, 1));
+		checkboxJPanel.add(curvaturePrecistionJPanel);
 		checkboxJPanel.add(setToOriginCheckBox);
 		checkboxJPanel.add(setAxeVisibleCheckBox);
 
