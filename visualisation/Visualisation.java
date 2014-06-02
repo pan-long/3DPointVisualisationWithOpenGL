@@ -381,8 +381,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		slider.setPaintLabels(true);
 
 		int numberOfTick = DEFAULT_NUMBER_OF_TICK;
-		if (DEFAULT_NUMBER_OF_TICK % 2 == 0)
-			numberOfTick++;
 
 		int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
 				/ (numberOfTick - 1);
