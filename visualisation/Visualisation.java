@@ -30,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -57,6 +58,7 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static Point prevMouse;
 	private static Point cueCenter = new Point();
 	private static double screenRatio = DEFAULT_SCREEN_RATIO;
+	private static double curvaturePrecision = DEFAULT_PRECISION;
 	private static boolean isMouseDragging = false;
 	private static float rot_matrix[] = Matrix.identity();
 	private static VirtualSphere vs = new VirtualSphere();
@@ -90,7 +92,8 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static JSlider curvatureJSlider = null;
 	private static JCheckBox setToOriginCheckBox = null;
 	private static JCheckBox setAxeVisibleCheckBox = null;
-
+	private static JCheckBox setNormalVisibleCheckBox = null;
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -114,6 +117,7 @@ public class Visualisation extends GLCanvas implements Constants,
 		leftJPanel.add(configFieldOfViewSlider());
 		leftJPanel.add(configRadiusSlider());
 		leftJPanel.add(configCurvatureSlider());
+		leftJPanel.add(configSetCurvaturePrecision());
 		leftJPanel.add(configCheckbox());
 		leftJPanel.add(configFileChooser(canvas));
 
@@ -232,8 +236,8 @@ public class Visualisation extends GLCanvas implements Constants,
 				int v = source.getValue();
 
 				curvature = (double) v / DEFAULT_SLIDER_MAX;
-				selectedCurMin = curvature - DEFAULT_PRECISION;
-				selectedCurMax = curvature + DEFAULT_PRECISION;
+				selectedCurMin = curvature - curvaturePrecision;
+				selectedCurMax = curvature + curvaturePrecision;
 
 				curvatureValueJLabel.setText(String.format("%.2f", curvature));
 			}
@@ -281,12 +285,48 @@ public class Visualisation extends GLCanvas implements Constants,
 				isAxesVisible = abstractButton.isSelected();
 			}
 		});
-
-		JPanel checkboxJPanel = new JPanel(defaultLayout);
+		
+		setNormalVisibleCheckBox = new JCheckBox("Show Normal Vectors");
+		setNormalVisibleCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		
+		JPanel checkboxJPanel = new JPanel(new GridLayout(3, 1));
 		checkboxJPanel.add(setToOriginCheckBox);
+		checkboxJPanel.add(setNormalVisibleCheckBox);
 		checkboxJPanel.add(setAxeVisibleCheckBox);
 
 		return checkboxJPanel;
+	}
+	
+	public static JPanel configSetCurvaturePrecision(){
+		JLabel label = new JLabel("  Set Curvature Precision(0~1)");
+		
+		JPanel curvaturePrecistionJPanel = new JPanel(new BorderLayout());
+		final JTextField curvatureTextField = new JTextField(String.format("%.2f", curvaturePrecision), 5);
+		final JButton setPrecisionJButton = new JButton("update");
+		setPrecisionJButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				double newVal = Double.parseDouble(curvatureTextField.getText());
+				if (newVal >= 0 && newVal < 1) {
+					curvaturePrecision = newVal;
+				}
+				curvatureTextField.setText(String.format("%.2f", curvaturePrecision));
+			}
+		});
+		curvaturePrecistionJPanel.add(curvatureTextField, BorderLayout.CENTER);
+		curvaturePrecistionJPanel.add(setPrecisionJButton, BorderLayout.EAST);
+		
+		JPanel jPanel = new JPanel(new GridLayout(3, 1));
+		jPanel.add(new JLabel("-------------------------------"));
+		jPanel.add(label, 1);
+		jPanel.add(curvaturePrecistionJPanel, 2);
+		
+		return jPanel;
 	}
 
 	public static JPanel configFileChooser(final GLCanvas canvas) {
@@ -445,7 +485,8 @@ public class Visualisation extends GLCanvas implements Constants,
 		selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
 		cameraDistanceSlider.setValue(DEFAULT_SLIDER_VALUE);
 		cameraDistance = DEFAULT_CAMERA_DISTANCE;
-
+		curvaturePrecision = DEFAULT_PRECISION;
+		
 		// reset look at point for camera
 		lookAtX = DEFAULT_LOOK_AT_POINT_X;
 		lookAtY = DEFAULT_LOOK_AT_POINT_Y;

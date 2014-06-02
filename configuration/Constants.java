@@ -6,7 +6,7 @@ import java.awt.GridLayout;
 public interface Constants {
 	static final String TITLE = "3D Visualisation Tool";
 	static final int DEFAULT_WINDOW_WIDTH = 1000;
-	static final int DEFAULT_WINDOW_HEIGHT = 600;
+	static final int DEFAULT_WINDOW_HEIGHT = 685;
 	static final Dimension DEFAULT_JLABEL_DIMENSION = new Dimension(50, 20);
 	static final double DEFAULT_CAMERA_DISTANCE = 25;
 	static final double DEFAULT_FIELD_OF_VIEW = 30;
@@ -38,10 +38,10 @@ public interface Constants {
 	static final int DEFAULT_LAYOUT_H_GAP = 0;
 	static final int DEFAULT_LAYOUT_V_GAP = -8;
 	static final int FILECHOOSER_LAYOUT_V_GAP = 1;
-	static final int LEFT_PANEL_LAYOUT_ROW = 7;
+	static final int LEFT_PANEL_LAYOUT_ROW = 8;
 	static final int LEFT_PANEL_LAYOUT_COLUMN = 1;
 	static final int LEFT_PANEL_WIDTH = 250;
-	static final int LEFT_PANEL_HEIGHT = 600;
+	static final int LEFT_PANEL_HEIGHT = 685;
 	static final boolean DEFAULT_IS_AXES_VISIBLE = true;
 	static final boolean DEFAULT_IS_SET_TO_ORIGIN = false;
 	static final boolean DEFAULT_IS_SELECTING_CURVATURE = false;
