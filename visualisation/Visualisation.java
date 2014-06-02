@@ -138,7 +138,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 				
-				configMainJPanel(canvas);
 				initJFrame(canvas, animator);
 			}
 		});
@@ -389,7 +388,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		final JFrame frame = new JFrame();
 		frame.setContentPane(configMainJPanel(canvas));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//frame.getContentPane().add(canvas);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
