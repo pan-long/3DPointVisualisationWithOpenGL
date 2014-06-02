@@ -83,6 +83,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	private static final int DEFAULT_LAYOUT_COLUMN = 1;
 	private static final int DEFAULT_LAYOUT_H_GAP = 0;
 	private static final int DEFAULT_LAYOUT_V_GAP = -8;
+	private static final int FILECHOOSER_LAYOUT_V_GAP = 1;
 	private static final int LEFT_PANEL_LAYOUT_ROW = 7;
 	private static final int LEFT_PANEL_LAYOUT_COLUMN = 1;
 	private static final int LEFT_PANEL_WIDTH = 250;
@@ -140,7 +141,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				final GLCanvas canvas = new Visualisation();
 				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 				
-				configMainJPanel(canvas);
 				initJFrame(canvas, animator);
 			}
 		});
@@ -282,7 +282,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 				JSlider source = (JSlider) e.getSource();
 				int v = source.getValue();
 
-				curvature = v / DEFAULT_SLIDER_MAX;
+				curvature = (double) v / DEFAULT_SLIDER_MAX;
 				selectedCurMin = curvature - DEFAULT_PRECISION;
 				selectedCurMax = curvature + DEFAULT_PRECISION;
 
@@ -350,7 +350,7 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 	
 	public static JPanel configFileChooser(final GLCanvas canvas) {
 		final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(
-				2, 1, 1, 1));
+				DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN, DEFAULT_LAYOUT_H_GAP, FILECHOOSER_LAYOUT_V_GAP));
 		final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
 		final JLabel fileJLabel = new JLabel("No File Chosen");
 		JButton openButton = new JButton("Choose File...");
@@ -398,7 +398,6 @@ public class Visualisation extends GLCanvas implements GLEventListener,
 		final JFrame frame = new JFrame();
 		frame.setContentPane(configMainJPanel(canvas));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//frame.getContentPane().add(canvas);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
