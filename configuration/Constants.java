@@ -21,6 +21,7 @@ public interface Constants {
 	static final double DEFAULT_LOOK_AT_POINT_Y = 0;
 	static final double DEFAULT_CAMERA_NEAR_CLIP = 0.1;
 	static final double DEFAULT_CAMERA_FAR_CLIP = 10000;
+	static final double DEFAULT_NORMAL_VECTOR_LENGTH = 20;
 	static final int DEFAULT_SLIDER_MIN = 0;
 	static final int DEFAULT_SLIDER_MAX = 60;
 	static final int DEFAULT_SLIDER_VALUE = 30;
@@ -44,6 +45,7 @@ public interface Constants {
 	static final boolean DEFAULT_IS_AXES_VISIBLE = true;
 	static final boolean DEFAULT_IS_SET_TO_ORIGIN = false;
 	static final boolean DEFAULT_IS_SELECTING_CURVATURE = false;
+	static final boolean DEFAULT_IS_NORMAL_VECTOR_VISIBLE = false;
 	static final int FPS = 60;
 	static final GridLayout defaultLayout = new GridLayout(DEFAULT_LAYOUT_ROW,
 			DEFAULT_LAYOUT_COLUMN, DEFAULT_LAYOUT_H_GAP, DEFAULT_LAYOUT_V_GAP);
