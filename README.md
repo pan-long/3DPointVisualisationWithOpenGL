@@ -14,7 +14,7 @@ This visualisation tool is for Point Cloud Research Project, to help visualise 3
 - x y z curvature normalX normalY normalZ
 
 ####System Requirement
-- this tool is developed and tested under `jdk 1.6` && `jogl`
+- this tool is developed and tested under `jdk 1.6` && `jogl` in Mac OS X 10.9.3
 - known issue: UI layout got problems under `jdk 1.7`
 
 ####Notice
