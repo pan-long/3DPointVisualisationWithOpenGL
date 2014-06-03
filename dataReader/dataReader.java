@@ -49,12 +49,20 @@ public class dataReader {
                 float y = (float)Double.parseDouble(coordinates[1]);
                 float z = (float)Double.parseDouble(coordinates[2]);
                 
-                if (coordinates.length == 6) {
+                if (coordinates.length == 7) {
+					float curvature = (float)Double.parseDouble(coordinates[3]);
+					float normal_x = (float)Double.parseDouble(coordinates[4]);
+                    float normal_y = (float)Double.parseDouble(coordinates[5]);
+                    float normal_z = (float)Double.parseDouble(coordinates[6]);
+                    points.add(new point(x, y, z, curvature, normal_x, normal_y, normal_z));
+				}
+                else if (coordinates.length == 6) {
                     float normal_x = (float)Double.parseDouble(coordinates[3]);
                     float normal_y = (float)Double.parseDouble(coordinates[4]);
                     float normal_z = (float)Double.parseDouble(coordinates[5]);
                     points.add(new point(x, y, z, normal_x, normal_y, normal_z));
-                } else if (coordinates.length == 4) {
+                } 
+                else if (coordinates.length == 4) {
                 	float temp = (float)Double.parseDouble(coordinates[3]);
                 	if (temp > 1) {
 						int color = (int)temp;
@@ -62,7 +70,8 @@ public class dataReader {
 					} else {
 						points.add(new point(x, y, z, temp));
 					} 
-                } else {
+                } 
+                else {
                     points.add(new point(x, y, z));
                 }
             }
