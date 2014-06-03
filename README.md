@@ -10,6 +10,9 @@ This visualisation tool is for Point Cloud Research Project, to help visualise 3
 - this tool is developed and tested under `jdk 1.6` && `jogl`
 - known issue: UI layout got problems under `jdk 1.7`
 
+####Notice
+This tool is only used to visualise 3d points. It DOES NOT "calculate" the normal vector, curvature or any additional information not provided in the input file.
+
 ####Contact Us
 Pan Long: aga.panlong@me.com
 Tang Ning: nus-tn@hotmail.com
