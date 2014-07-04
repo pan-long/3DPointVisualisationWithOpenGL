@@ -1,9 +1,9 @@
 package configuration;
 
+import point.point;
+
 import java.util.Collections;
 import java.util.List;
-
-import point.point;
 
 public class ScaleConfiguration {
     private final double cameraDistance = -40;
