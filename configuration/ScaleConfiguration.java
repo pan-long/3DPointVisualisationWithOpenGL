@@ -37,7 +37,7 @@ public class ScaleConfiguration {
         return this.movedCenterOfMass;
     }
 
-    public double[] calculateCenterOfMass() {
+    private double[] calculateCenterOfMass() {
         double sumX, sumY, sumZ;
         double[] center = new double[3];
         sumX = sumY = sumZ = 0;
@@ -71,6 +71,12 @@ public class ScaleConfiguration {
         return this.radius;
     }
 
+    /**
+     * This method is approximated in 3 dimensions.
+     * @param start
+     * @param end
+     * @return minimum distance of any two points from index start to end
+     */
     private double calculateMinDis(int start, int end) {
         if (start >= end)
             return 0;

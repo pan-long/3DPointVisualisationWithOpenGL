@@ -507,7 +507,6 @@ public class Visualisation extends GLCanvas implements Constants,
 		centerOfMass = sc.getCenterOfMass();
 	}
 
-	// --------------- Methods of the GLEventListener interface -----------
 	public void buildPoints(GL2 gl) {
 		gl.glEnable(GL2.GL_POINT_SPRITE);
 		gl.glEnable(GL2.GL_POINT_SMOOTH);
@@ -748,6 +747,9 @@ public class Visualisation extends GLCanvas implements Constants,
 		}
 	}
 
+    /**
+     * fix the possible errors in rotation matrix
+     */
 	private void fixRotationMatrix() {
 		rot_matrix[3] = rot_matrix[7] = rot_matrix[11] = rot_matrix[12] = rot_matrix[13] = rot_matrix[14] = 0.0f;
 		rot_matrix[15] = 1.0f;
