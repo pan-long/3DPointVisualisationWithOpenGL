@@ -91,11 +91,20 @@ public class point implements Comparable<Object> {
 		return this.normal_z;
 	}
 
+    /**
+     * getNormal only generate normal vector array once
+     * @return return the array representing normal vector
+     */
 	public float[] getNormal() {
 		if (normal == null)
 			normal = new float[] { this.normal_x, this.normal_y, this.normal_z };
 		return normal;
 	}
+
+    /**
+     * parse the RGB from double format to RGB array
+     * @return the converted RGB array of colour
+     */
 	public int[] parseRGB() {
 		if (rgb == null && color != -1) {
 			rgb = new int[3];
@@ -107,6 +116,10 @@ public class point implements Comparable<Object> {
 		return rgb;
 	}
 
+    /**
+     * get the properties of point, which depend on the type of the point
+     * @return all properties of point
+     */
 	public float[] getProperties() {
 		switch (type) {
 		case XYZ:
@@ -181,6 +194,11 @@ public class point implements Comparable<Object> {
 			return 0;
 	}
 
+    /**
+     * calculate the distance of this point to another point
+     * @param other
+     * @return the distance from this point to the other point
+     */
 	public float disTo(point other) {
 		if (other == null)
 			return 0;

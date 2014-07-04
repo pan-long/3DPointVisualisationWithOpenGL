@@ -73,8 +73,8 @@ public class ScaleConfiguration {
 
     /**
      * This method is approximated in 3 dimensions.
-     * @param start
-     * @param end
+     * @param start start index of point
+     * @param end end index of point
      * @return minimum distance of any two points from index start to end
      */
     private double calculateMinDis(int start, int end) {
