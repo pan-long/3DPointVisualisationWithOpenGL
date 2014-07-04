@@ -1,5 +1,8 @@
 import com.jogamp.opengl.util.FPSAnimator;
 import configuration.Constants;
+import configuration.ScaleConfiguration;
+import dataReader.dataReader;
+import point.point;
 import visualisation.Visualisation;
 
 import javax.media.opengl.awt.GLCanvas;
@@ -13,11 +16,45 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.*;
 
 /**
  * Created by a0105529 on 7/4/14.
  */
 public class Main implements Constants{
+    private static JSlider cameraDistanceSlider = null;
+    private static JSlider fieldOfViewSlider = null;
+    private static JSlider radiusJSlider = null;
+    private static JCheckBox setChooseCurvatureCheckBox = null;
+    private static JSlider curvatureJSlider = null;
+    private static JCheckBox setToOriginCheckBox = null;
+    private static JCheckBox setAxeVisibleCheckBox = null;
+    private static JCheckBox setNormalVisibleCheckBox = null;
+
+    private static boolean isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
+    private static boolean isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
+    private static boolean isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
+
+    private static double selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
+    private static double selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+    private static double cameraDistance = DEFAULT_CAMERA_DISTANCE;
+    private static double fieldOfView = DEFAULT_FIELD_OF_VIEW;
+    private static double curvaturePrecision = DEFAULT_PRECISION;
+    private static int window_height = DEFAULT_WINDOW_HEIGHT;
+    private static int window_width = DEFAULT_WINDOW_WIDTH;
+    private static double lookAtX = DEFAULT_LOOK_AT_POINT_X;
+    private static double lookAtY = DEFAULT_LOOK_AT_POINT_Y;
+    private static double scaleFactor;
+    private static double radius;
+    private static double curvature;
+    private static double defaultRadius;
+    private static double[] centerOfMass;
+
+    private static File file = null;
+    private static dataReader dr = null;
+    private static ScaleConfiguration sc = null;
+    private static java.util.List<point> pointsList = null;
+
     public static void main(String[] args){
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -325,5 +362,96 @@ public class Main implements Constants{
         fileChooserRowJPanel.add(buildButton);
 
         return fileChooserRowJPanel;
+    }
+
+    public static JSlider initSlider() {
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, DEFAULT_SLIDER_MIN,
+                DEFAULT_SLIDER_MAX, DEFAULT_SLIDER_VALUE);
+        slider.setMajorTickSpacing(DEFAULT_MAJOR_TICK_SPACING);
+        slider.setMinorTickSpacing(DEFAULT_MINOR_TICK_SPACING);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+
+        int numberOfTick = DEFAULT_NUMBER_OF_TICK;
+
+        int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
+                / (numberOfTick - 1);
+
+        Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+        for (int i = 0; i < numberOfTick / 2; i++) {
+            labelTable.put(
+                    new Integer(i * spacing),
+                    new JLabel(String
+                            .format("1/%d", (numberOfTick / 2) - i + 1)));
+        }
+        labelTable
+                .put(new Integer(numberOfTick / 2 * spacing), new JLabel("1"));
+        for (int i = numberOfTick / 2 + 1; i <= numberOfTick; i++) {
+            labelTable.put(new Integer(i * spacing),
+                    new JLabel(String.format("%d", i - numberOfTick / 2 + 1)));
+        }
+        slider.setLabelTable(labelTable);
+
+        return slider;
+    }
+
+    public static JSlider initCurvatureSlider() {
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, DEFAULT_SLIDER_MIN,
+                DEFAULT_SLIDER_MAX, DEFAULT_SLIDER_VALUE);
+        slider.setMajorTickSpacing(DEFAULT_MAJOR_TICK_SPACING);
+        slider.setMinorTickSpacing(DEFAULT_MINOR_TICK_SPACING);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
+
+        int numberOfTick = DEFAULT_NUMBER_OF_TICK_CURVATURE;
+
+        int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
+                / (numberOfTick - 1);
+        Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+        for (int i = 0; i < numberOfTick; i++) {
+            labelTable.put(
+                    new Integer(i * spacing),
+                    new JLabel(String.format("%.1f", 1.0 * i * spacing
+                            / DEFAULT_SLIDER_MAX)));
+        }
+        slider.setLabelTable(labelTable);
+
+        return slider;
+    }
+
+    public static void initDataReader(File file) {
+        if (file == null)
+            return;
+        dr = new dataReader(file);
+        pointsList = dr.getPoints();
+        sc = new ScaleConfiguration(pointsList, 10);
+        scaleFactor = sc.getScaleFactor();
+        defaultRadius = radius = sc.getRadius()
+                * (window_height / DEFAULT_MAX_ABS_COORIDINATE);
+        centerOfMass = sc.getCenterOfMass();
+    }
+
+    public static void reset() {
+        setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
+        isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
+        setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
+        isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
+        fieldOfViewSlider.setValue(DEFAULT_SLIDER_VALUE);
+        fieldOfView = DEFAULT_FIELD_OF_VIEW;
+        setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
+        setNormalVisibleCheckBox.setSelected(DEFAULT_IS_NORMAL_VECTOR_VISIBLE);
+        isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
+        curvatureJSlider.setValue(DEFAULT_SLIDER_VALUE);
+        curvatureJSlider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
+        selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
+        selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
+        cameraDistanceSlider.setValue(DEFAULT_SLIDER_VALUE);
+        cameraDistance = DEFAULT_CAMERA_DISTANCE;
+        curvaturePrecision = DEFAULT_PRECISION;
+
+        // reset look at point for camera
+        lookAtX = DEFAULT_LOOK_AT_POINT_X;
+        lookAtY = DEFAULT_LOOK_AT_POINT_Y;
     }
 }
