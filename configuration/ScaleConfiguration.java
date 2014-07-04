@@ -37,18 +37,6 @@ public class ScaleConfiguration {
         return this.movedCenterOfMass;
     }
 
-    /* public void moveCenterTo(double newX, double newY, double newZ) */
-    /* { */
-    /* movedCenterOfMass[0] = newX; */
-    /* movedCenterOfMass[1] = newY; */
-    /* movedCenterOfMass[2] = newZ; */
-    /* } */
-
-    /* public double[] getOriginalCenter() */
-    /* { */
-    /* return centerOfMass; */
-    /* } */
-
     public double[] calculateCenterOfMass() {
         double sumX, sumY, sumZ;
         double[] center = new double[3];
