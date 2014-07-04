@@ -1,6 +1,6 @@
 package point;
 
-public class point implements Comparable<point> {
+public class point implements Comparable<Object> {
 	private float x, y, z, normal_x, normal_y, normal_z;
 	private int color = -1;
 	private int[] rgb = null;
