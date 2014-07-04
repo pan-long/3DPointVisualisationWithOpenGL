@@ -157,20 +157,25 @@ public class point implements Comparable<point> {
 	}
 
 	@Override
-	public int compareTo(point other) {
+	public int compareTo(Object other) {
 		if (other == null)
 			return 1;
-		else if (this.x > other.getX())
+        else if (other instanceof point)
+            return 1;
+
+        point p_other = (point) other;
+
+		if (this.x > p_other.getX())
 			return 1;
-		else if (this.x < other.getX())
+		else if (this.x < p_other.getX())
 			return -1;
-		else if (this.y > other.getY())
+		else if (this.y > p_other.getY())
 			return 1;
-		else if (this.y < other.getY())
+		else if (this.y < p_other.getY())
 			return -1;
-		else if (this.z > other.getZ())
+		else if (this.z > p_other.getZ())
 			return 1;
-		else if (this.z < other.getZ())
+		else if (this.z < p_other.getZ())
 			return -1;
 		else
 			return 0;
