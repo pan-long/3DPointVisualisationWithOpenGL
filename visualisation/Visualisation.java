@@ -118,43 +118,6 @@ public class Visualisation extends GLCanvas implements Constants,
 		return visualisation;
 	}
 
-
-    /*
-	public static void reset() {
-		setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
-		isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
-		setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
-		isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
-		fieldOfViewSlider.setValue(DEFAULT_SLIDER_VALUE);
-		fieldOfView = DEFAULT_FIELD_OF_VIEW;
-		setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
-		setNormalVisibleCheckBox.setSelected(DEFAULT_IS_NORMAL_VECTOR_VISIBLE);
-		isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
-		curvatureJSlider.setValue(DEFAULT_SLIDER_VALUE);
-		curvatureJSlider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
-		selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
-		selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
-		cameraDistanceSlider.setValue(DEFAULT_SLIDER_VALUE);
-		cameraDistance = DEFAULT_CAMERA_DISTANCE;
-		curvaturePrecision = DEFAULT_PRECISION;
-
-		// reset look at point for camera
-		lookAtX = DEFAULT_LOOK_AT_POINT_X;
-		lookAtY = DEFAULT_LOOK_AT_POINT_Y;
-	}*/
-
-//	public static void initDataReader(File file) {
-//		if (file == null)
-//			return;
-//		dr = new dataReader(file);
-//		pointsList = dr.getPoints();
-//		sc = new ScaleConfiguration(pointsList, 10);
-//		scaleFactor = sc.getScaleFactor();
-//		defaultRadius = radius = sc.getRadius()
-//				* (window_height / DEFAULT_MAX_ABS_COORIDINATE);
-//		centerOfMass = sc.getCenterOfMass();
-//	}
-
 	public void buildPoints(GL2 gl) {
 		gl.glEnable(GL2.GL_POINT_SPRITE);
 		gl.glEnable(GL2.GL_POINT_SMOOTH);
