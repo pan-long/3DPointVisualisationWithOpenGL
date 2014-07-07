@@ -97,6 +97,18 @@ public class Visualisation extends GLCanvas implements Constants,
         isNormalVectorVisible = b;
     }
 
+    public void setRadius(double r){
+        radius = r;
+    }
+
+    public void setCurvature(double c) {
+        curvature = c;
+    }
+
+    public void setCameraDistance(double d) {
+        cameraDistance = d;
+    }
+
 	private Visualisation() {
 		addGLEventListener(this);
 		addMouseListener(this);

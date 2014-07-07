@@ -135,6 +135,7 @@ public class Main implements Constants{
                     cameraDistance = DEFAULT_CAMERA_DISTANCE
                             * (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
                 }
+                canvas.setCameraDistance(cameraDistance);
                 cameraDistanceValueJLabel.setText(String.format("%.2f",
                         cameraDistance));
             }
@@ -203,6 +204,7 @@ public class Main implements Constants{
                     radius = defaultRadius * (v - DEFAULT_SLIDER_VALUE + 10.0)
                             / 10.0;
                 }
+                canvas.setRadius(radius);
                 radiusValueJLabel.setText(String.format("%.2f", radius));
             }
         });
@@ -233,6 +235,7 @@ public class Main implements Constants{
                 selectedCurMin = curvature - curvaturePrecision;
                 selectedCurMax = curvature + curvaturePrecision;
 
+                canvas.setCurvature(curvature);
                 curvatureValueJLabel.setText(String.format("%.2f", curvature));
             }
         });
