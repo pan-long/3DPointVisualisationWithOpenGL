@@ -31,10 +31,6 @@ public class Main implements Constants{
     private static JCheckBox setAxeVisibleCheckBox = null;
     private static JCheckBox setNormalVisibleCheckBox = null;
 
-    private static boolean isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
-    private static boolean isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
-    private static boolean isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
-
     private static double selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
     private static double selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
     private static double cameraDistance = DEFAULT_CAMERA_DISTANCE;
@@ -55,11 +51,13 @@ public class Main implements Constants{
     private static ScaleConfiguration sc = null;
     private static java.util.List<point> pointsList = null;
 
+    private static final Visualisation canvas = Visualisation.getVisualisationInstance();
+
     public static void main(String[] args){
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                final GLCanvas canvas = Visualisation.getVisualisationInstance();
+                //final GLCanvas canvas = Visualisation.getVisualisationInstance();
                 final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
                 initJFrame(canvas, animator);
@@ -296,7 +294,7 @@ public class Main implements Constants{
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractButton abstractButton = (AbstractButton) e.getSource();
-                isSetToOrigin = abstractButton.isSelected();
+                canvas.setIsSetToOrigin(abstractButton.isSelected());
             }
         });
         setAxeVisibleCheckBox = new JCheckBox("Show Axes");
@@ -305,7 +303,7 @@ public class Main implements Constants{
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractButton abstractButton = (AbstractButton) e.getSource();
-                isAxesVisible = abstractButton.isSelected();
+                canvas.setIsAxesVisible(abstractButton.isSelected());
             }
         });
 
@@ -314,7 +312,7 @@ public class Main implements Constants{
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractButton abstractButton = (AbstractButton) e.getSource();
-                isNormalVectorVisible = abstractButton.isSelected();
+                canvas.setIsNormalVectorVisible(abstractButton.isSelected());
             }
         });
 
@@ -434,14 +432,14 @@ public class Main implements Constants{
 
     public static void reset() {
         setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
-        isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
+        canvas.setIsSetToOrigin(DEFAULT_IS_SET_TO_ORIGIN);
+        canvas.setIsAxesVisible(DEFAULT_IS_AXES_VISIBLE);
+        canvas.setIsNormalVectorVisible(DEFAULT_IS_NORMAL_VECTOR_VISIBLE);
         setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
-        isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
         fieldOfViewSlider.setValue(DEFAULT_SLIDER_VALUE);
         fieldOfView = DEFAULT_FIELD_OF_VIEW;
         setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
         setNormalVisibleCheckBox.setSelected(DEFAULT_IS_NORMAL_VECTOR_VISIBLE);
-        isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
         curvatureJSlider.setValue(DEFAULT_SLIDER_VALUE);
         curvatureJSlider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
         selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;

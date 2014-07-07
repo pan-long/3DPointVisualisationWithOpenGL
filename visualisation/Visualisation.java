@@ -68,9 +68,9 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static ScaleConfiguration sc = null;
 	private static dataReader dr = null;
 	private static File file = null;
-	private static boolean isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
-	private static boolean isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
-	private static boolean isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
+	private boolean isSetToOrigin = DEFAULT_IS_SET_TO_ORIGIN;
+	private boolean isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
+	private boolean isNormalVectorVisible = DEFAULT_IS_NORMAL_VECTOR_VISIBLE;
 	private static double[] centerOfMass;
 	private static double scaleFactor;
 	private static double radius;
@@ -85,379 +85,17 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static int window_height = DEFAULT_WINDOW_HEIGHT;
 	private static int window_width = DEFAULT_WINDOW_WIDTH;
 
-	private static JSlider cameraDistanceSlider = null;
-	private static JSlider fieldOfViewSlider = null;
-	private static JSlider radiusJSlider = null;
-	private static JCheckBox setChooseCurvatureCheckBox = null;
-	private static JSlider curvatureJSlider = null;
-	private static JCheckBox setToOriginCheckBox = null;
-	private static JCheckBox setAxeVisibleCheckBox = null;
-	private static JCheckBox setNormalVisibleCheckBox = null;
+    public void setIsSetToOrigin(boolean b) {
+        isSetToOrigin = b;
+    }
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				final GLCanvas canvas = getVisualisationInstance();
-				final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
+    public void setIsAxesVisible(boolean b) {
+        isAxesVisible = b;
+    }
 
-				initJFrame(canvas, animator);
-			}
-		});
-	}
-
-	public static JPanel initLeftPanel(final GLCanvas canvas) {
-		final JPanel leftJPanel = new JPanel();
-		leftJPanel.setPreferredSize(new Dimension(LEFT_PANEL_WIDTH,
-				LEFT_PANEL_HEIGHT));
-		leftJPanel.setLayout(new GridLayout(LEFT_PANEL_LAYOUT_ROW,
-				LEFT_PANEL_LAYOUT_COLUMN));
-
-		leftJPanel.add(configCameraDistanceSlider());
-		leftJPanel.add(configFieldOfViewSlider());
-		leftJPanel.add(configRadiusSlider());
-		leftJPanel.add(configCurvatureSlider());
-		leftJPanel.add(configSetCurvaturePrecision());
-		leftJPanel.add(configCheckbox());
-		leftJPanel.add(configFileChooser(canvas));
-
-		return leftJPanel;
-	}
-
-	public static JPanel configCameraDistanceSlider() {
-		final JLabel cameraDistanceJLabel = new JLabel("  Camera Distance");
-		final JLabel cameraDistanceValueJLabel = new JLabel(String.format(
-				"%.2f", DEFAULT_CAMERA_DISTANCE));
-		cameraDistanceSlider = initSlider();
-		cameraDistanceSlider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				int v = source.getValue();
-				if (v < DEFAULT_SLIDER_VALUE) {
-					cameraDistance = DEFAULT_CAMERA_DISTANCE * 10.0
-							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
-				} else {
-					cameraDistance = DEFAULT_CAMERA_DISTANCE
-							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
-				}
-				cameraDistanceValueJLabel.setText(String.format("%.2f",
-						cameraDistance));
-			}
-		});
-		JPanel cameraDistanceValueJPanel = new JPanel(new BorderLayout());
-		cameraDistanceValueJPanel
-				.add(cameraDistanceSlider, BorderLayout.CENTER);
-		cameraDistanceValueJPanel.add(cameraDistanceValueJLabel,
-				BorderLayout.EAST);
-		cameraDistanceValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
-		JPanel cameraDistanceJPanel = new JPanel(defaultLayout);
-		cameraDistanceJPanel.add(cameraDistanceJLabel);
-		cameraDistanceJPanel.add(cameraDistanceValueJPanel);
-
-		return cameraDistanceJPanel;
-	}
-
-	public static JPanel configFieldOfViewSlider() {
-		final JLabel fieldOfViewJLabel = new JLabel("  Field Of View");
-		final JLabel fieldOfViewValueJLabel = new JLabel(String.format("%.2f",
-				DEFAULT_FIELD_OF_VIEW));
-		fieldOfViewSlider = initSlider();
-		fieldOfViewSlider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				int v = source.getValue();
-
-				if (v < DEFAULT_SLIDER_VALUE) {
-					fieldOfView = DEFAULT_FIELD_OF_VIEW * 10.0
-							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
-				} else {
-					fieldOfView = DEFAULT_FIELD_OF_VIEW
-							* (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
-				}
-				fieldOfViewValueJLabel.setText(String.format("%.2f",
-						fieldOfView));
-			}
-		});
-		JPanel fieldOfViewValueJPanel = new JPanel(new BorderLayout());
-		fieldOfViewValueJPanel.add(fieldOfViewSlider, BorderLayout.CENTER);
-		fieldOfViewValueJPanel.add(fieldOfViewValueJLabel, BorderLayout.EAST);
-		fieldOfViewValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
-		JPanel fieldOfViewJPanel = new JPanel(defaultLayout);
-		fieldOfViewJPanel.add(fieldOfViewJLabel);
-		fieldOfViewJPanel.add(fieldOfViewValueJPanel);
-
-		return fieldOfViewJPanel;
-	}
-
-	public static JPanel configRadiusSlider() {
-		final JLabel radiusJLabel = new JLabel("  Point Radius");
-		final JLabel radiusValueJLabel = new JLabel(String.format("%.2f",
-				radius));
-		radiusJSlider = initSlider();
-		radiusJSlider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				int v = source.getValue();
-
-				if (v < DEFAULT_SLIDER_VALUE) {
-					radius = defaultRadius * 10.0
-							/ (DEFAULT_SLIDER_VALUE + 10.0 - v);
-				} else {
-					radius = defaultRadius * (v - DEFAULT_SLIDER_VALUE + 10.0)
-							/ 10.0;
-				}
-				radiusValueJLabel.setText(String.format("%.2f", radius));
-			}
-		});
-		JPanel radiusValueJPanel = new JPanel(new BorderLayout());
-		radiusValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
-		radiusValueJPanel.add(radiusJSlider, BorderLayout.CENTER);
-		radiusValueJPanel.add(radiusValueJLabel, BorderLayout.EAST);
-		JPanel radiusJPanel = new JPanel(defaultLayout);
-		radiusJPanel.add(radiusJLabel);
-		radiusJPanel.add(radiusValueJPanel);
-
-		return radiusJPanel;
-	}
-
-	public static JPanel configCurvatureSlider() {
-		setChooseCurvatureCheckBox = new JCheckBox(
-				"Enable Selection Of Curvature");
-		final JLabel curvatureValueJLabel = new JLabel(String.format("%.2f",
-				DEFAULT_SELECTED_CURVATURE));
-		curvatureJSlider = initCurvatureSlider();
-		curvatureJSlider.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				int v = source.getValue();
-
-				curvature = (double) v / DEFAULT_SLIDER_MAX;
-				selectedCurMin = curvature - curvaturePrecision;
-				selectedCurMax = curvature + curvaturePrecision;
-
-				curvatureValueJLabel.setText(String.format("%.2f", curvature));
-			}
-		});
-		JPanel curvatureValueJPanel = new JPanel(new BorderLayout());
-		curvatureValueJLabel.setPreferredSize(DEFAULT_JLABEL_DIMENSION);
-		curvatureValueJPanel.add(curvatureJSlider, BorderLayout.CENTER);
-		curvatureValueJPanel.add(curvatureValueJLabel, BorderLayout.EAST);
-		JPanel curvatureJPanel = new JPanel(defaultLayout);
-		curvatureJPanel.add(setChooseCurvatureCheckBox);
-		curvatureJPanel.add(curvatureValueJPanel);
-
-		setChooseCurvatureCheckBox.setSelected(DEFAULT_IS_SELECTING_CURVATURE);
-		setChooseCurvatureCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AbstractButton abstractButton = (AbstractButton) e.getSource();
-				curvatureJSlider.setEnabled(abstractButton.isSelected());
-				if (!abstractButton.isSelected()) {
-					selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
-					selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
-				}
-			}
-		});
-
-		return curvatureJPanel;
-	}
-
-	public static JPanel configCheckbox() {
-		setToOriginCheckBox = new JCheckBox("Set Center To Origin");
-		setToOriginCheckBox.setSelected(DEFAULT_IS_SET_TO_ORIGIN);
-		setToOriginCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AbstractButton abstractButton = (AbstractButton) e.getSource();
-				isSetToOrigin = abstractButton.isSelected();
-			}
-		});
-		setAxeVisibleCheckBox = new JCheckBox("Show Axes");
-		setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
-		setAxeVisibleCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AbstractButton abstractButton = (AbstractButton) e.getSource();
-				isAxesVisible = abstractButton.isSelected();
-			}
-		});
-
-		setNormalVisibleCheckBox = new JCheckBox("Show Normal Vectors");
-		setNormalVisibleCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AbstractButton abstractButton = (AbstractButton) e.getSource();
-				isNormalVectorVisible = abstractButton.isSelected();
-			}
-		});
-
-		JPanel checkboxJPanel = new JPanel(new GridLayout(3, 1));
-		checkboxJPanel.add(setToOriginCheckBox);
-		checkboxJPanel.add(setNormalVisibleCheckBox);
-		checkboxJPanel.add(setAxeVisibleCheckBox);
-
-		return checkboxJPanel;
-	}
-
-	public static JPanel configSetCurvaturePrecision(){
-		JLabel label = new JLabel("  Set Curvature Precision(0~1)");
-
-		JPanel curvaturePrecistionJPanel = new JPanel(new BorderLayout());
-		final JTextField curvatureTextField = new JTextField(String.format("%.2f", curvaturePrecision), 5);
-		final JButton setPrecisionJButton = new JButton("update");
-		setPrecisionJButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				double newVal = Double.parseDouble(curvatureTextField.getText());
-				if (newVal >= 0 && newVal < 1) {
-					curvaturePrecision = newVal;
-				}
-				curvatureTextField.setText(String.format("%.2f", curvaturePrecision));
-			}
-		});
-		curvaturePrecistionJPanel.add(curvatureTextField, BorderLayout.CENTER);
-		curvaturePrecistionJPanel.add(setPrecisionJButton, BorderLayout.EAST);
-
-		JPanel jPanel = new JPanel(new GridLayout(3, 1));
-		jPanel.add(new JLabel("-------------------------------"));
-		jPanel.add(label, 1);
-		jPanel.add(curvaturePrecistionJPanel, 2);
-
-		return jPanel;
-	}
-
-	public static JPanel configFileChooser(final GLCanvas canvas) {
-		final JPanel fileChooserRowJPanel = new JPanel(new GridLayout(
-				DEFAULT_LAYOUT_ROW, DEFAULT_LAYOUT_COLUMN,
-				DEFAULT_LAYOUT_H_GAP, FILECHOOSER_LAYOUT_V_GAP));
-		final JPanel fileChooserJPanel = new JPanel(new BorderLayout());
-		final JLabel fileJLabel = new JLabel("No File Chosen");
-		JButton openButton = new JButton("Choose File...");
-		openButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"Point Cloud Data Format", "pcd");
-				fileChooser.setFileFilter(filter);
-				fileChooser.setCurrentDirectory(new File("./"));
-				int rVal = fileChooser.showOpenDialog(canvas);
-				if (rVal == JFileChooser.APPROVE_OPTION) {
-					file = fileChooser.getSelectedFile();
-					fileJLabel.setText(file.getName());
-				}
-			}
-		});
-		JButton buildButton = new JButton("Build");
-		buildButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				reset();
-				initDataReader(file);
-			}
-		});
-		fileChooserJPanel.add(openButton, BorderLayout.WEST);
-		fileChooserJPanel.add(fileJLabel, BorderLayout.CENTER);
-		fileChooserRowJPanel.add(fileChooserJPanel);
-		fileChooserRowJPanel.add(buildButton);
-
-		return fileChooserRowJPanel;
-	}
-
-	public static JPanel configMainJPanel(GLCanvas canvas) {
-		final JPanel mainJPanel = new JPanel();
-		mainJPanel.setLayout(new BorderLayout());
-		mainJPanel.add(initLeftPanel(canvas), BorderLayout.WEST);
-		mainJPanel.add(canvas, BorderLayout.CENTER);
-
-		return mainJPanel;
-	}
-
-	public static void initJFrame(final GLCanvas canvas,
-			final FPSAnimator animator) {
-		final JFrame frame = new JFrame();
-		frame.setContentPane(configMainJPanel(canvas));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				new Thread() {
-					@Override
-					public void run() {
-						if (animator.isStarted())
-							animator.stop();
-						System.exit(0);
-					}
-				}.start();
-			}
-		});
-		frame.setTitle(TITLE);
-		frame.setPreferredSize(new Dimension(DEFAULT_WINDOW_WIDTH,
-				DEFAULT_WINDOW_HEIGHT));
-		frame.pack();
-		frame.setVisible(true);
-		animator.start();
-	}
-
-	public static JSlider initSlider() {
-		JSlider slider = new JSlider(JSlider.HORIZONTAL, DEFAULT_SLIDER_MIN,
-				DEFAULT_SLIDER_MAX, DEFAULT_SLIDER_VALUE);
-		slider.setMajorTickSpacing(DEFAULT_MAJOR_TICK_SPACING);
-		slider.setMinorTickSpacing(DEFAULT_MINOR_TICK_SPACING);
-		slider.setPaintTicks(true);
-		slider.setPaintLabels(true);
-
-		int numberOfTick = DEFAULT_NUMBER_OF_TICK;
-
-		int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
-				/ (numberOfTick - 1);
-
-		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		for (int i = 0; i < numberOfTick / 2; i++) {
-			labelTable.put(
-					new Integer(i * spacing),
-					new JLabel(String
-							.format("1/%d", (numberOfTick / 2) - i + 1)));
-		}
-		labelTable
-				.put(new Integer(numberOfTick / 2 * spacing), new JLabel("1"));
-		for (int i = numberOfTick / 2 + 1; i <= numberOfTick; i++) {
-			labelTable.put(new Integer(i * spacing),
-					new JLabel(String.format("%d", i - numberOfTick / 2 + 1)));
-		}
-		slider.setLabelTable(labelTable);
-
-		return slider;
-	}
-
-	public static JSlider initCurvatureSlider() {
-		JSlider slider = new JSlider(JSlider.HORIZONTAL, DEFAULT_SLIDER_MIN,
-				DEFAULT_SLIDER_MAX, DEFAULT_SLIDER_VALUE);
-		slider.setMajorTickSpacing(DEFAULT_MAJOR_TICK_SPACING);
-		slider.setMinorTickSpacing(DEFAULT_MINOR_TICK_SPACING);
-		slider.setPaintTicks(true);
-		slider.setPaintLabels(true);
-		slider.setEnabled(DEFAULT_IS_SELECTING_CURVATURE);
-
-		int numberOfTick = DEFAULT_NUMBER_OF_TICK_CURVATURE;
-
-		int spacing = (DEFAULT_SLIDER_MAX - DEFAULT_SLIDER_MIN)
-				/ (numberOfTick - 1);
-		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		for (int i = 0; i < numberOfTick; i++) {
-			labelTable.put(
-					new Integer(i * spacing),
-					new JLabel(String.format("%.1f", 1.0 * i * spacing
-							/ DEFAULT_SLIDER_MAX)));
-		}
-		slider.setLabelTable(labelTable);
-
-		return slider;
-	}
+    public void setIsNormalVectorVisible(boolean b) {
+        isNormalVectorVisible = b;
+    }
 
 	private Visualisation() {
 		addGLEventListener(this);
@@ -472,6 +110,7 @@ public class Visualisation extends GLCanvas implements Constants,
 		return visualisation;
 	}
 
+    /*
 	public static void reset() {
 		setAxeVisibleCheckBox.setSelected(DEFAULT_IS_AXES_VISIBLE);
 		isAxesVisible = DEFAULT_IS_AXES_VISIBLE;
@@ -493,7 +132,7 @@ public class Visualisation extends GLCanvas implements Constants,
 		// reset look at point for camera
 		lookAtX = DEFAULT_LOOK_AT_POINT_X;
 		lookAtY = DEFAULT_LOOK_AT_POINT_Y;
-	}
+	}*/
 
 	public static void initDataReader(File file) {
 		if (file == null)
