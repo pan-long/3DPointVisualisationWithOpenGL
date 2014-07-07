@@ -201,7 +201,8 @@ public class Main implements Constants{
                     radius = sc.getRadius() * (v - DEFAULT_SLIDER_VALUE + 10.0)
                             / 10.0;
                 }
-                canvas.setRadius(radius);
+
+                canvas.setRadius(radius * (window_height / DEFAULT_MAX_ABS_COORIDINATE));
                 radiusValueJLabel.setText(String.format("%.2f", radius));
             }
         });
