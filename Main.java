@@ -17,6 +17,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by a0105529 on 7/4/14.
@@ -442,7 +443,7 @@ public class Main implements Constants{
         selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
         selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
         cameraDistanceSlider.setValue(DEFAULT_SLIDER_VALUE);
-        cameraDistance = DEFAULT_CAMERA_DISTANCE;
+        canvas.setCameraDistance(DEFAULT_CAMERA_DISTANCE);
         curvaturePrecision = DEFAULT_PRECISION;
 
         // reset look at point for camera

@@ -283,8 +283,10 @@ public class Visualisation extends GLCanvas implements Constants,
 		gl.glPushMatrix();
 		gl.glMultMatrixf(rot_matrix, 0);
 
-		if (pointsList != null)
-			buildPoints(gl);
+		if (pointsList != null) {
+            buildPoints(gl);
+            //System.out.println(radius);
+        }
 		if (isAxesVisible)
 			buildAxes(gl);
 		if (isNormalVectorVisible)
