@@ -1,19 +1,12 @@
 package visualisation;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.util.Hashtable;
-import java.util.List;
+import configuration.Constants;
+import configuration.ScaleConfiguration;
+import dataReader.dataReader;
+import point.DataType;
+import point.point;
+import util.Matrix;
+import util.VirtualSphere;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -22,30 +15,13 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import point.DataType;
-import point.point;
-import util.Matrix;
-import util.VirtualSphere;
-
-import com.jogamp.opengl.util.FPSAnimator;
-
-import configuration.Constants;
-import configuration.ScaleConfiguration;
-import dataReader.dataReader;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.util.List;
 
 public class Visualisation extends GLCanvas implements Constants,
 		GLEventListener, MouseListener, MouseMotionListener {
