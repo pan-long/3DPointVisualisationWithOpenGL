@@ -51,7 +51,6 @@ public class Visualisation extends GLCanvas implements Constants,
 	private static double scaleFactor;
 	private static double radius;
 	private static double curvature;
-	private static double defaultRadius;
 	private static double selectedCurMax = DEFAULT_MAX_SELECTED_CURVATURE;
 	private static double selectedCurMin = DEFAULT_MIN_SELECTED_CURVATURE;
 	private static double cameraDistance = DEFAULT_CAMERA_DISTANCE;
@@ -77,16 +76,16 @@ public class Visualisation extends GLCanvas implements Constants,
         radius = r;
     }
 
-    public void setDefaultRadius(double dr) {
-        defaultRadius = dr;
-    }
-
     public void setCurvature(double c) {
         curvature = c;
     }
 
     public void setCameraDistance(double d) {
         cameraDistance = d;
+    }
+
+    public void setFieldOfView(double f) {
+        fieldOfView = f;
     }
 
     public void setPointsList(List<point> pl) {

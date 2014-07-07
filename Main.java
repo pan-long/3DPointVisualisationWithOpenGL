@@ -166,6 +166,8 @@ public class Main implements Constants{
                     fieldOfView = DEFAULT_FIELD_OF_VIEW
                             * (v - DEFAULT_SLIDER_VALUE + 10.0) / 10.0;
                 }
+
+                canvas.setFieldOfView(fieldOfView);
                 fieldOfViewValueJLabel.setText(String.format("%.2f",
                         fieldOfView));
             }
@@ -424,7 +426,6 @@ public class Main implements Constants{
         sc = new ScaleConfiguration(dr.getPoints(), 10);
         canvas.setScaleFactor(sc.getScaleFactor());
         canvas.setRadius(sc.getRadius() * (window_height / DEFAULT_MAX_ABS_COORIDINATE));
-        canvas.setDefaultRadius(sc.getRadius() * (window_height / DEFAULT_MAX_ABS_COORIDINATE));
         canvas.setCenterOfMass(sc.getCenterOfMass());
     }
 
