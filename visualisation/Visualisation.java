@@ -101,12 +101,33 @@ public class Visualisation extends GLCanvas implements Constants,
         radius = r;
     }
 
+    public void setDefaultRadius(double dr) {
+        defaultRadius = dr;
+    }
+
     public void setCurvature(double c) {
         curvature = c;
     }
 
     public void setCameraDistance(double d) {
         cameraDistance = d;
+    }
+
+    public void setPointsList(List<point> pl) {
+        pointsList = pl;
+    }
+
+    public void setScaleFactor(double s) {
+        scaleFactor = s;
+    }
+
+    public void setCenterOfMass(double[] c){
+        centerOfMass = c;
+    }
+
+    public void setLookAt(double x, double y){
+        lookAtX = x;
+        lookAtY = y;
     }
 
 	private Visualisation() {
@@ -121,6 +142,7 @@ public class Visualisation extends GLCanvas implements Constants,
 			visualisation = new Visualisation();
 		return visualisation;
 	}
+
 
     /*
 	public static void reset() {
@@ -146,17 +168,17 @@ public class Visualisation extends GLCanvas implements Constants,
 		lookAtY = DEFAULT_LOOK_AT_POINT_Y;
 	}*/
 
-	public static void initDataReader(File file) {
-		if (file == null)
-			return;
-		dr = new dataReader(file);
-		pointsList = dr.getPoints();
-		sc = new ScaleConfiguration(pointsList, 10);
-		scaleFactor = sc.getScaleFactor();
-		defaultRadius = radius = sc.getRadius()
-				* (window_height / DEFAULT_MAX_ABS_COORIDINATE);
-		centerOfMass = sc.getCenterOfMass();
-	}
+//	public static void initDataReader(File file) {
+//		if (file == null)
+//			return;
+//		dr = new dataReader(file);
+//		pointsList = dr.getPoints();
+//		sc = new ScaleConfiguration(pointsList, 10);
+//		scaleFactor = sc.getScaleFactor();
+//		defaultRadius = radius = sc.getRadius()
+//				* (window_height / DEFAULT_MAX_ABS_COORIDINATE);
+//		centerOfMass = sc.getCenterOfMass();
+//	}
 
 	public void buildPoints(GL2 gl) {
 		gl.glEnable(GL2.GL_POINT_SPRITE);

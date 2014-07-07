@@ -38,18 +38,12 @@ public class Main implements Constants{
     private static double curvaturePrecision = DEFAULT_PRECISION;
     private static int window_height = DEFAULT_WINDOW_HEIGHT;
     private static int window_width = DEFAULT_WINDOW_WIDTH;
-    private static double lookAtX = DEFAULT_LOOK_AT_POINT_X;
-    private static double lookAtY = DEFAULT_LOOK_AT_POINT_Y;
-    private static double scaleFactor;
     private static double radius;
     private static double curvature;
-    private static double defaultRadius;
-    private static double[] centerOfMass;
 
     private static File file = null;
     private static dataReader dr = null;
     private static ScaleConfiguration sc = null;
-    private static java.util.List<point> pointsList = null;
 
     private static final Visualisation canvas = Visualisation.getVisualisationInstance();
 
@@ -198,10 +192,10 @@ public class Main implements Constants{
                 int v = source.getValue();
 
                 if (v < DEFAULT_SLIDER_VALUE) {
-                    radius = defaultRadius * 10.0
+                    radius = sc.getRadius() * 10.0
                             / (DEFAULT_SLIDER_VALUE + 10.0 - v);
                 } else {
-                    radius = defaultRadius * (v - DEFAULT_SLIDER_VALUE + 10.0)
+                    radius = sc.getRadius() * (v - DEFAULT_SLIDER_VALUE + 10.0)
                             / 10.0;
                 }
                 canvas.setRadius(radius);
@@ -425,12 +419,12 @@ public class Main implements Constants{
         if (file == null)
             return;
         dr = new dataReader(file);
-        pointsList = dr.getPoints();
-        sc = new ScaleConfiguration(pointsList, 10);
-        scaleFactor = sc.getScaleFactor();
-        defaultRadius = radius = sc.getRadius()
-                * (window_height / DEFAULT_MAX_ABS_COORIDINATE);
-        centerOfMass = sc.getCenterOfMass();
+        canvas.setPointsList(dr.getPoints());
+        sc = new ScaleConfiguration(dr.getPoints(), 10);
+        canvas.setScaleFactor(sc.getScaleFactor());
+        canvas.setRadius(sc.getRadius() * (window_height / DEFAULT_MAX_ABS_COORIDINATE));
+        canvas.setDefaultRadius(sc.getRadius() * (window_height / DEFAULT_MAX_ABS_COORIDINATE));
+        canvas.setCenterOfMass(sc.getCenterOfMass());
     }
 
     public static void reset() {
@@ -452,7 +446,6 @@ public class Main implements Constants{
         curvaturePrecision = DEFAULT_PRECISION;
 
         // reset look at point for camera
-        lookAtX = DEFAULT_LOOK_AT_POINT_X;
-        lookAtY = DEFAULT_LOOK_AT_POINT_Y;
+        canvas.setLookAt(DEFAULT_LOOK_AT_POINT_X, DEFAULT_LOOK_AT_POINT_Y);
     }
 }
