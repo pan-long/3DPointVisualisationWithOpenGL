@@ -306,7 +306,7 @@ public class Visualisation extends GLCanvas implements Constants,
 	public static JPanel configSetCurvaturePrecision(){
 		JLabel label = new JLabel("  Set Curvature Precision(0~1)");
 
-		JPanel curvaturePrecistionJPanel = new JPanel(new BorderLayout());
+		JPanel curvaturePrecisionJPanel = new JPanel(new BorderLayout());
 		final JTextField curvatureTextField = new JTextField(String.format("%.2f", curvaturePrecision), 5);
 		final JButton setPrecisionJButton = new JButton("update");
 		setPrecisionJButton.addActionListener(new ActionListener() {
@@ -319,13 +319,13 @@ public class Visualisation extends GLCanvas implements Constants,
 				curvatureTextField.setText(String.format("%.2f", curvaturePrecision));
 			}
 		});
-		curvaturePrecistionJPanel.add(curvatureTextField, BorderLayout.CENTER);
-		curvaturePrecistionJPanel.add(setPrecisionJButton, BorderLayout.EAST);
+		curvaturePrecisionJPanel.add(curvatureTextField, BorderLayout.CENTER);
+		curvaturePrecisionJPanel.add(setPrecisionJButton, BorderLayout.EAST);
 
 		JPanel jPanel = new JPanel(new GridLayout(3, 1));
 		jPanel.add(new JLabel("-------------------------------"));
 		jPanel.add(label, 1);
-		jPanel.add(curvaturePrecistionJPanel, 2);
+		jPanel.add(curvaturePrecisionJPanel, 2);
 
 		return jPanel;
 	}
