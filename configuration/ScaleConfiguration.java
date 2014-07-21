@@ -1,9 +1,9 @@
 package configuration;
 
+import point.point;
+
 import java.util.Collections;
 import java.util.List;
-
-import point.point;
 
 public class ScaleConfiguration {
     private final double cameraDistance = -40;
@@ -37,19 +37,7 @@ public class ScaleConfiguration {
         return this.movedCenterOfMass;
     }
 
-    /* public void moveCenterTo(double newX, double newY, double newZ) */
-    /* { */
-    /* movedCenterOfMass[0] = newX; */
-    /* movedCenterOfMass[1] = newY; */
-    /* movedCenterOfMass[2] = newZ; */
-    /* } */
-
-    /* public double[] getOriginalCenter() */
-    /* { */
-    /* return centerOfMass; */
-    /* } */
-
-    public double[] calculateCenterOfMass() {
+    private double[] calculateCenterOfMass() {
         double sumX, sumY, sumZ;
         double[] center = new double[3];
         sumX = sumY = sumZ = 0;
@@ -83,6 +71,12 @@ public class ScaleConfiguration {
         return this.radius;
     }
 
+    /**
+     * This method is approximated in 3 dimensions.
+     * @param start start index of point
+     * @param end end index of point
+     * @return minimum distance of any two points from index start to end
+     */
     private double calculateMinDis(int start, int end) {
         if (start >= end)
             return 0;
