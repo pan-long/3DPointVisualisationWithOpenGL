@@ -3,6 +3,10 @@ package configuration;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
+/**
+ * 	interface Constants
+ * 	Global constants used in Visualisation tool
+ **/
 public interface Constants {
 	static final String TITLE = "3D Visualisation Tool";
 	static final int DEFAULT_WINDOW_WIDTH = 1000;

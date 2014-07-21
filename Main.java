@@ -60,6 +60,9 @@ public class Main implements Constants{
         });
     }
 
+    /**
+     * use JFrame to draw UI
+     */
     public static void initJFrame(final GLCanvas canvas,
                                   final FPSAnimator animator) {
         final JFrame frame = new JFrame();

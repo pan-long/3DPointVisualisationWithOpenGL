@@ -23,6 +23,10 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.util.List;
 
+/**
+ * class Visualisation
+ * provide an OpenGL canvas for visualising data
+ */
 public class Visualisation extends GLCanvas implements Constants,
 		GLEventListener, MouseListener, MouseMotionListener {
 
@@ -105,6 +109,10 @@ public class Visualisation extends GLCanvas implements Constants,
         lookAtY = y;
     }
 
+    /**
+     * constructor
+     * make constructor private, apply singleton
+     */
 	private Visualisation() {
 		addGLEventListener(this);
 		addMouseListener(this);
@@ -118,6 +126,10 @@ public class Visualisation extends GLCanvas implements Constants,
 		return visualisation;
 	}
 
+	/**
+	 * @param gl 	OpenGL
+	 * visualise points
+	 */
 	public void buildPoints(GL2 gl) {
 		gl.glEnable(GL2.GL_POINT_SPRITE);
 		gl.glEnable(GL2.GL_POINT_SMOOTH);
@@ -130,16 +142,20 @@ public class Visualisation extends GLCanvas implements Constants,
 			gl.glPushMatrix();
 			gl.glTranslatef(p.getX(), p.getY(), p.getZ());
 
+			// use RGB data in point if found
 			if (p.getType() == DataType.XYZRGB) {
 				int[] color = p.parseRGB();
 				gl.glColor3d(color[0], color[1], color[2]);
 			} else if (p.getType() != DataType.XYZC
 					|| (p.getCurvature() > selectedCurMin && p.getCurvature() < selectedCurMax))
+				// else, modify the color based on its curvature and the curvature user selected
 				gl.glColor3f(0.95f, 0.207f, 0.031f);
 			else {
+				// else, set to the default color
 				gl.glColor3d(0, 154, 199);
 			}
 
+			// if set to origin is checked, we move its center of mass to the origin
 			if (!isSetToOrigin) {
 				gl.glVertex3f((float) (p.getX() * scaleFactor),
 						(float) (p.getY() * scaleFactor),
@@ -155,7 +171,12 @@ public class Visualisation extends GLCanvas implements Constants,
 		gl.glEnd();
 	}
 
+	/**
+	 * @param gl 	OpenGL
+	 * visualise axes
+	 */
 	public void buildAxes(GL2 gl) {
+		// we use cylinder to draw axes
 		float cylinderRadius = (float) (0.1 * (Math.pow(cameraDistance
 				/ DEFAULT_CAMERA_DISTANCE, 1.0 / 2) * (fieldOfView / DEFAULT_FIELD_OF_VIEW)));
 		float cylinderHeight = (float) (3 * DEFAULT_MAX_ABS_COORIDINATE);
@@ -163,6 +184,16 @@ public class Visualisation extends GLCanvas implements Constants,
 		int stacks = DEFAULT_CYLINDER_STACK;
 		GLUquadric body = glu.gluNewQuadric();
 
+		// x axis
+		gl.glPushMatrix();
+		gl.glTranslatef(-cylinderHeight / 2, 0.0f, 0.0f);
+		gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+		gl.glColor3f(1.0f, 0.0f, 0.0f);
+		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
+				slices, stacks);
+		gl.glPopMatrix();
+
+		// y axis
 		gl.glPushMatrix();
 		gl.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
 		gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
@@ -171,23 +202,21 @@ public class Visualisation extends GLCanvas implements Constants,
 				slices, stacks);
 		gl.glPopMatrix();
 
+		// z axis
 		gl.glPushMatrix();
 		gl.glTranslatef(0.0f, 0.0f, -cylinderHeight / 2);
 		gl.glColor3f(0.0f, 0.0f, 1.0f);
 		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
 				slices, stacks);
 		gl.glPopMatrix();
-
-		gl.glPushMatrix();
-		gl.glTranslatef(-cylinderHeight / 2, 0.0f, 0.0f);
-		gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-		gl.glColor3f(1.0f, 0.0f, 0.0f);
-		glu.gluCylinder(body, cylinderRadius, cylinderRadius, cylinderHeight,
-				slices, stacks);
-		gl.glPopMatrix();
 	}
 
+	/**
+	 * @param gl 	OpenGL
+	 * visualise normal vectors
+	 */
 	public void buildNormalVector(GL2 gl) {
+		// use line to draw normal vectors
 		gl.glLineWidth((float) radius / 2);
 		gl.glBegin(GL.GL_LINES);
 		if (pointsList != null)
@@ -257,6 +286,7 @@ public class Visualisation extends GLCanvas implements Constants,
 		gl.glPopMatrix();
 	}
 
+	// set up virsual sphere for scrolling
 	public void setupVS(int w, int h) {
 		cueCenter.x = w / 2;
 		cueCenter.y = h / 2;
@@ -341,6 +371,7 @@ public class Visualisation extends GLCanvas implements Constants,
 				vs.makeRotationMtx(prevMouse, newMouse, cueCenter, cueRadius,
 						mouseMtx);
 
+				// for smooth moving, we double the rotation
 				rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
 				rot_matrix = Matrix.multiply(rot_matrix, mouseMtx);
 				fixRotationMatrix();

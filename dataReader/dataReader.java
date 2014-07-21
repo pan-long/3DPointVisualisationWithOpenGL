@@ -9,21 +9,39 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class dataReader
+ * read data from pcd file and return the points data
+ */
 public class dataReader {
     private List<point> points = null;
 
+    /**
+     * constructor
+     * @param filename  the filename of data file
+     */
     public dataReader(String filename) {
         openFile(new File(filename));
     }
 
+    /**
+     * constructor
+     * @param file  the file object of data file
+     */
     public dataReader(File file) {
         openFile(file);
     }
 
+    /**
+     * @return the point list in the data file
+     */
     public List<point> getPoints() {
         return points;
     }
 
+    /**
+     * open file and read the points 
+     */
     private void openFile(File file)
     {
         points = new ArrayList<point>();
